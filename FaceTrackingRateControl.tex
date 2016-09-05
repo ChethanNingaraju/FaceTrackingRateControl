@@ -7,7 +7,8 @@
 \documentclass[11pt]{article} % use larger type; default would be 10pt
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
-
+\usepackage{graphicx}
+\graphicspath{ {images/} }
 %%% Examples of Article customizations
 % These packages are optional, depending whether you want the features they provide.
 % See the LaTeX Companion or other references for full information.
@@ -53,7 +54,7 @@
 
 %%% The "real" document content comes below...
 
-\title{Face Tracking for Optimized Bitrate Bontrol in Low Delay Video Encoding}
+\title{Face Tracking for Optimized Bitrate Control in Low Delay Video Encoding}
 \author{Chethan Ningaraju}
 %\date{} % Activate to display a given date or no date (if empty),
          % otherwise the current date is printed 
@@ -63,9 +64,18 @@
 
 \section{Introduction}
   \subsection{Low Delay Bitrate Control}
+	In recent years there is increasing demand for high quality video conferencing solutions. To address this growing need there has been constant improvement in  low delay video coding techniques. The need for extremely low end to end delay in video telephony puts additional contraints on video coding which results in compromise of video quality.
 
-    	In recent years there is increasing demand for high quality video conferencing solutions. To address this growing need there has been constant improvement in  low delay video coding techniques. The need for extremely low end to end delay in video telephony puts additional contraints on video coding which results in compromise of video quality. 
-     \par	
-The bitrate control module is encoder is responsible for controlling the bit-consumption of the encoder to guarantee smooth playback. Bitrate control module is not codec specific and operates  .During the low delay video encoding, tools like bi-directional prediction are disabled
+	The bitrate control module is responsible for controlling the bit-consumption of the encoder to guarantee smooth playback. Bitrate control module is not codec specific and operates independent of any chosen codec. The main purpose of the bitrate control module is to ensure efficient playback of the encoded video. Figure 1 shows the functionality the bitrate control module. It achieves this by controlling the quantization parameter using during the encoding. The decision of quantization parameter is done considering the input bitrate, framerate, input complexity (spatial and temporal activity), acceptable input delay (a measure of VBV buffer size). The module also takes the feedback from the encoder regularly to make better decision.  During the low delay video encoding, tools like bi-directional  	prediction are disabled.
+  \subsection{ROI based coding}
+	In conventional video coding, all regions of the frame is considered equally important. It is assumed all regions contribute equally for perceptual quality. This is true
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{RC_block}
+    \caption{Bitrate Control Module Functionality}
+    \label{fig:Bitrate Control Module Functionality}
+\end{figure} 
+
+\section{Operating Conditions}     
 \end{document}
