@@ -1,0 +1,7 @@
+\contentsline {section}{\numberline {1}Introduction}{3}
+\contentsline {subsection}{\numberline {1.1}Low Delay Bitrate Control}{3}
+\contentsline {subsection}{\numberline {1.2}ROI based coding}{3}
+\contentsline {section}{\numberline {2}Study setup}{4}
+\contentsline {subsection}{\numberline {2.1}codec configuration}{4}
+\contentsline {subsection}{\numberline {2.2}Measurements}{4}
+\contentsline {section}{References}{5}
