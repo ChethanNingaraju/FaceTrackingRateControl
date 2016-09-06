@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.8.29)  5 SEP 2016 18:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.8.27)  6 SEP 2016 04:35
 entering extended mode
 **./FaceTrackingRateControl.tex
 (FaceTrackingRateControl.tex
@@ -659,24 +659,20 @@ Overfull \hbox (15.36526pt too wide) in paragraph at lines 73--74
 [1
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <./images/RC_block.jpg>] [
-2] (FaceTrackingRateControl.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+2] (FaceTrackingRateControl.aux) ) 
 Here is how much of TeX's memory you used:
  4290 strings out of 493334
- 63574 string characters out of 3139243
+ 63574 string characters out of 3139246
  136204 words of memory out of 3000000
  7762 multiletter control sequences out of 15000+200000
  9089 words of font info for 32 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,10n,43p,868b,267s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Pro
-gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program File
-s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmss12.pfb>
-Output written on FaceTrackingRateControl.pdf (2 pages, 105738 bytes).
+ 44i,10n,43p,867b,267s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr
+17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss12.pfb>
+Output written on FaceTrackingRateControl.pdf (2 pages, 108357 bytes).
 PDF statistics:
  26 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
