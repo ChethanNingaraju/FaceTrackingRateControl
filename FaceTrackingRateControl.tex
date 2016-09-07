@@ -98,7 +98,7 @@ The quantization paramter is adapted at every maco-block level to meet the overa
 
 The most crucial aspect in this proposal is the metric used to evaluate various algorithms and choosing the best one. The goal of this proposal is to improve the quality of ROI region at the cost of non-ROI regions. The goal is to keep the bitrate constant. Since the whole approach is to measure the gain in perceptual quality, using frame level PSNR as a metric could be misleading.
 In this proposal, the metric used is average PSNR of frames and it is compared with average ROI PSNR. The expectation is to see an improvement in ROI level PSNR, with degradation in PSNR of the non-ROI regions. 
-
+	
 In order to evaluate different algorithms, we consider different metrics. The gain of PSNR in visual ROI region and non- ROI region is measured as average PSNR of full frame and average PSNR of ROI region. This will also help in measuring the aggressiveness of an algorithm. The goal is to not make background really bad compared to the foreground.
 
 The initial approach is to find the gain in PSNR in ROI, however finding the desirable extent of improvement in PSNR in ROI along with acceptable drop in PSNR of non-ROI is tricky. The idea here is to find the right balance between quality improvements in ROI with degradation of non-ROI region as to achieve maximum perceptual quality. For the sample video chosen, following was the PSNR measurements. The values in \ref{InitPSNR1} shows the PSNR values 
@@ -115,19 +115,60 @@ Content & PSNR Avg (dB) & PSNR ROI (dB) \\
  \caption{Initial PSNR values}
  \label{InitPSNR1}
 \end{table}
+The PSNR is calculated using weighted sum of PSNR of individual components per picture (PSNR\textsubscript{Y}, PSNR\textsubscript{U} and PSNR\textsubscript{V}) \cite{ComparingCodingEfficiency}.
+\begin{equation}
+\label{Eq:PSNR}
+PSNR\textsubscript{YUV} = ( 6 . PSNR\textsubscript{Y} + PSNR\textsubscript{U} + PSNR\textsubscript{V}) / 8
+\end{equation}
+ where individual components are computes as
+\begin{equation}
+\label{Eq:PSNRDef}
+PSNR = 10 . log_{10}((2^B - 1)^2 / MSE)
+\end{equation}
+wher B = 8 is the number of bits per sample of the video and MSE isthe mean squared error.
 
+The second aspect of measurement in this kind of video is to consider the PSNR and QP distribution within the frame. These are represented as a gray scale image. For a QP scale map, the darker regions in a frame indicate higher quantization. Even though quantization parameter used for a block to be encoded is closely realted to the PSNR of the block, it is not the only deciding factor. The PSNR can also vary depending on the content. Therefore, the PSNR distribution within a frame is also represented as gray scale image.
+\begin{figure}[h]
+    \centering
+%Raw YUV image
+    \includegraphics[scale=0.5]{PaulDefault120}
+    \caption{A Frame in the sample video}
+    \label{fig:PaulDefault120}
+%%encoded frame image
+    \includegraphics[scale=0.5]{PaulDefault120_91250kbps}
+    \caption{Sample frame in encoded video (250kbps)}
+    \label{fig:PaulDefaultencoded}
+\end{figure} 
+
+The image in fugure \ref{fig:PaulDefault120} shows a frame in the sample video conferencing content. The iamge in [ ??] shows the same frame when encoded with the codec configurations discussed in <section> with 250 kbps. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{PaulDefault120}
+    \caption{A Frame in the sample video}
+    \label{fig:PaulDefault120}
+    \includegraphics[scale=0.5]{PaulDefault120_91250kbps}
+    \caption{A Frame in the sample video}
+    \label{fig:PaulDefault539}
+\end{figure} 
+
+%
+%
+%
 %Bibiliography and reference
+%
+%
+%
 \begin{thebibliography}{9}
 \bibitem{HighQualityROICodingForVideoConferencing} 
 Manzur Murshed and James Brown. 
 \textit{High Quality Region-of-Interest Coding for Video Conferencing based Remote General Practitioner Training}. 
 The Fifth International Conference on eHealth, Telemedicine, and Social Medicine.
  
-\bibitem{einstein} 
-Albert Einstein. 
-\textit{Zur Elektrodynamik bewegter K{\"o}rper}. (German) 
-[\textit{On the electrodynamics of moving bodies}]. 
-Annalen der Physik, 322(10):891–921, 1905.
+\bibitem{ComparingCodingEfficiency} 
+J. Ohm. G. J. Sullivan, H. Schwarz, Thiow Keng Tan and T. Wiegand.
+\textit{Comparison of the Coding Efficiency of Video Coding Standards—Including High Efficiency Video Coding (HEVC).}
+ IEEE Transactions on Circuits and Systems for Video Technology ( Volume: 22, Issue: 12, Dec. 2012 )
  
 \bibitem{knuthwebsite} 
 Knuth: Computers and Typesetting,

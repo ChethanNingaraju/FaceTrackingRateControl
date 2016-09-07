@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.8.29)  7 SEP 2016 14:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.8.29)  7 SEP 2016 17:06
 entering extended mode
 **./FaceTrackingRateControl.tex
 (FaceTrackingRateControl.tex
@@ -532,7 +532,11 @@ Package tocloft Info: The document has section divisions on input line 44.
 \cftsubtabindent=\skip98
 \cftsubtabnumwidth=\skip99
 )
-(FaceTrackingRateControl.aux)
+(FaceTrackingRateControl.aux
+
+LaTeX Warning: Label `fig:PaulDefault539' multiply defined.
+
+)
 \openout1 = `FaceTrackingRateControl.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 62.
@@ -547,8 +551,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 62.
 LaTeX Font Info:    ... okay on input line 62.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 62.
 LaTeX Font Info:    ... okay on input line 62.
-
-("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+ ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count103
 \scratchdimen=\dimen136
@@ -671,25 +674,72 @@ Overfull \hbox (15.36526pt too wide) in paragraph at lines 78--79
 
 [3
 
- <./images/RC_block.jpg>] [4] [5] (FaceTrackingRateControl.aux) ) 
+ <./images/RC_block.jpg>] [4]
+<images/PaulDefault120.jpg, id=19, 517.18219pt x 389.95688pt>
+File: images/PaulDefault120.jpg Graphic file (type jpg)
+
+<use images/PaulDefault120.jpg>
+Package pdftex.def Info: images/PaulDefault120.jpg used on input line 134.
+(pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
+
+<images/PaulDefault120_91250kbps.jpg, id=20, 517.18219pt x 389.95688pt>
+File: images/PaulDefault120_91250kbps.jpg Graphic file (type jpg)
+
+<use images/PaulDefault120_91250kbps.jpg>
+Package pdftex.def Info: images/PaulDefault120_91250kbps.jpg used on input line
+ 138.
+(pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+LaTeX Warning: Reference `fig:PaulDefault120' on page 5 undefined on input line
+ 143.
+
+File: images/PaulDefault120.jpg Graphic file (type jpg)
+<use images/PaulDefault120.jpg>
+Package pdftex.def Info: images/PaulDefault120.jpg used on input line 147.
+(pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
+File: images/PaulDefault120_91250kbps.jpg Graphic file (type jpg)
+ <use images/PaulDefault120_91250kbps.jpg>
+Package pdftex.def Info: images/PaulDefault120_91250kbps.jpg used on input line
+ 150.
+(pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[5] [6] [7 <./images/PaulDefault120.jpg> <./images/PaulDefault120_91250kbps.jpg
+>] [8] (FaceTrackingRateControl.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 4309 strings out of 493334
- 63866 string characters out of 3139243
- 138221 words of memory out of 3000000
- 7775 multiletter control sequences out of 15000+200000
+ 4323 strings out of 493334
+ 64284 string characters out of 3139243
+ 140284 words of memory out of 3000000
+ 7787 multiletter control sequences out of 15000+200000
  10527 words of font info for 37 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,10n,43p,1064b,267s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Fi
-les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTe
-X 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
-public/amsfonts/cm/cmss12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
-cm/cmtt10.pfb>
-Output written on FaceTrackingRateControl.pdf (5 pages, 148331 bytes).
+ 44i,10n,43p,1064b,302s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
+sfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
+cmss12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.p
+fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/P
+rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on FaceTrackingRateControl.pdf (8 pages, 362462 bytes).
 PDF statistics:
- 43 PDF objects out of 1000 (max. 8388607)
+ 76 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
