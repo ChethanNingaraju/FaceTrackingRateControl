@@ -1,0 +1,16 @@
+\contentsline {section}{\numberline {1}Introduction}{3}
+\contentsline {subsection}{\numberline {1.1}Low Delay Bitrate Control}{3}
+\contentsline {subsection}{\numberline {1.2}ROI based coding}{3}
+\contentsline {section}{\numberline {2}Study setup}{4}
+\contentsline {subsection}{\numberline {2.1}codec configuration}{4}
+\contentsline {subsection}{\numberline {2.2}Measurements}{4}
+\contentsline {subsubsection}{\numberline {2.2.1}Quality metrics}{5}
+\contentsline {subsubsection}{\numberline {2.2.2}PSNP and QP variation}{5}
+\contentsline {subsubsection}{\numberline {2.2.3}Bitrate fluctuation - Delay plots}{8}
+\contentsline {section}{\numberline {3}Face Detection}{9}
+\contentsline {subsection}{\numberline {3.1}Spatial Domain Face Detection}{10}
+\contentsline {subsection}{\numberline {3.2}Compressed domain Face Detection}{10}
+\contentsline {section}{\numberline {4}ROI based intelligent bitrate control - Approaches}{10}
+\contentsline {subsection}{\numberline {4.1}QP offset}{10}
+\contentsline {subsection}{\numberline {4.2}Reaction Factor - Buffer control}{10}
+\contentsline {section}{References}{13}

@@ -201,7 +201,33 @@ There are many ways of using the additional information of knowing the region of
 \subsection{QP offset}
 The simplest and straight-forward way of creating a bias in quality for ROI and non-ROI is by using a QP offset between ROI based regions in the existing bitrate control module. The feedback from the encoder to rate control will ensure that final bitrate is still met. A negative QP offset  is used for ROI regions, which triggers increase in QP of non-ROI regions. 
 
-Such QP offset will ensure the quality difference and shall not be overruled by bitrate contol mechanisms. However, this approach might result in bitrate control over-reacting for the blocks around the ROI and encode them with very low quality. The magnitude of QP offset shall dictate the magnitude of shift in quality for the ROI. This approach is used to find right QP offset for best perceptual quality.
+Such QP offset will ensure the quality difference and shall not be overruled by bitrate control mechanisms. However, this approach might result in bitrate control over-reacting for the blocks around the ROI and encode them with very low quality. The magnitude of QP offset shall dictate the magnitude of shift in quality for the ROI. This approach is used to find right QP offset for best perceptual quality. 
+
+It is perhaps a better idea to link the confidence quotient of face detection algorithms with the QP offset used. It should also be dependent on the area of the face, if the area of the ROI is considerably large in a video then the quality difference should be minimized. 
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[scale=0.4]{PaulDefault120_91250kbps_psnr}
+    \includegraphics[scale=0.4]{QPOffset/paul120_250kbps_QPoffset4_psnr}
+    \includegraphics[scale=0.4]{PaulDefault120_91250kbps}
+    \includegraphics[scale=0.4]{QPOffset/paul120_250kbps_QPoffset4}
+    \includegraphics[scale=0.37]{PaulDefault120_91250kbps_quant}
+    \includegraphics[scale=0.4]{QPOffset/paul120_250kbps_QPoffset4_quant}    
+    \caption{Comparing the images with QP offset of 4 for ROI}
+    \label{fig:Default_QPOffsetCompare}
+\end{figure}
+
+The images in \ref{fig:Default_QPOffsetCompare} shows the comparison between original images, PSNR, Quant map and corresponding attributes after encoding the ROI with a better lower QP of 4. The overall bitrate of the streams were almost constant, the result is only due to movement in the bits. The number of dropped or skip frames were found to be the same. Figure\ref{fig:DelayDefault_QPOffsetCompare} shows the comparison of delay of original bitstream with the bitstream with QP offset for ROI. It can be seen that the delay behavior does not change significantly with skip/dropped frames at same locations.
+\begin{figure}[!h]
+    \centering
+    \includegraphics[scale=0.75]{QPOffset/Paul250kbps_QP_Offset_Delay}
+    \caption{Delay Comparison of images with QP offset of 4 for ROI}
+    \label{fig:DelayDefault_QPOffsetCompare}
+\end{figure}
+\subsection{Reaction Factor - Buffer control} 
+The second approach of using ROI information to enhance quality of ROI is by using different buffer controls in the inside the birate control module. The bitrate control module used in this study is compensates for the overconsumption or underconsumption of bits in the past by adjusting the delta bits for future frames.This corrected allocation happens at every macroblock level. For instance, if there is excessive consumption of bits in the past macro-blocks, the excess is subtracted from certain number of future frames known as reaction factor. If the reaction factor is low, the excess or shortage of bits is shared by a large number of macro-blocks.
+
+The reaction factor is used to allocate additional bits to ROI by changing the reaction for macro-blocks belonging to ROI. 
 %
 %
 %Bibiliography and reference
