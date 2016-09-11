@@ -227,7 +227,7 @@ The images in \ref{fig:Default_QPOffsetCompare} shows the comparison between ori
 \subsection{Reaction Factor - Buffer control} 
 The second approach of using ROI information to enhance quality of ROI is by using different buffer controls in the inside the birate control module. The bitrate control module used in this study is compensates for the overconsumption or underconsumption of bits in the past by adjusting the delta bits for future frames.This corrected allocation happens at every macroblock level. For instance, if there is excessive consumption of bits in the past macro-blocks, the excess is subtracted from certain number of future frames known as reaction factor. If the reaction factor is low, the excess or shortage of bits is shared by a large number of macro-blocks.
 
-The reaction factor is used to allocate additional bits to ROI by changing the reaction for macro-blocks belonging to ROI. 
+The reaction factor is used to allocate additional bits to ROI by changing the reaction for macro-blocks belonging to ROI. In case of underconsumption in the past, the excess bits available for future macroblocks is forced to be used aggressively for macroblocks belonging to ROI. On the other hand whenever there is overconsumption in the past, the bits are reduced more aggresively for macroblocks belonging to non-ROI. The advantage of this appraoch over QP offset approach is that, the bitallocation is still controlled within the rate control and decisions are its decisions are not overridden by external offsets. This guarantees better buffer compliance. 
 %
 %
 %Bibiliography and reference
