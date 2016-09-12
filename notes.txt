@@ -1,0 +1,6 @@
+[x] Give the full table PSNR of all contents
+[x]
+
+New papers
+----------
+[x] Region-of-interest based rate control algorithm for H.264/AVC video coding
