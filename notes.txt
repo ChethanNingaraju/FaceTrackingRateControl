@@ -4,3 +4,4 @@
 New papers
 ----------
 [x] Region-of-interest based rate control algorithm for H.264/AVC video coding
+[x]Seems like quality not going below certain point, there is just drop in frame rate
