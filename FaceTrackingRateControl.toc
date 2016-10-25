@@ -1,12 +1,13 @@
 \contentsline {section}{\numberline {1}Introduction}{3}
 \contentsline {subsection}{\numberline {1.1}Low Delay Bitrate Control}{3}
+\contentsline {subsubsection}{\numberline {1.1.1}Overview of Bitrate Control Module}{4}
 \contentsline {subsection}{\numberline {1.2}ROI based coding}{4}
 \contentsline {section}{\numberline {2}Study setup}{5}
 \contentsline {subsection}{\numberline {2.1}codec configuration}{5}
 \contentsline {subsection}{\numberline {2.2}Measurements}{5}
 \contentsline {subsubsection}{\numberline {2.2.1}Quality metrics}{6}
-\contentsline {subsubsection}{\numberline {2.2.2}PSNR and QP Variation}{6}
-\contentsline {subsubsection}{\numberline {2.2.3}Bitrate fluctuation - Delay plots}{9}
+\contentsline {subsubsection}{\numberline {2.2.2}PSNR and QP Variation}{7}
+\contentsline {subsubsection}{\numberline {2.2.3}Bitrate fluctuation - Delay plots}{8}
 \contentsline {section}{\numberline {3}Face Detection}{10}
 \contentsline {subsection}{\numberline {3.1}Spatial Domain Face Detection}{11}
 \contentsline {subsection}{\numberline {3.2}Compressed domain Face Detection}{11}

@@ -88,6 +88,10 @@ The bitrate control algorithm computes the QP for a given macroblock based on tw
 \item Current Virtual Buffer occupancy.
 \end{itemize}
 
+%%SubSub section for detailed overview of bitrate control	
+\subsubsection{Overview of Bitrate Control Module}
+	The bitrate control module used in this work in a modified version of \cite{JVTF086}. As mentioned earlier quantization parameter at a macroblock depends on 2 factors. First, a delta QP (dqp) is calculated considering the
+
   \subsection{ROI based coding}
 	In conventional video coding, all regions of a frame are considered equally important. It is assumed that all the regions contribute equally to the perceptual quality. Some video codecs use the fact that high frequency components are less important to the human visual system and perform preferential coding based on spatial frequency. The higher frequency components which are not so important to perceptual quality is encoded with higher QP. However, such preferential coding does not take into account the contents of the frame to be encoded. 
 
@@ -312,11 +316,16 @@ The reaction factor is used to allocate additional bits to ROI by using differen
 Manzur Murshed and James Brown. 
 \textit{High Quality Region-of-Interest Coding for Video Conferencing based Remote General Practitioner Training}. 
 The Fifth International Conference on eHealth, Telemedicine, and Social Medicine.
- 
+
 \bibitem{ComparingCodingEfficiency} 
 J. Ohm. G. J. Sullivan, H. Schwarz, Thiow Keng Tan and T. Wiegand.
 \textit{Comparison of the Coding Efficiency of Video Coding Standards—Including High Efficiency Video Coding (HEVC).}
  IEEE Transactions on Circuits and Systems for Video Technology ( Volume: 22, Issue: 12, Dec. 2012 )
- 
+
+\bibitem{JVTF086}
+Siwei Ma, Wen Gao, Yan Lu and Hanqing Lu.
+\textit{Proposed draft description of rate control on JVT standard. }
+Joint Video Team (JVT) of ISO/IEC MPEG and ITU-T VCEG (ISO/IEC JTC1/SC29/WG11 and ITU-T SG16 Q.6) 6h Meeting: Awaji, 5-13, December, 2002.
+
 \end{thebibliography}
 \end{document}
