@@ -30,6 +30,7 @@
 \usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
 \usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
 \usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+\usepackage{amsmath}
 % These packages are all incorporated in the memoir class to one degree or another...
 
 %%% HEADERS & FOOTERS
@@ -82,15 +83,22 @@ The goal of this work is to identify the salient region of a frame, which is the
 
 The need for extremely low end to end delay in video telephony puts additional constraints on video coding which results in compromise of video quality. During the low delay video encoding, tools like bi-directional prediction are disabled. The delay in video encoding is a direct measure of Video Buffer Verifier (VBV) buffer size of rate control. The VBV buffer is a virtual buffer modelled by the bitrate control module to ensure that video stream can be correctly buffered, and played back at the decoder end. This can be visualized as a leaky bucket, where the output of encoder with variable rate is stored in a leaky bucket which is draining at a constant rate. Any underflow or over flow in this buffer must be avoided to ensure smooth playback. When the size of the VBV buffer is very low (due to low delay), there is less room to accommodate the variation in bitrate of the encoder. This implies that there can be minimum variation in the size of frame irrespective of the content. To ensure this, encoder's quantization parameter (QP) is adapted on a macroblock level in order to ensure that the maximum allowed bitcount for an encoded frame is not exceeded.
 
-The bitrate control algorithm computes the QP for a given macroblock based on two factors. 
+%%SubSub section for detailed overview of bitrate control	
+\subsubsection{Overview of Bitrate Control Module}
+	The bitrate control module used in this work in a modified version of \cite{JVTF086}.The bitrate control algorithm computes the QP for a given macroblock based on two factors. 
 \begin{itemize}  
 \item Activity of the macroblock - Difference of actual and predicted macroblocks.
 \item Current Virtual Buffer occupancy.
 \end{itemize}
-
-%%SubSub section for detailed overview of bitrate control	
-\subsubsection{Overview of Bitrate Control Module}
-	The bitrate control module used in this work in a modified version of \cite{JVTF086}. As mentioned earlier quantization parameter at a macroblock depends on 2 factors. First, a delta QP (dqp) is calculated considering the
+ First, a delta QP (dq) is calculated considering the activity of the macroblock. The activity of the macroblock is a measure of complexity of the macroblock and hence indicates the bits required to encode the macroblock. The relative activity of the current macroblock with respect to average activity of the entire frame is considered to calculate the delta QP based equations mentioned below
+\begin{equation}
+	dq = \begin{cases}
+		-floor(\frac{avj\_act} {act_j} - 1), &  0 < \frac{act_j}{avg\_act} <= 1/2.\\
+		0, & 1/2 < \frac{act_j}{avg\_act} <= 2.\\
+		floor(\frac{act_j} {avj\_act}) - 1, & \frac{act_j}{avg\_act} >= 2
+	\end{cases}
+\end{equation}
+As depicted the above equation, a positive dq is used when current macroblock is complex relative to average frame complexity. This indicates that for relatively complex macroblocks within a frame, higher QP is used. This is make sure that bits within a frame is equally distributed across all macroblocks. In practice, the average frame activity for entire frame is unavailable until the last macroblock the frame has been encoded. Therefore, previous frame average activity is used since the average property of two adjacent frames in the video is likely to remain same. The activity metric used in the above equation is a complexity metric, hence it can be replaced by similar metrics depicting the complexity of the block. Other metrics like SATD (Sum of Absolute Difference in Transform domain) and cost of macroblock can be used instead of the activity.
 
   \subsection{ROI based coding}
 	In conventional video coding, all regions of a frame are considered equally important. It is assumed that all the regions contribute equally to the perceptual quality. Some video codecs use the fact that high frequency components are less important to the human visual system and perform preferential coding based on spatial frequency. The higher frequency components which are not so important to perceptual quality is encoded with higher QP. However, such preferential coding does not take into account the contents of the frame to be encoded. 

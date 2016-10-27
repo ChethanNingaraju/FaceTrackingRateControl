@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.8.29)  25 OCT 2016 17:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.8.29)  26 OCT 2016 17:41
 entering extended mode
 **./FaceTrackingRateControl.tex
 (FaceTrackingRateControl.tex
@@ -469,16 +469,74 @@ Package caption3 Info: TeX engine: e-TeX on input line 67.
 \sf@top=\skip52
 \sf@bottom=\skip53
 )
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
+Package: amsmath 2016/06/28 v2.15d AMS math features
+\@mathmargin=\skip54
+
+For additional information on amsmath, use the `?' option.
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks22
+\ex@=\dimen136
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen137
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count103
+LaTeX Info: Redefining \frac on input line 199.
+\uproot@=\count104
+\leftroot@=\count105
+LaTeX Info: Redefining \overline on input line 297.
+\classnum@=\count106
+\DOTSCASE@=\count107
+LaTeX Info: Redefining \ldots on input line 394.
+LaTeX Info: Redefining \dots on input line 397.
+LaTeX Info: Redefining \cdots on input line 518.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen138
+LaTeX Font Info:    Redeclaring font encoding OML on input line 634.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 635.
+\macc@depth=\count108
+\c@MaxMatrixCols=\count109
+\dotsspace@=\muskip10
+\c@parentequation=\count110
+\dspbrk@lvl=\count111
+\tag@help=\toks23
+\row@=\count112
+\column@=\count113
+\maxfields@=\count114
+\andhelp@=\toks24
+\eqnshift@=\dimen139
+\alignsep@=\dimen140
+\tagshift@=\dimen141
+\tagwidth@=\dimen142
+\totwidth@=\dimen143
+\lineht@=\dimen144
+\@envbody=\toks25
+\multlinegap=\skip55
+\multlinetaggap=\skip56
+\mathdisplay@stack=\toks26
+LaTeX Info: Redefining \[ on input line 2739.
+LaTeX Info: Redefining \] on input line 2740.
+)
 ("C:\Program Files\MiKTeX 2.9\tex\latex\fancyhdr\fancyhdr.sty"
-\fancy@headwidth=\skip54
-\f@ncyO@elh=\skip55
-\f@ncyO@erh=\skip56
-\f@ncyO@olh=\skip57
-\f@ncyO@orh=\skip58
-\f@ncyO@elf=\skip59
-\f@ncyO@erf=\skip60
-\f@ncyO@olf=\skip61
-\f@ncyO@orf=\skip62
+\fancy@headwidth=\skip57
+\f@ncyO@elh=\skip58
+\f@ncyO@erh=\skip59
+\f@ncyO@olh=\skip60
+\f@ncyO@orh=\skip61
+\f@ncyO@elf=\skip62
+\f@ncyO@erf=\skip63
+\f@ncyO@olf=\skip64
+\f@ncyO@orf=\skip65
 )
 ("C:\Program Files\MiKTeX 2.9\tex\latex\sectsty\sectsty.sty"
 Package: sectsty 2002/02/25 v2.0.2 Commands to change all sectional heading sty
@@ -494,73 +552,73 @@ Package tocbibind Note: Using section or other style headings.
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\tocloft\tocloft.sty"
 Package: tocloft 2013/05/02 v2.3f parameterised ToC, etc., typesetting
 Package tocloft Info: The document has section divisions on input line 44.
-\cftparskip=\skip63
-\cftbeforetoctitleskip=\skip64
-\cftaftertoctitleskip=\skip65
-\cftbeforepartskip=\skip66
-\cftpartnumwidth=\skip67
-\cftpartindent=\skip68
-\cftbeforesecskip=\skip69
-\cftsecindent=\skip70
-\cftsecnumwidth=\skip71
-\cftbeforesubsecskip=\skip72
-\cftsubsecindent=\skip73
-\cftsubsecnumwidth=\skip74
-\cftbeforesubsubsecskip=\skip75
-\cftsubsubsecindent=\skip76
-\cftsubsubsecnumwidth=\skip77
-\cftbeforeparaskip=\skip78
-\cftparaindent=\skip79
-\cftparanumwidth=\skip80
-\cftbeforesubparaskip=\skip81
-\cftsubparaindent=\skip82
-\cftsubparanumwidth=\skip83
-\cftbeforeloftitleskip=\skip84
-\cftafterloftitleskip=\skip85
-\cftbeforefigskip=\skip86
-\cftfigindent=\skip87
-\cftfignumwidth=\skip88
-\cftbeforelottitleskip=\skip89
-\cftafterlottitleskip=\skip90
-\cftbeforetabskip=\skip91
-\cfttabindent=\skip92
-\cfttabnumwidth=\skip93
-\cftbeforesubfigskip=\skip94
-\cftsubfigindent=\skip95
-\cftsubfignumwidth=\skip96
-\cftbeforesubtabskip=\skip97
-\cftsubtabindent=\skip98
-\cftsubtabnumwidth=\skip99
+\cftparskip=\skip66
+\cftbeforetoctitleskip=\skip67
+\cftaftertoctitleskip=\skip68
+\cftbeforepartskip=\skip69
+\cftpartnumwidth=\skip70
+\cftpartindent=\skip71
+\cftbeforesecskip=\skip72
+\cftsecindent=\skip73
+\cftsecnumwidth=\skip74
+\cftbeforesubsecskip=\skip75
+\cftsubsecindent=\skip76
+\cftsubsecnumwidth=\skip77
+\cftbeforesubsubsecskip=\skip78
+\cftsubsubsecindent=\skip79
+\cftsubsubsecnumwidth=\skip80
+\cftbeforeparaskip=\skip81
+\cftparaindent=\skip82
+\cftparanumwidth=\skip83
+\cftbeforesubparaskip=\skip84
+\cftsubparaindent=\skip85
+\cftsubparanumwidth=\skip86
+\cftbeforeloftitleskip=\skip87
+\cftafterloftitleskip=\skip88
+\cftbeforefigskip=\skip89
+\cftfigindent=\skip90
+\cftfignumwidth=\skip91
+\cftbeforelottitleskip=\skip92
+\cftafterlottitleskip=\skip93
+\cftbeforetabskip=\skip94
+\cfttabindent=\skip95
+\cfttabnumwidth=\skip96
+\cftbeforesubfigskip=\skip97
+\cftsubfigindent=\skip98
+\cftsubfignumwidth=\skip99
+\cftbeforesubtabskip=\skip100
+\cftsubtabindent=\skip101
+\cftsubtabnumwidth=\skip102
 )
 (FaceTrackingRateControl.aux)
 \openout1 = `FaceTrackingRateControl.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
 
 ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count103
-\scratchdimen=\dimen136
-\scratchbox=\box26
-\nofMPsegments=\count104
-\nofMParguments=\count105
-\everyMPshowfont=\toks22
-\MPscratchCnt=\count106
-\MPscratchDim=\dimen137
-\MPnumerator=\count107
-\makeMPintoPDFobject=\count108
-\everyMPtoPDFconversion=\toks23
+\scratchcounter=\count115
+\scratchdimen=\dimen145
+\scratchbox=\box28
+\nofMPsegments=\count116
+\nofMParguments=\count117
+\everyMPshowfont=\toks27
+\MPscratchCnt=\count118
+\MPscratchDim=\dimen146
+\MPnumerator=\count119
+\makeMPintoPDFobject=\count120
+\everyMPtoPDFconversion=\toks28
 ) ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
 Package: pdftexcmds 2016/05/21 v0.22 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -640,19 +698,10 @@ G,.JBIG2,.JB2,.eps]
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 63.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 63.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 63.
 [1
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-(FaceTrackingRateControl.toc
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 1.
-)
+(FaceTrackingRateControl.toc)
 \tf@toc=\write3
 \openout3 = `FaceTrackingRateControl.toc'.
 
@@ -662,10 +711,10 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 <images/RC_block.jpg, id=12, 867.24pt x 302.63063pt>
 File: images/RC_block.jpg Graphic file (type jpg)
  <use images/RC_block.jpg>
-Package pdftex.def Info: images/RC_block.jpg used on input line 78.
+Package pdftex.def Info: images/RC_block.jpg used on input line 79.
 (pdftex.def)             Requested size: 433.61894pt x 151.31494pt.
 
-Overfull \hbox (15.36526pt too wide) in paragraph at lines 78--79
+Overfull \hbox (15.36526pt too wide) in paragraph at lines 79--80
  [][] 
  []
 
@@ -675,282 +724,284 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [3
 
 ]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 87.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 90.
  ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 87.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 90.
  [4 <./images/RC_block.jpg>] [5] [6]
-<images/PaulDefault120.jpg, id=30, 517.18219pt x 389.95688pt>
+<images/PaulDefault120.jpg, id=32, 517.18219pt x 389.95688pt>
 File: images/PaulDefault120.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120.jpg>
-Package pdftex.def Info: images/PaulDefault120.jpg used on input line 154.
+Package pdftex.def Info: images/PaulDefault120.jpg used on input line 162.
 (pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
 
-<images/PaulDefault120_91250kbps.jpg, id=31, 517.18219pt x 389.95688pt>
+<images/PaulDefault120_91250kbps.jpg, id=33, 517.18219pt x 389.95688pt>
 File: images/PaulDefault120_91250kbps.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120_91250kbps.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps.jpg used on input line
- 158.
+ 166.
 (pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
- [7 <./images/PaulDefault120.jpg> <./images/PaulDefault120_91250kbps.jpg>]
-<images/PaulDefault120_91250kbps_quant.jpg, id=36, 517.18219pt x 389.95688pt>
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<images/PaulDefault120_91250kbps_quant.jpg, id=34, 517.18219pt x 389.95688pt>
 File: images/PaulDefault120_91250kbps_quant.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120_91250kbps_quant.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps_quant.jpg used on inpu
-t line 169.
+t line 177.
 (pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
 
-<images/PaulDefault120_91250kbps_psnr.jpg, id=37, 517.18219pt x 389.95688pt>
+<images/PaulDefault120_91250kbps_psnr.jpg, id=35, 517.18219pt x 389.95688pt>
 File: images/PaulDefault120_91250kbps_psnr.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120_91250kbps_psnr.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps_psnr.jpg used on input
- line 172.
+ line 180.
 (pdftex.def)             Requested size: 258.59045pt x 194.97795pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[8] <images/PaulDefault250kbpsDelay.png, id=41, 1734.48pt x 869.4081pt>
+[7] [8 <./images/PaulDefault120.jpg> <./images/PaulDefault120_91250kbps.jpg>]
+[9 <./images/PaulDefault120_91250kbps_quant.jpg> <./images/PaulDefault120_91250
+kbps_psnr.jpg>]
+<images/PaulDefault250kbpsDelay.png, id=46, 1734.48pt x 869.4081pt>
 File: images/PaulDefault250kbpsDelay.png Graphic file (type png)
 
 <use images/PaulDefault250kbpsDelay.png>
 Package pdftex.def Info: images/PaulDefault250kbpsDelay.png used on input line 
-190.
+198.
 (pdftex.def)             Requested size: 433.61894pt x 217.35149pt.
 
-Overfull \hbox (15.36526pt too wide) in paragraph at lines 190--191
+Overfull \hbox (15.36526pt too wide) in paragraph at lines 198--199
 [][] 
  []
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[9 <./images/PaulDefault120_91250kbps_quant.jpg> <./images/PaulDefault120_91250
-kbps_psnr.jpg>]
-<images/PaulDefault120FaceRecognized.jpg, id=46, 517.18219pt x 389.95688pt>
+<images/PaulDefault120FaceRecognized.jpg, id=48, 517.18219pt x 389.95688pt>
 File: images/PaulDefault120FaceRecognized.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120FaceRecognized.jpg>
 Package pdftex.def Info: images/PaulDefault120FaceRecognized.jpg used on input 
-line 203.
+line 211.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
 
-<images/PaulDefault120FaceMap.jpg, id=47, 517.18219pt x 389.95688pt>
+<images/PaulDefault120FaceMap.jpg, id=49, 517.18219pt x 389.95688pt>
 File: images/PaulDefault120FaceMap.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120FaceMap.jpg>
-Package pdftex.def Info: images/PaulDefault120FaceMap.jpg used on input line 20
-4.
+Package pdftex.def Info: images/PaulDefault120FaceMap.jpg used on input line 21
+2.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[10 <./images/PaulDefault250kbpsDelay.png>] [11 <./images/PaulDefault120FaceRec
-ognized.jpg> <./images/PaulDefault120FaceMap.jpg>]
+ [10 <./images/PaulDefault250kbpsDelay.png>] [11 <./images/PaulDefault120FaceRe
+cognized.jpg> <./images/PaulDefault120FaceMap.jpg>]
 File: images/PaulDefault120_91250kbps_psnr.jpg Graphic file (type jpg)
-
-<use images/PaulDefault120_91250kbps_psnr.jpg>
+ <use images/PaulDefault120_91250kbps_psnr.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps_psnr.jpg used on input
- line 233.
+ line 241.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
 
-<images/QPOffset/paul120_250kbps_QPoffset4_psnr.jpg, id=55, 517.18219pt x 389.9
+<images/QPOffset/paul120_250kbps_QPoffset4_psnr.jpg, id=57, 517.18219pt x 389.9
 5688pt>
 File: images/QPOffset/paul120_250kbps_QPoffset4_psnr.jpg Graphic file (type jpg
 )
  <use images/QPOffset/paul120_250kbps_QPoffset4_psnr.jpg>
 Package pdftex.def Info: images/QPOffset/paul120_250kbps_QPoffset4_psnr.jpg use
-d on input line 234.
+d on input line 242.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
 File: images/PaulDefault120_91250kbps.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120_91250kbps.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps.jpg used on input line
- 235.
+ 243.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
 
-<images/QPOffset/paul120_250kbps_QPoffset4.jpg, id=56, 517.18219pt x 389.95688p
+<images/QPOffset/paul120_250kbps_QPoffset4.jpg, id=58, 517.18219pt x 389.95688p
 t>
 File: images/QPOffset/paul120_250kbps_QPoffset4.jpg Graphic file (type jpg)
  <use images/QPOffset/paul120_250kbps_QPoffset4.jpg>
 Package pdftex.def Info: images/QPOffset/paul120_250kbps_QPoffset4.jpg used on 
-input line 236.
+input line 244.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
 File: images/PaulDefault120_91250kbps_quant.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120_91250kbps_quant.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps_quant.jpg used on inpu
-t line 237.
+t line 245.
 (pdftex.def)             Requested size: 191.35442pt x 144.28178pt.
 
-<images/QPOffset/paul120_250kbps_QPoffset4_quant.jpg, id=57, 482.55281pt x 360.
+<images/QPOffset/paul120_250kbps_QPoffset4_quant.jpg, id=59, 482.55281pt x 360.
 59718pt>
 File: images/QPOffset/paul120_250kbps_QPoffset4_quant.jpg Graphic file (type jp
 g)
  <use images/QPOffset/paul120_250kbps_QPoffset4_quant.jpg>
 Package pdftex.def Info: images/QPOffset/paul120_250kbps_QPoffset4_quant.jpg us
-ed on input line 238.
+ed on input line 246.
 (pdftex.def)             Requested size: 193.0177pt x 144.23631pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-<images/QPOffset/Paul250kbps_QP_Offset_Delay.jpg, id=58, 465.99094pt x 319.9453
+<images/QPOffset/Paul250kbps_QP_Offset_Delay.jpg, id=60, 465.99094pt x 319.9453
 1pt>
 File: images/QPOffset/Paul250kbps_QP_Offset_Delay.jpg Graphic file (type jpg)
  <use images/QPOffset/Paul250kbps_QP_Offset_Delay.jpg>
 Package pdftex.def Info: images/QPOffset/Paul250kbps_QP_Offset_Delay.jpg used o
-n input line 245.
+n input line 253.
 (pdftex.def)             Requested size: 349.49234pt x 239.95839pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-<images/QPOffset/trialOffset/Paul250kbps_offset2.jpg, id=59, 482.55281pt x 361.
-35pt>
-File: images/QPOffset/trialOffset/Paul250kbps_offset2.jpg Graphic file (type jp
-g)
- <use images/QPOffset/trialOffset/Paul250kbps_offset2.jpg>
-Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset2.jpg us
-ed on input line 275.
-(pdftex.def)             Requested size: 207.49365pt x 155.37747pt.
-
-<images/QPOffset/trialOffset/Paul250kbps_offset4.jpg, id=60, 482.55281pt x 362.
-10281pt>
-File: images/QPOffset/trialOffset/Paul250kbps_offset4.jpg Graphic file (type jp
-g)
- <use images/QPOffset/trialOffset/Paul250kbps_offset4.jpg>
-Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset4.jpg us
-ed on input line 276.
-(pdftex.def)             Requested size: 207.49365pt x 155.70116pt.
-
-<images/QPOffset/trialOffset/Paul250kbps_offset6.jpg, id=61, 481.8pt x 362.1028
-1pt>
-File: images/QPOffset/trialOffset/Paul250kbps_offset6.jpg Graphic file (type jp
-g)
- <use images/QPOffset/trialOffset/Paul250kbps_offset6.jpg>
-Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset6.jpg us
-ed on input line 277.
-(pdftex.def)             Requested size: 207.16995pt x 155.70116pt.
-
-<images/QPOffset/trialOffset/Paul250kbps_offset8.jpg, id=62, 481.8pt x 361.35pt
->
-File: images/QPOffset/trialOffset/Paul250kbps_offset8.jpg Graphic file (type jp
-g)
- <use images/QPOffset/trialOffset/Paul250kbps_offset8.jpg>
-Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset8.jpg us
-ed on input line 278.
-(pdftex.def)             Requested size: 207.16995pt x 155.37747pt.
-
-<images/BufferControl/Paul250kbps_Buffer_Control_Delay.jpg, id=63, 481.8pt x 32
-2.20375pt>
-File: images/BufferControl/Paul250kbps_Buffer_Control_Delay.jpg Graphic file (t
-ype jpg)
- <use images/BufferControl/Paul250kbps_Buffer_Control_Delay.jpg>
-Package pdftex.def Info: images/BufferControl/Paul250kbps_Buffer_Control_Delay.
-jpg used on input line 284.
-(pdftex.def)             Requested size: 361.3491pt x 241.6522pt.
 
 [12]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+<images/QPOffset/trialOffset/Paul250kbps_offset2.jpg, id=64, 482.55281pt x 361.
+35pt>
+File: images/QPOffset/trialOffset/Paul250kbps_offset2.jpg Graphic file (type jp
+g)
+ <use images/QPOffset/trialOffset/Paul250kbps_offset2.jpg>
+Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset2.jpg us
+ed on input line 283.
+(pdftex.def)             Requested size: 207.49365pt x 155.37747pt.
+
+<images/QPOffset/trialOffset/Paul250kbps_offset4.jpg, id=65, 482.55281pt x 362.
+10281pt>
+File: images/QPOffset/trialOffset/Paul250kbps_offset4.jpg Graphic file (type jp
+g)
+ <use images/QPOffset/trialOffset/Paul250kbps_offset4.jpg>
+Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset4.jpg us
+ed on input line 284.
+(pdftex.def)             Requested size: 207.49365pt x 155.70116pt.
+
+<images/QPOffset/trialOffset/Paul250kbps_offset6.jpg, id=66, 481.8pt x 362.1028
+1pt>
+File: images/QPOffset/trialOffset/Paul250kbps_offset6.jpg Graphic file (type jp
+g)
+ <use images/QPOffset/trialOffset/Paul250kbps_offset6.jpg>
+Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset6.jpg us
+ed on input line 285.
+(pdftex.def)             Requested size: 207.16995pt x 155.70116pt.
+
+<images/QPOffset/trialOffset/Paul250kbps_offset8.jpg, id=67, 481.8pt x 361.35pt
+>
+File: images/QPOffset/trialOffset/Paul250kbps_offset8.jpg Graphic file (type jp
+g)
+ <use images/QPOffset/trialOffset/Paul250kbps_offset8.jpg>
+Package pdftex.def Info: images/QPOffset/trialOffset/Paul250kbps_offset8.jpg us
+ed on input line 286.
+(pdftex.def)             Requested size: 207.16995pt x 155.37747pt.
+
+<images/BufferControl/Paul250kbps_Buffer_Control_Delay.jpg, id=68, 481.8pt x 32
+2.20375pt>
+File: images/BufferControl/Paul250kbps_Buffer_Control_Delay.jpg Graphic file (t
+ype jpg)
+ <use images/BufferControl/Paul250kbps_Buffer_Control_Delay.jpg>
+Package pdftex.def Info: images/BufferControl/Paul250kbps_Buffer_Control_Delay.
+jpg used on input line 292.
+(pdftex.def)             Requested size: 361.3491pt x 241.6522pt.
 
 [13 <./images/QPOffset/paul120_250kbps_QPoffset4_psnr.jpg> <./images/QPOffset/p
 aul120_250kbps_QPoffset4.jpg> <./images/QPOffset/paul120_250kbps_QPoffset4_quan
 t.jpg>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[14 <./images/QPOffset/Paul250kbps_QP_Offset_Delay.jpg>]
 File: images/PaulDefault120_91250kbps_psnr.jpg Graphic file (type jpg)
- <use images/PaulDefault120_91250kbps_psnr.jpg>
+
+<use images/PaulDefault120_91250kbps_psnr.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps_psnr.jpg used on input
- line 294.
+ line 302.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
 
-<images/BufferControl/paul120_250kbps_BufferControl_psnr.jpg, id=71, 493.845pt 
+<images/BufferControl/paul120_250kbps_BufferControl_psnr.jpg, id=76, 493.845pt 
 x 374.90062pt>
 File: images/BufferControl/paul120_250kbps_BufferControl_psnr.jpg Graphic file 
 (type jpg)
 
 <use images/BufferControl/paul120_250kbps_BufferControl_psnr.jpg>
 Package pdftex.def Info: images/BufferControl/paul120_250kbps_BufferControl_psn
-r.jpg used on input line 295.
+r.jpg used on input line 303.
 (pdftex.def)             Requested size: 197.53448pt x 149.95758pt.
 File: images/PaulDefault120_91250kbps.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120_91250kbps.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps.jpg used on input line
- 296.
+ 304.
 (pdftex.def)             Requested size: 206.8692pt x 155.97998pt.
 
-<images/BufferControl/paul120_250kbps_bufferControl.jpg, id=72, 481.8pt x 361.3
+<images/BufferControl/paul120_250kbps_bufferControl.jpg, id=77, 481.8pt x 361.3
 5pt>
 File: images/BufferControl/paul120_250kbps_bufferControl.jpg Graphic file (type
  jpg)
  <use images/BufferControl/paul120_250kbps_bufferControl.jpg>
 Package pdftex.def Info: images/BufferControl/paul120_250kbps_bufferControl.jpg
- used on input line 297.
+ used on input line 305.
 (pdftex.def)             Requested size: 192.71658pt x 144.53743pt.
 File: images/PaulDefault120_91250kbps_quant.jpg Graphic file (type jpg)
 
 <use images/PaulDefault120_91250kbps_quant.jpg>
 Package pdftex.def Info: images/PaulDefault120_91250kbps_quant.jpg used on inpu
-t line 298.
+t line 306.
 (pdftex.def)             Requested size: 191.35442pt x 144.28178pt.
 
-<images/BufferControl/paul120_250kbps_BufferControl_quant.jpg, id=73, 481.8pt x
+<images/BufferControl/paul120_250kbps_BufferControl_quant.jpg, id=78, 481.8pt x
  360.59718pt>
 File: images/BufferControl/paul120_250kbps_BufferControl_quant.jpg Graphic file
  (type jpg)
 
 <use images/BufferControl/paul120_250kbps_BufferControl_quant.jpg>
 Package pdftex.def Info: images/BufferControl/paul120_250kbps_BufferControl_qua
-nt.jpg used on input line 299.
+nt.jpg used on input line 307.
 (pdftex.def)             Requested size: 192.71658pt x 144.23631pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[14 <./images/QPOffset/Paul250kbps_QP_Offset_Delay.jpg>] [15 <./images/QPOffset
-/trialOffset/Paul250kbps_offset2.jpg> <./images/QPOffset/trialOffset/Paul250kbp
-s_offset4.jpg> <./images/QPOffset/trialOffset/Paul250kbps_offset6.jpg> <./image
-s/QPOffset/trialOffset/Paul250kbps_offset8.jpg>] [16 <./images/BufferControl/Pa
-ul250kbps_Buffer_Control_Delay.jpg>] [17 <./images/BufferControl/paul120_250kbp
-s_BufferControl_psnr.jpg> <./images/BufferControl/paul120_250kbps_bufferControl
-.jpg> <./images/BufferControl/paul120_250kbps_BufferControl_quant.jpg>]
-[18
+[15 <./images/QPOffset/trialOffset/Paul250kbps_offset2.jpg> <./images/QPOffset/
+trialOffset/Paul250kbps_offset4.jpg> <./images/QPOffset/trialOffset/Paul250kbps
+_offset6.jpg> <./images/QPOffset/trialOffset/Paul250kbps_offset8.jpg>] [16 <./i
+mages/BufferControl/Paul250kbps_Buffer_Control_Delay.jpg>] [17 <./images/Buffer
+Control/paul120_250kbps_BufferControl_psnr.jpg> <./images/BufferControl/paul120
+_250kbps_bufferControl.jpg> <./images/BufferControl/paul120_250kbps_BufferContr
+ol_quant.jpg>] [18
 
 ] (FaceTrackingRateControl.aux) ) 
 Here is how much of TeX's memory you used:
- 4441 strings out of 493334
- 69051 string characters out of 3139243
- 141344 words of memory out of 3000000
- 7879 multiletter control sequences out of 15000+200000
- 10958 words of font info for 38 fonts, out of 3000000 for 9000
+ 5043 strings out of 493334
+ 75840 string characters out of 3139243
+ 150774 words of memory out of 3000000
+ 8463 multiletter control sequences out of 15000+200000
+ 11856 words of font info for 42 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,11n,43p,1261b,273s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 44i,11n,43p,1261b,275s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr
-10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C
-:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program
- Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Program Files/MiKTeX 2.9/
-fonts/type1/public/amsfonts/cm/cmss12.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
-ic/amsfonts/cm/cmti10.pfb>
-Output written on FaceTrackingRateControl.pdf (18 pages, 1325131 bytes).
+c/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+mi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Progra
+m Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmss10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmss12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+ti10.pfb>
+Output written on FaceTrackingRateControl.pdf (18 pages, 1344633 bytes).
 PDF statistics:
- 122 PDF objects out of 1000 (max. 8388607)
+ 130 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  101 words of extra memory for PDF output out of 10000 (max. 10000000)
 
