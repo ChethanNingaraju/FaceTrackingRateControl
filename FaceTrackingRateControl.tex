@@ -85,6 +85,7 @@ The need for extremely low end to end delay in video telephony puts additional c
 
 %%SubSub section for detailed overview of bitrate control	
 \subsubsection{Overview of Bitrate Control Module}
+	The functionality of Bitrate control module can be visualized with the help of leaky-bucket model. The output data rate of a video encoder varies depending on the input complexity of the video (motion in the frame). It also depends on the picture type,  key/intra frames consume a lot of bits compared to inter pictures. In video streaming scenario considering a constant bitrate channel, the throughput is maximum when data rate is constant and equal to available bandwidth. Therefore, the output data of the encoder is smoothed using a virtual buffer. The functionality of this virtual buffer is similar to leaky bucket where the input bitrate is variable (bursty), but the the buffer is drained at a constant output rate. Any under-flow or overflow of this buffer causes glitch in the video streaming. 
 	The bitrate control module used in this work in a modified version of \cite{JVTF086}.The bitrate control algorithm computes the QP for a given macroblock based on two factors. 
 \begin{itemize}  
 \item Activity of the macroblock - Difference of actual and predicted macroblocks.
@@ -99,6 +100,8 @@ The need for extremely low end to end delay in video telephony puts additional c
 	\end{cases}
 \end{equation}
 As depicted the above equation, a positive dq is used when current macroblock is complex relative to average frame complexity. This indicates that for relatively complex macroblocks within a frame, higher QP is used. This is make sure that bits within a frame is equally distributed across all macroblocks. In practice, the average frame activity for entire frame is unavailable until the last macroblock the frame has been encoded. Therefore, previous frame average activity is used since the average property of two adjacent frames in the video is likely to remain same. The activity metric used in the above equation is a complexity metric, hence it can be replaced by similar metrics depicting the complexity of the block. Other metrics like SATD (Sum of Absolute Difference in Transform domain) and cost of macroblock can be used instead of the activity.
+
+The second metric that influences the macroblock QP is the current buffer fullness.
 
   \subsection{ROI based coding}
 	In conventional video coding, all regions of a frame are considered equally important. It is assumed that all the regions contribute equally to the perceptual quality. Some video codecs use the fact that high frequency components are less important to the human visual system and perform preferential coding based on spatial frequency. The higher frequency components which are not so important to perceptual quality is encoded with higher QP. However, such preferential coding does not take into account the contents of the frame to be encoded. 
