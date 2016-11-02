@@ -5,14 +5,15 @@
 \contentsline {section}{\numberline {2}Study setup}{6}
 \contentsline {subsection}{\numberline {2.1}codec configuration}{6}
 \contentsline {subsection}{\numberline {2.2}Measurements}{6}
-\contentsline {subsubsection}{\numberline {2.2.1}Quality metrics}{6}
-\contentsline {subsubsection}{\numberline {2.2.2}PSNR and QP Variation}{7}
+\contentsline {subsubsection}{\numberline {2.2.1}Quality metrics}{7}
+\contentsline {subsubsection}{\numberline {2.2.2}PSNR and QP Variation}{8}
 \contentsline {subsubsection}{\numberline {2.2.3}Bitrate fluctuation - Delay plots}{10}
-\contentsline {section}{\numberline {3}Face Detection}{10}
+\contentsline {section}{\numberline {3}Face Detection}{11}
 \contentsline {subsection}{\numberline {3.1}Spatial Domain Face Detection}{12}
 \contentsline {subsection}{\numberline {3.2}Compressed domain Face Detection}{12}
-\contentsline {section}{\numberline {4}ROI based Intelligent Bitrate Control - Approaches}{12}
-\contentsline {subsection}{\numberline {4.1}QP offset}{12}
-\contentsline {subsubsection}{\numberline {4.1.1}Tuning QP Offset}{15}
-\contentsline {subsection}{\numberline {4.2}Reaction Factor - Buffer control}{16}
-\contentsline {section}{References}{18}
+\contentsline {section}{\numberline {4}ROI based Intelligent Bitrate Control - Approaches}{13}
+\contentsline {subsection}{\numberline {4.1}QP offset}{13}
+\contentsline {subsubsection}{\numberline {4.1.1}Tuning QP Offset}{13}
+\contentsline {subsubsection}{\numberline {4.1.2}Area of Region of Interest}{16}
+\contentsline {subsection}{\numberline {4.2}Reaction Factor - Buffer control}{18}
+\contentsline {section}{References}{20}

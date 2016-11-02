@@ -73,7 +73,7 @@
 
 The goal of this work is to identify the salient region of a frame, which is the face of the participant in a video conference. In a first iteration we assume ideal capture conditions so that the results of the face tracking will be directly used as side information for the H264/AVC encoder's bitrate-control. Face regions should allocate an above-average bitcount and yield a better visual quality than background regions. It is also the aim of this work to develop and extensively evaluate the strategy of uneven bitrate allocation and also to identify its limitations.
   \subsection{Low Delay Bitrate Control}
-	The bitrate control module is responsible for controlling the bit-consumption of the encoder to guarantee smooth playback. Bitrate control module is not codec specific and operates independent of any chosen codec. Figure \ref{fig:Bitrate Control Module Functionality} shows the functionality the bitrate control module. The main purpose of the bitrate control module is to ensure smooth playback of the encoded video under given bandwidth and delay constraints.  It achieves this by controlling the quantization parameter (QP) used during the encoding. The decision of quantization parameter is done considering the input bitrate, framerate, input complexity (spatial and temporal activity) and acceptable input delay. The module also takes the feedback from the encoder regularly to make better QP decision.  The feedback from the encoder gives information about the content of the video and helps the module to decide the right QP for a given bit budget.
+	The bitrate control module is responsible for controlling the bit-consumption of the encoder to guarantee smooth playback. Bitrate control module is not codec specific and operates independent of any chosen codec. Figure \ref{fig:Bitrate Control Module Functionality} shows the functionality of the bitrate control module. The main purpose of the bitrate control module is to ensure smooth playback of the encoded video under given bandwidth and delay constraints.  It achieves this by controlling the quantization parameter (QP) used during the encoding. The decision of quantization parameter is done considering the input bitrate, framerate, input complexity (spatial and temporal activity) and acceptable input delay. The module also takes the feedback from the encoder regularly to make better QP decision.  The feedback from the encoder gives information about the content of the video and helps the module to decide the right QP for a given bit budget.
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.5]{RC_block}
@@ -81,7 +81,7 @@ The goal of this work is to identify the salient region of a frame, which is the
     \label{fig:Bitrate Control Module Functionality}
 \end{figure} 
 
-The need for extremely low end to end delay in video telephony puts additional constraints on video coding which results in compromise of video quality. During the low delay video encoding, tools like bi-directional prediction are disabled. The delay in video encoding is a direct measure of Video Buffer Verifier (VBV) buffer size of rate control. The VBV buffer is a virtual buffer modelled by the bitrate control module to ensure that video stream can be correctly buffered, and played back at the decoder end. This can be visualized as a leaky bucket, where the output of encoder with variable rate is stored in a leaky bucket which is draining at a constant rate. Any underflow or over flow in this buffer must be avoided to ensure smooth playback. When the size of the VBV buffer is very low (due to low delay), there is less room to accommodate the variation in bitrate of the encoder. This implies that there can be minimum variation in the size of frame irrespective of the content. To ensure this, encoder's quantization parameter (QP) is adapted on a macroblock level in order to ensure that the maximum allowed bitcount for an encoded frame is not exceeded.
+The need for extremely low end to end delay in video telephony puts additional constraints on video coding which results in compromise of video quality. During the low delay video encoding, tools like bi-directional prediction are disabled. The delay in video encoding is a direct measure of Video Buffer Verifier (VBV) buffer size of rate control. The VBV buffer is a virtual buffer modelled by the bitrate control module to ensure that video stream can be correctly buffered, and played back at the decoder end. This can be visualized as a leaky bucket, where the output of the encoder with variable rate is stored in a leaky bucket which is draining at a constant rate. Any underflow or overflow in this buffer must be avoided to ensure smooth playback. When the size of the VBV buffer is very low (due to low delay), there is less room to accommodate the variation in bitrate of the encoder. This implies that there can be minimum variation in the size of frame irrespective of the content. To ensure this, encoder's quantization parameter (QP) is adapted on a macroblock level so that the maximum allowed bitcount for an encoded frame is not exceeded.
 
 %%SubSub section for detailed overview of bitrate control	
 \subsubsection{Overview of Bitrate Control Module}
@@ -91,18 +91,32 @@ The need for extremely low end to end delay in video telephony puts additional c
 \item Activity of the macroblock - Difference of actual and predicted macroblocks.
 \item Current Virtual Buffer occupancy.
 \end{itemize}
- First, a delta QP (dq) is calculated considering the activity of the macroblock. The activity of the macroblock is a measure of complexity of the macroblock and hence indicates the bits required to encode the macroblock. The relative activity of the current macroblock with respect to average activity of the entire frame is considered to calculate the delta QP based equations mentioned below
+ First, a delta QP (dq) is calculated considering the activity of the macroblock. The activity of the macroblock is a measure of complexity of the macroblock and hence indicates the bits required to encode the macroblock. The relative activity of the current macroblock with respect to average activity of the entire frame is considered to calculate the delta QP (Eq:\ref{Eq:deltaQP}).
 \begin{equation}
+	\label{Eq:deltaQP}
 	dq = \begin{cases}
 		-floor(\frac{avj\_act} {act_j} - 1), &  0 < \frac{act_j}{avg\_act} <= 1/2.\\
 		0, & 1/2 < \frac{act_j}{avg\_act} <= 2.\\
 		floor(\frac{act_j} {avj\_act}) - 1, & \frac{act_j}{avg\_act} >= 2
 	\end{cases}
 \end{equation}
-As depicted the above equation, a positive dq is used when current macroblock is complex relative to average frame complexity. This indicates that for relatively complex macroblocks within a frame, higher QP is used. This is make sure that bits within a frame is equally distributed across all macroblocks. In practice, the average frame activity for entire frame is unavailable until the last macroblock the frame has been encoded. Therefore, previous frame average activity is used since the average property of two adjacent frames in the video is likely to remain same. The activity metric used in the above equation is a complexity metric, hence it can be replaced by similar metrics depicting the complexity of the block. Other metrics like SATD (Sum of Absolute Difference in Transform domain) and cost of macroblock can be used instead of the activity.
+As depicted the above equation, a positive dq is used when current macroblock is complex relative to average frame complexity. This indicates that for relatively complex macroblocks within a frame, higher QP is used. This is to make sure that bits within a frame is equally distributed across all macroblocks. In practice, the average frame activity for entire frame is unavailable until the last macroblock the frame has been encoded. Therefore, previous frame average activity is used since the average property of two adjacent frames in the video is likely to remain same. The activity metric used in the above equation is a complexity metric, hence it can be replaced by similar metrics depicting the complexity of the block. Other metrics like SATD (Sum of Absolute Difference in Transform domain) and cost of macroblock can be used instead of the activity.
 
-The second metric that influences the macroblock QP is the current buffer fullness.
+	The delta QP calculated above is added to QP calculated based on current virtual buffer fullness. The virtual buffer fullness corresponds to fullness of the buffer discussed in context of leaky bucket model in previous section. The current virtual buffer occupancy ($d_m^n$) when encoding the $m^{th}$ macroblock of $n^{th}$ frame is calculated according to equation \ref{Eq:buffer_fullness}.
+\begin{equation}
+	\label{Eq:buffer_fullness}
+	d_m^n = d_0^n + CurFrameBitCount - (AvgBitsPerMB * m)
+\end{equation}	
 
+The term $d_0^n$ in above equation is deviation in bitrate of the encoded video until the last fully encoded frame. It is same as $d_m^n$ at the start of encoding of the current frame. A positive $d_0^n$ implies over-consumption of bits compared to target bits. CurFrameBitCount is the bit-consumption until the last encoded macroblock. Therefore, CurBufferOccupancy is the measure of deviation in target and achieved bitrate until the current macroblock in the frame. The current virtual buffer occupancy is used to calculate QP parameter for the $m^{th}$ macroblock ($Q_m$) using equation \ref{Eq:mainQP}.
+\begin{equation}
+	\label{Eq:mainQP}
+	Q_m = \frac{d_m^n * 31}{r} + dq
+\end{equation}
+\begin{equation}
+ where, r = i * bitrate/framerate \nonumber
+\end{equation}
+The factor $dq$ in eq\ref{Eq:mainQP} is the delta QP calcuated using equation \ref{Eq:deltaQP}. The factor $r$, is called the reaction factor. This factor is used to tweak the aggressiveness of the bitrate control module in adapting to deviation in achieved bitrate. The aggressiveness is controlled using the factor $i$, the bitrate module in this work uses $i = 1$, making the bitrate control module highly reactive to deviation in bitrate. 
   \subsection{ROI based coding}
 	In conventional video coding, all regions of a frame are considered equally important. It is assumed that all the regions contribute equally to the perceptual quality. Some video codecs use the fact that high frequency components are less important to the human visual system and perform preferential coding based on spatial frequency. The higher frequency components which are not so important to perceptual quality is encoded with higher QP. However, such preferential coding does not take into account the contents of the frame to be encoded. 
 
@@ -280,7 +294,7 @@ Reaction Factor & Paul640x480, 250kbps & 38.22 & 39.50 \\
 
 %
 \subsubsection{Tuning QP Offset}
-As mentioned earlier, the methods discussed in this work only aim to re-distribute the bits within a frame based on region of interest. The extent of re-distribution should be carefully chosen to avoid degradation of the background to an extent that artifacts become noticeable to the viewer even though they are not expected to concentrate on those regions. Ideal level of redistribution will make sure that there is maximum transfer of bits from non-ROI region to ROI without creating any visible artifacts in the image.
+As mentioned earlier, the methods discussed in this work only aim to re-distribute the bits within a frame based on the region of interest. The extent of re-distribution should be carefully chosen to avoid degradation of the background to an extent that artifacts become noticeable to the viewer even though they are not expected to concentrate on those regions. Ideal level of redistribution will make sure that there is maximum transfer of bits from non-ROI region to ROI without creating any visible artifacts in the image.
 \begin{figure}[!h]
     \centering
     \includegraphics[scale=0.43]{QPOffset/trialOffset/Paul250kbps_offset2}
@@ -298,6 +312,33 @@ As mentioned earlier, the methods discussed in this work only aim to re-distribu
 \end{figure}
 
 In this work, various offsets were used to study the effect of magnitude of QP offset on perceptual quality. The results shown in Figure \ref{fig:Default_QPOffsetTuning} shows that, as QP offset increases the face region appears more sharper which improves the overall perceptual quality of the frame. The image with QP offset of 8 appears to not have any noticeable blockiness in the background. However, using a very high QP offset triggers another problems that is not shown in the sample images. Due to increased QP offset, the encoder is forced to use lower QP even when virtual buffer is critically full. This increases the number of skipped/dropped frames in the entires sequence. The sample video consisted of 1000 frames and a total of 44, 46, 46 and 50 frames were dropped in the sequence with QP offset of 2, 4, 6 and 8 respectively. This increase in skip frames reduces the smoothness of the playback which is annoying to the viewer. Therefore, the increase in QP offset should tuned not only considering the degradation of the background quality but also by assessing any other side effects like increase in dropped frames.
+%
+%Discuss the impact of ratio of ROI mbs to non-ROI mb's
+\subsubsection{Area of Region of Interest}
+The variation in QP offset discussed in the above section correspond to same sequence where the ratio of number of ROI macroblocks to number of non-ROI macroblocks is almost same. In the sample sequence used, 46 to 50 macroblocks out of 1200 total macroblocks belong to face (ROI). Therefore, the ROI is less than 5 percent of the entire video frame. This is comparatively smaller ROI, it is possible to use very high QP offsets since there are large number of non-ROI frames to compensate for the consumption of bits at ROI. However, based on the focal length of the camera and distance from camera, the area of face in video conference can change considerably. For instance, when the area of ROI is half of the entire frame, usage of higher QP offsets will cause severe degradation in the quality of non-ROI macroblocks. In order severe degradation of the background, the magnitude of the QP offset should be inversely proportional to the ratio of ROI to non-ROI.
+
+The algorithm implemented to use area of ROI, calculates the QP offset using linear relationship described in equation \ref{Eq:QP_offset}
+\begin{equation}
+	\label{Eq:QP_offset}
+	\begin{aligned}
+	dq_{roi} = -round\Big(\frac{M}{M_{roi} * 3}\Big) \\
+	dq_{roi} = clip(dq_{roi}, -1 , -6)
+	\end{aligned}	
+\end{equation}
+where, $dq_{roi}$ is the offset of used for ROI blocks, $M$ is the total number of macroblocks in the frame, $M_{roi}$ is the total number of macroblocks marked as region-of-interest. The negative sign in the equation implies the calculated offset is negative, which results is QP lower non-ROI blocks. 
+
+It is evident from equation \ref{Eq:QP_offset}, there is no QP offset for ROI region if ROI region covers more than two-third of the whole frame. Subsequently, the offset increases linearly with increase in ROI area. A offset is clipped between -1 to -6 to avoid extreme offsets.
+
+The QP offsets calculated so far is only applied to ROI region. The bitrate control module is help responsible to increase QP of the non-ROI. The over-consumption of bits in ROI triggers the reaction by Bitrate control to increase the QP for non-ROI blocks. However, this approach of one-sided offset results in the artifact event in figure TBD. It can be noticed the the blocks above ROI belonging to non-ROI generally have lower QP compared to non-ROI blocks below the face region. This is because, the QP of the non-ROI blocks is increased by bitrate control module only after it sees the over-consumption after encoding the ROI blocks. This results in usage of average QP for non-ROI blocks before encoding ROI. Once the ROI is encoded with lower QP, the bits over-consumption is compensated for by increasing the QP of non-ROI blocks encoded after ROI blocks.
+
+A two sided QP offset is used to avoid the behavior described above. The non-ROI blocks are assigned with positive QP offset, which can compensate the over-consumption in ROI blocks. Since the non-ROI blocks from start of the frame are encoded with higher QP, there will be surplus of bits already which can be used in encoding ROI blocks. In ideal scenario, the negative and positive QP offsets must negate each others effect resulting in frame level bits being unchanged had the frame been encoded without any offset.
+
+The study in \cite{ROI-Coding-paper} suggests that, for frame level bitcount to be constant, the average QP of the frame must remain unchanged before and after adding the offsets. This is an observation made after multiple experiments. The equation \ref{Eq:QP_offset_double} shows computing the offset for non-ROI based on offset calculated for non-ROI in eq \ref{Eq:QP_offset}
+\begin{equation}
+	\label{Eq:QP_offset_double}
+		dq_{non-roi} = \frac{M_{roi} * dq_{roi}}{M - M_{roi}}
+\end{equation}
+where, $dq_{non-roi}$ is a positive QP offset used for non-ROI blocks when negative QP offset of $dq_{roi}$ is used for ROI blocks. 
 \subsection{Reaction Factor - Buffer control} 
 
 \begin{figure}[!h]
@@ -337,6 +378,11 @@ J. Ohm. G. J. Sullivan, H. Schwarz, Thiow Keng Tan and T. Wiegand.
 Siwei Ma, Wen Gao, Yan Lu and Hanqing Lu.
 \textit{Proposed draft description of rate control on JVT standard. }
 Joint Video Team (JVT) of ISO/IEC MPEG and ITU-T VCEG (ISO/IEC JTC1/SC29/WG11 and ITU-T SG16 Q.6) 6h Meeting: Awaji, 5-13, December, 2002.
+
+\bibitem{ROI-Coding-paper}
+Manzur Murshed, Md. Atiur Rahman Siddique, Saikat Islam and James Brown.
+\textit{High Quality Region-of-Interest Coding for Video Conferencing based Remote General Practitioner Training.}
+eTELEMED 2013 : The Fifth International Conference on eHealth, Telemedicine, and Social Medicine
 
 \end{thebibliography}
 \end{document}
