@@ -44,7 +44,7 @@
 \usepackage{sectsty}
 \allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
 % (This matches ConTeXt defaults)
-
+\setcounter{secnumdepth}{5}
 %%% ToC (table of contents) APPEARANCE
 \usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
 \usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
@@ -85,13 +85,14 @@ The need for extremely low end to end delay in video telephony puts additional c
 
 %%SubSub section for detailed overview of bitrate control	
 \subsubsection{Overview of Bitrate Control Module}
-	The functionality of Bitrate control module can be visualized with the help of leaky-bucket model. The output data rate of a video encoder varies depending on the input complexity of the video (motion in the frame). It also depends on the picture type,  key/intra frames consume a lot of bits compared to inter pictures. In video streaming scenario considering a constant bitrate channel, the throughput is maximum when data rate is constant and equal to available bandwidth. Therefore, the output data of the encoder is smoothed using a virtual buffer. The functionality of this virtual buffer is similar to leaky bucket where the input bitrate is variable (bursty), but the the buffer is drained at a constant output rate. Any under-flow or overflow of this buffer causes glitch in the video streaming. 
-	The bitrate control module used in this work in a modified version of \cite{JVTF086}.The bitrate control algorithm computes the QP for a given macroblock based on two factors. 
+	The functionality of Bitrate control module can be visualized with the help of leaky-bucket model. The output data rate of a video encoder varies depending on the input complexity of the video (motion in the frame). It also depends on the picture type,  key/intra frames consume a lot of bits compared to inter pictures. In video streaming scenario considering a constant bitrate channel, the throughput is maximum when data rate is constant and equal to available bandwidth. Therefore, the output data of the encoder is smoothed using a virtual buffer. The functionality of this virtual buffer is similar to leaky bucket where the input bitrate is variable (bursty), but the the buffer is drained at a constant output rate. Any under-flow or overflow of this buffer causes glitch in the video streaming. The bitrate control module used in this work in a modified version of \cite{JVTF086}.
+ 
+	The bitrate control algorithm computes the QP for a given macroblock based on two factors. 
 \begin{itemize}  
 \item Activity of the macroblock - Difference of actual and predicted macroblocks.
 \item Current Virtual Buffer occupancy.
-\end{itemize}
- First, a delta QP (dq) is calculated considering the activity of the macroblock. The activity of the macroblock is a measure of complexity of the macroblock and hence indicates the bits required to encode the macroblock. The relative activity of the current macroblock with respect to average activity of the entire frame is considered to calculate the delta QP (Eq:\ref{Eq:deltaQP}).
+\end{itemize}	
+	First, a delta QP (dq) is calculated considering the activity of the macroblock. The activity of the macroblock is a measure of complexity of the macroblock and hence indicates the bits required to encode the macroblock. The relative activity of the current macroblock with respect to average activity of the entire frame is considered to calculate the delta QP (Eq:\ref{Eq:deltaQP}).
 \begin{equation}
 	\label{Eq:deltaQP}
 	dq = \begin{cases}
@@ -102,13 +103,25 @@ The need for extremely low end to end delay in video telephony puts additional c
 \end{equation}
 As depicted the above equation, a positive dq is used when current macroblock is complex relative to average frame complexity. This indicates that for relatively complex macroblocks within a frame, higher QP is used. This is to make sure that bits within a frame is equally distributed across all macroblocks. In practice, the average frame activity for entire frame is unavailable until the last macroblock the frame has been encoded. Therefore, previous frame average activity is used since the average property of two adjacent frames in the video is likely to remain same. The activity metric used in the above equation is a complexity metric, hence it can be replaced by similar metrics depicting the complexity of the block. Other metrics like SATD (Sum of Absolute Difference in Transform domain) and cost of macroblock can be used instead of the activity.
 
+\textbf{Bit Allocation} - The bit-allocation is very simplified due to presence of only one type of picture (P-frames) in steady state. The key-frame at the beginning is handled using special conditions.  A delay of 165ms is allowed for the key-frame initially. This allows, allocation of higher than average bits for the key frame. However, the allowed delay for P frames in steady state is only 1.5 times the average frame delay. For example, if video is encoded at 30fps, then the time interval between two consecutive frame is 33ms, the permissible delay for frames in steady state is approximately 49ms. The usage of different delay values for first key frame and steady state P-frames is handled by changing the delay value gradually. The large key-frame at the beginning results in huge delay (165ms), this delay is gradually reduced by using less than average bit count for subsequent few frames (half of average bit count per frame). Once the over-consumption of first-key frame has been compensated, the steady state delay of 49ms is maintained. 
+
+In practical implementation, usage of above average bit-count for I-frame results in few dropped frames subsequently. This is considered an acceptable trade-off to achieve good initial spatial quality.
+
+The bit-allocation module uses virtual buffer fullness to decide the bits allocated for the current frame. The virtual buffer fullness ($d_0^n$) after encoding $nth$every frame is calculated as follows based on size of the encoded frame in bits ($FrameSize_n$)
+
+$$ d_0^n = d_0^n + (CurFrameBitConsumption - FrameSize_n)$$
+$$ d_0^n = max(d_0^n , 0) $$
+where, $$ AvgBitsPerFrame = \frac{bitrate}{framerate}$$
+
+The allocated bits for $(n+1)th$ frame is maximum amount of bits that can be transferred along with residual bits in the virtual buffer in allowed delay of $49ms$.
+
 	The delta QP calculated above is added to QP calculated based on current virtual buffer fullness. The virtual buffer fullness corresponds to fullness of the buffer discussed in context of leaky bucket model in previous section. The current virtual buffer occupancy ($d_m^n$) when encoding the $m^{th}$ macroblock of $n^{th}$ frame is calculated according to equation \ref{Eq:buffer_fullness}.
 \begin{equation}
 	\label{Eq:buffer_fullness}
 	d_m^n = d_0^n + CurFrameBitCount - (AvgBitsPerMB * m)
 \end{equation}	
 
-The term $d_0^n$ in above equation is deviation in bitrate of the encoded video until the last fully encoded frame. It is same as $d_m^n$ at the start of encoding of the current frame. A positive $d_0^n$ implies over-consumption of bits compared to target bits. CurFrameBitCount is the bit-consumption until the last encoded macroblock. Therefore, CurBufferOccupancy is the measure of deviation in target and achieved bitrate until the current macroblock in the frame. The current virtual buffer occupancy is used to calculate QP parameter for the $m^{th}$ macroblock ($Q_m$) using equation \ref{Eq:mainQP}.
+The term $d_0^n$ in above equation is deviation in bitrate of the encoded video until the last fully encoded frame. It is same as $d_m^n$ at the start of encoding of the current frame. The metric AvgBitsPerMB is not a fixed value based on bitrate and framerate. This value is calculated based on bit-allocation explained above and hence remains constant for a given frame. A positive $d_0^n$ implies over-consumption of bits compared to target bits. CurFrameBitCount is the bit-consumption until the last encoded macroblock. Therefore, CurBufferOccupancy is the measure of deviation in target and achieved bitrate until the current macroblock in the frame. The current virtual buffer occupancy is used to calculate QP parameter for the $m^{th}$ macroblock ($Q_m$) using equation \ref{Eq:mainQP}.
 \begin{equation}
 	\label{Eq:mainQP}
 	Q_m = \frac{d_m^n * 31}{r} + dq
