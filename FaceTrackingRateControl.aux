@@ -1,15 +1,16 @@
 \relax 
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Low Delay Bitrate Control}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Bitrate Control}{3}}
 \citation{JVTF086}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Bitrate Control Module Functionality\relax }}{4}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{fig:Bitrate Control Module Functionality}{{1}{4}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.1.1}Overview of Bitrate Control Module}{4}}
-\newlabel{Eq:deltaQP}{{1}{5}}
+\newlabel{Eq:activity_calc}{{1}{5}}
+\newlabel{Eq:deltaQP}{{2}{5}}
 \citation{HighQualityROICodingForVideoConferencing}
-\newlabel{Eq:buffer_fullness}{{2}{6}}
-\newlabel{Eq:mainQP}{{3}{6}}
+\newlabel{Eq:buffer_fullness}{{3}{6}}
+\newlabel{Eq:mainQP}{{4}{6}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}ROI based coding}{6}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Study setup}{7}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}codec configuration}{7}}
@@ -18,42 +19,42 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Quality metrics}{8}}
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Initial PSNR values\relax }}{8}}
 \newlabel{InitPSNR1}{{1}{8}}
-\newlabel{Eq:PSNR}{{4}{8}}
-\newlabel{Eq:PSNRDef}{{5}{8}}
+\newlabel{Eq:PSNR}{{5}{8}}
+\newlabel{Eq:PSNRDef}{{6}{8}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}PSNR and QP Variation}{9}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces A Frame in the sample video\relax }}{9}}
-\newlabel{fig:PaulDefault120}{{2}{9}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Sample frame in encoded video (250kbps)\relax }}{9}}
-\newlabel{fig:PaulDefaultencoded}{{3}{9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Bitrate fluctuation - Delay plots}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces A Frame in the sample video\relax }}{10}}
+\newlabel{fig:PaulDefault120}{{2}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Sample frame in encoded video (250kbps)\relax }}{10}}
+\newlabel{fig:PaulDefaultencoded}{{3}{10}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Quantization map\relax }}{11}}
 \newlabel{fig:PaulDefault120Quant}{{4}{11}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Relative PSNR map\relax }}{11}}
 \newlabel{fig:PaulDefault120PSNR}{{5}{11}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Bitrate fluctuation - Delay plots}{11}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Delay plot\relax }}{12}}
 \newlabel{fig:PaulDefault250kbpsDelay}{{6}{12}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Face Detection}{12}}
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Face Detection binary map\relax }}{13}}
 \newlabel{fig:PaulDefault120FaceMap}{{7}{13}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Spatial Domain Face Detection}{13}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Compressed domain Face Detection}{13}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}ROI based Intelligent Bitrate Control - Approaches}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Compressed domain Face Detection}{14}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}ROI based Intelligent Bitrate Control - Approaches}{14}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}QP offset}{14}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces PSNR Comparison for different approaches\relax }}{14}}
-\newlabel{AllPSNR1}{{2}{14}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Tuning QP Offset}{14}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Comparing the images with QP offset of 4 for ROI\relax }}{15}}
 \newlabel{fig:Default_QPOffsetCompare}{{8}{15}}
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Delay Comparison of images with QP offset of 4 for ROI\relax }}{16}}
 \newlabel{fig:DelayDefault_QPOffsetCompare}{{9}{16}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Area of Region of Interest}{16}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces PSNR Comparison for different approaches\relax }}{16}}
+\newlabel{AllPSNR1}{{2}{16}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Tuning QP Offset}{16}}
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Tuning QP offset - Trial QP offsets used are 2, 4, 6 and 8 in raster scan order\relax }}{17}}
 \newlabel{fig:Default_QPOffsetTuning}{{10}{17}}
-\newlabel{Eq:QP_offset}{{6}{17}}
-\citation{ROI-Coding-paper}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Area of Region of Interest}{17}}
 \@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Delay Comparison of original video with ROI based reaction factor modification\relax }}{18}}
 \newlabel{fig:DelayDefault_BufferControltCompare}{{11}{18}}
-\newlabel{Eq:QP_offset_double}{{7}{19}}
+\newlabel{Eq:QP_offset}{{7}{18}}
+\citation{ROI-Coding-paper}
+\newlabel{Eq:QP_offset_double}{{8}{19}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Reaction Factor - Buffer control}{19}}
 \@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Comparing the images with modified reaction for ROI macroblcoks\relax }}{20}}
 \newlabel{fig:Default_BufferControlCompare}{{12}{20}}
