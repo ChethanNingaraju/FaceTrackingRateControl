@@ -72,7 +72,13 @@
 	In recent years, there is increasing demand for high-quality video conferencing solutions. To address this growing need there has been constant improvement in  low-delay video coding techniques along with better techniques to ensure low-delay transmission reliability at the network level. The tremendous increase in smart phone usage has led to increase in video telephony over cellular networks whose bandwidth is highly constrained. Therefore, it is very important to develop methods of delivering high quality video with less bandwidth requirement. This work explores the methods of region of interest(ROI) based encoding to exploit the available bandwidth to encode regions that are of high importance to perceptual quality with higher quality. 
 
 The goal of this work is to identify the salient region of a frame, which is the face of the participant in a video conference. In a first iteration we assume ideal capture conditions so that the results of the face tracking will be directly used as side information for the H264/AVC encoder's bitrate-control. Face regions should allocate an above-average bitcount and yield a better visual quality than background regions. It is also the aim of this work to develop and extensively evaluate the strategy of uneven bitrate allocation and also to identify its limitations.
-  \subsection{Bitrate Control}
+
+\subsection{ROI based coding}
+	In conventional video coding, all regions of a frame are considered equally important. It is assumed that all the regions contribute equally to the perceptual quality. Some video codecs use the fact that high frequency components are less important to the human visual system and perform preferential coding based on spatial frequency. The higher frequency components which are not so important to perceptual quality is encoded with higher QP. However, such preferential coding does not take into account the contents of the frame to be encoded. 
+
+The study of Human Visual System (HVS) also shows that human eyes can only focus at one area in a frame at any given point in time which is called region of interest. Region of interest based coding is not a common practice in video coding because it is very hard to automatically detect important regions that contribute the most to the perceptual quality. This is because the region of interest constantly keeps changing depending on the content. For instance, in a movie, the region of interest can depend on context of the scene. Developing generic techniques for detection of ROI in such videos is very difficult. However, region of interest in the video conferencing content is going to be the face region predominantly. Due to recent improvements in face detection algorithms it is possible to detect the face with good accuracy. The study in \cite{HighQualityROICodingForVideoConferencing} shows how boosting quality of face regions can improve the overall perceived quality of the video. This work aims to study possible ways of improving perceptual quality of the video by detecting face regions and coding it with higher quality than rest of the frame.
+
+\subsection{Bitrate Control}
 	The bitrate control module is responsible for controlling the bit-consumption of the encoder to guarantee smooth playback. Bitrate control module is not codec specific and operates independent of any chosen codec. There are various flavors of bitrate control like Constant Bitrate (CBR), Variable Bitrate (VBR) and Average Bitrate (ABR). In this work CBR type of bitrate contol is considered since it is most commonly used in video conferencing and other streaming related solutions. 
 	
 	Figure \ref{fig:Bitrate Control Module Functionality} illustrates the functionality of the bitrate control module. The main purpose of the bitrate control module is to ensure smooth playback of the encoded video under given bandwidth and delay constraints.  It achieves this by controlling the quantization parameter (QP) used during the encoding. The decision of quantization parameter is done considering the input bitrate, framerate, input complexity (spatial and temporal activity) and acceptable input delay. The module also takes the feedback from the encoder regularly to make better QP decision.  The feedback from the encoder gives information about the content of the video and helps the module to decide the right QP for a given bit budget.
@@ -86,22 +92,58 @@ The goal of this work is to identify the salient region of a frame, which is the
     \label{fig:Bitrate Control Module Functionality}
 \end{figure} 
 
-%%SubSub section for detailed overview of bitrate control	
-\subsubsection{Overview of Bitrate Control Module}
+ As mentioned earlier, the bitrate control allocates bits at every macroblock and adjusts the QP. In a simple approach one would try to distribute the bitrate evenly on every macroblock. Since load efficiency is of high importance it is not advisable to do multipass encoding for optimal bitrate allocation. Therefore, over-allocation in one macroblock has to be compensated by under-allocation (using a higher QP) for neighboring macroblocks, regardless of the image content. However, a more intelligent allocation strategy should take the image content into account. Thus parts of the image with higher importance (e.g.faces) should be given a higher percentage of the overall bitcount which results in higher visual quality. Background regions would get a lower proportion of the bitcount.
+
+%% Section to throw light on other works in same field
+\section{Literature Survey}
+
+The concept of region of interest based encoding has been around for a while.
+ 
+%%section for detailed overview of bitrate control	
+\section{Overview of Bitrate Control Module}
 This section gives an overview of low-delay bitrate control module used in this work. The need for extremely low end to end delay in video telephony puts additional constraints on video coding which results in compromise of video quality. During the low-delay video encoding, tools like bi-directional prediction are disabled. The delay in video encoding is a direct measure of Video Buffer Verifier (VBV) buffer size. When the size of the VBV buffer is very low (due to low delay), there is less room to accommodate the variation in bitrate of the encoder. This implies that there can be minimum variation in the size of frame irrespective of the content.
  
- The bitrate control module used in this work in a modified version of \cite{JVTF086}. The bitrate control module targets a delay of approximately $50ms$ in steady state. The bitrate control does a frame level bit-allocation based on fullness of VBV buffer, followed by adapting QP at macroblcok level. The bitrate control algorithm computes the QP for a given macroblock based on two factors.
+ The bitrate control module used in this work in a modified version of \cite{JVTF086}.  The bitrate control does a frame level bit-allocation based on fullness of the VBV buffer, followed by adapting QP at macroblcok level. The functionality of bitrate control module can be divided into two parts:
+\begin{itemize}  
+\item Bit Allocation
+\item Quantization Parameter (QP) Prediction
+\end{itemize}
+
+\subsection{Bit Allocation}
+
+The low-delay encoding mode does not favor usage of B-frames and regular key-frames. Therefore, in steady state only P-frames are used in encoding video conferencing content. This makes frame level bit-allocation simpler since there is no need to consider relative complexity between different types of frames during frame level bit-allocation. The key-frame at the beginning is handled using special cases.  
+
+As depicted in fig:\ref{fig:Bitrate Control Module Functionality}, one of the inputs for bitrate control module is a delay/latency parameter (L). This is defined as the maximum permissible delay allowed between encoder and decoder assuming zero transmission delay. In other words, the delay parameter is the maximum allowed time for any encoded frame to be transmitted through a constant bandwidth channel of per-defined bitrate. In this work, delay parameter (L) is configured as, 
+$$L_0 = 165 ms \text{	and	} L = \frac{1.5 * 1000}{framerate}$$
+Initially a delay of $L_0 = 165ms$ is allowed for the key-frame. This allows, allocation of higher than average bits for the key frame. However, the delay parameter (L) for P frames in steady state is only 1.5 times the average frame delay. For instance, if video is encoded at 30fps, then the time interval between two consecutive frame is 33ms, the permissible delay(L) for frames in steady state is approximately 49ms. The usage of different delay values for first key frame and steady state P-frames is handled by changing the delay value gradually. The large key-frame at the beginning results in huge delay (165ms), this delay is gradually reduced by using less than average bit count for subsequent few frames (half of average bit count per frame). Once the over-consumption of first-key frame has been compensated, the steady state delay of $49ms$ is maintained. 
+
+In practical implementation, usage of above average bit-count for I-frame results in few dropped frames subsequently. This is considered an acceptable trade-off to achieve good initial spatial quality.
+
+The bit-allocation module uses VBV buffer fullness and delay parameter (L) to decide the bits allocated for the current frame. The VBV buffer fullness ($d_0^{n+1}$) after encoding $nth$ frame is calculated as follows based on the size of the encoded frame in bits ($FrameSize_n$)
+
+$$ d_0^{n+1} = d_0^n + (FrameSize_n - AvgBitsPerFrame)$$
+$$ d_0^n = max(d_0^n , 0) $$
+where, $$ AvgBitsPerFrame = \frac{bitrate}{framerate}$$
+
+The allocated bits for $(n+1)th$ frame is maximum amount of bits that can be transferred along with residual bits in the virtual buffer in allowed delay of $49ms$. The maximum acceptable delay in ms is translated to bits using below equation.
+$$ L_{bits} = \frac{L * birate}{1000}$$
+Therefore, allocated bits for current frame $(B_{alloc})$ is given by
+$$ B_{alloc} = L_{bits} - d_0^n $$
+In practice, rate control QP predictions are not very accurate to exactly consume the bits that was allocated to the frame ($B_{alloc}$). If a frame consumes more bits than $B_{alloc}$, it violates the delay conditions. The encoded frame will be unable to reach the decoder in time with specified bitrate. Hence, the frame is not added to the bitstream. These frames which are encoded but not part of the output of the encoder are called \textit{dropped frames}. A slight room for inaccuracy of the QP prediction is considered at the end of the bit-allocation stage to avoid dropped frames. Such dropped frames must be avoided since it causes jerky playback. In practice, the target bits for QP prediction is slightly lesser than $B_{alloc}$ to avoid dropping the frame in case of minor over-consumption.
+\subsection{QP Prediction}  
+  Due to low VBV buffer size, the bitrate control needs to have very quick reaction to any deviation in bitrate to avoid dropped frames. The bitrate control algorithm computes the QP for every macroblock. The two factors considered in computing QP for a macroblock are:
   
 \begin{itemize}  
-\item Complexity metric of the macroblock
+\item Complexity of the macroblock
 \item Instantaneous Virtual Buffer occupancy.
-\end{itemize}	
+\end{itemize}
+\subsubsection{Activity Based delta QP}	
 	Firstly, a delta QP (dq) is calculated considering the complexity of the macroblock. The activity of the macroblock is a measure of complexity of the macroblock and hence indicates the bits required to encode the macroblock. After motion compensation with the selected coding mode and motion vectors, the activity of macroblock $(i,j)$ with original pixel value $s(i,j)$ and predicted pixel value of $c(i,j)$ is calculated using equation \ref{Eq:activity_calc}. 
 \begin{equation}
 	\label{Eq:activity_calc}
 	act_m = \sum_{i,j} \mid s(i,j)-c(i,j) \mid ,\quad	i,j = 1,2,....16
 \end{equation}	
-	 The relative complexity of the macroblock with respect to entire frame complexity is used in QP adaptation. The relative activity of the current macroblock with respect to average activity of the entire frame is considered to calculate the delta QP (Eq:\ref{Eq:deltaQP}).
+	 The relative complexity of the macroblock with respect to entire frame complexity is used in QP adaptation. The ratio of activity of the current macroblock and  average activity of the entire frame is used to calculate the delta QP (Eq:\ref{Eq:deltaQP}).
 \begin{equation}
 	\label{Eq:deltaQP}
 	dq = \begin{cases}
@@ -112,41 +154,27 @@ This section gives an overview of low-delay bitrate control module used in this 
 \end{equation}
 As depicted the above equation, a positive dq is used when current macroblock is complex relative to average frame complexity. This indicates that for relatively complex macroblocks within a frame, higher QP is used. This is to make sure that bits within a frame is equally distributed across all macroblocks. In practice, the average frame activity for entire frame is unavailable until the last macroblock of the frame has been encoded. Therefore, previous frame average activity is used since the average property of two adjacent frames in the video is likely to remain same. 
 
-The activity metric used in the equation\ref{Eq:deltaQP} is a complexity metric, hence it can be replaced by similar metrics depicting the complexity of the block. Other metrics like SATD (Sum of Absolute Difference in Transform domain similar to activity calculation in Eq:\ref{Eq:activity_calc}) and cost of macroblock can be used instead of the activity. The cost of the macroblock is a closest 
-
-\textbf{Bit Allocation} - The bit-allocation is very simplified due to presence of only one type of picture (P-frames) in steady state. The key-frame at the beginning is handled using special conditions.  A delay of 165ms is allowed for the key-frame initially. This allows, allocation of higher than average bits for the key frame. However, the allowed delay for P frames in steady state is only 1.5 times the average frame delay. For example, if video is encoded at 30fps, then the time interval between two consecutive frame is 33ms, the permissible delay for frames in steady state is approximately 49ms. The usage of different delay values for first key frame and steady state P-frames is handled by changing the delay value gradually. The large key-frame at the beginning results in huge delay (165ms), this delay is gradually reduced by using less than average bit count for subsequent few frames (half of average bit count per frame). Once the over-consumption of first-key frame has been compensated, the steady state delay of 49ms is maintained. 
-
-In practical implementation, usage of above average bit-count for I-frame results in few dropped frames subsequently. This is considered an acceptable trade-off to achieve good initial spatial quality.
-
-The bit-allocation module uses virtual buffer fullness to decide the bits allocated for the current frame. The virtual buffer fullness ($d_0^n$) after encoding $nth$every frame is calculated as follows based on size of the encoded frame in bits ($FrameSize_n$)
-
-$$ d_0^n = d_0^n + (CurFrameBitConsumption - FrameSize_n)$$
-$$ d_0^n = max(d_0^n , 0) $$
-where, $$ AvgBitsPerFrame = \frac{bitrate}{framerate}$$
-
-The allocated bits for $(n+1)th$ frame is maximum amount of bits that can be transferred along with residual bits in the virtual buffer in allowed delay of $49ms$.
-
-	The delta QP calculated above is added to QP calculated based on current virtual buffer fullness. The virtual buffer fullness corresponds to fullness of the buffer discussed in context of leaky bucket model in previous section. The current virtual buffer occupancy ($d_m^n$) when encoding the $m^{th}$ macroblock of $n^{th}$ frame is calculated according to equation \ref{Eq:buffer_fullness}.
+The activity metric used in the equation\ref{Eq:deltaQP} is a complexity metric, hence it can be replaced by similar metrics depicting the complexity of the block. Other metrics like SATD (Sum of Absolute Difference in Transform Domain similar to activity calculation in Eq:\ref{Eq:activity_calc}) and cost of macroblock (J) can be used instead of the activity. In this work, cost of the macroblock used in rate-distortion optimization is used as the complexity metric. The cost of the macroblock factors in both amount of residual information to be encoded and bits used for the mode making it accurate in terms of reflecting the complexity of the block.
+ \begin{equation}
+	\label{Eq:CostCalc}
+		J = D + \lambda R
+\end{equation}
+Here the distortion D represents the residual error after prediction measured of sum of absolute difference (SAD), is weighted against the number of bits R associated with motion information using the Lagrange multiplier $\lambda$. The least cost of all the evaluated modes is considered as the complexity of the block.
+\subsubsection{Compute Quantization Parameter}
+	The delta QP ($dq$) calculated above is added to QP calculated based on current virtual buffer fullness. The virtual buffer fullness corresponds to fullness of the buffer discussed in context of leaky bucket model in the previous section. The virtual buffer occupancy $d_0^n$ is calculated only after entire frame is encoded. Any deviation in bitrate will be reflected in the occupancy of the buffer. In order to account for deviation from in bitrate at macro-block level a global deviation factor is computed at macroblock level based on virtual buffer fullness and size of macroblocks encoded in the current frame. The current virtual buffer occupancy ($d_m^n$) when encoding the $m^{th}$ macroblock of $n^{th}$ frame is calculated according to equation \ref{Eq:buffer_fullness}.
 \begin{equation}
 	\label{Eq:buffer_fullness}
-	d_m^n = d_0^n + CurFrameBitCount - (AvgBitsPerMB * m)
+	d_m^{n'} = d_0^{n'} + CurFrameBitCount - \frac{B_{alloc} * m}{M}
 \end{equation}	
-
-The term $d_0^n$ in above equation is deviation in bitrate of the encoded video until the last fully encoded frame. It is same as $d_m^n$ at the start of encoding of the current frame. The metric AvgBitsPerMB is not a fixed value based on bitrate and framerate. This value is calculated based on bit-allocation explained above and hence remains constant for a given frame. A positive $d_0^n$ implies over-consumption of bits compared to target bits. CurFrameBitCount is the bit-consumption until the last encoded macroblock. Therefore, CurBufferOccupancy is the measure of deviation in target and achieved bitrate until the current macroblock in the frame. The current virtual buffer occupancy is used to calculate QP parameter for the $m^{th}$ macroblock ($Q_m$) using equation \ref{Eq:mainQP}.
+Where, M is the number of total macroblocks in a frame. The term $d_0^{n'}$ in above equation is directly derived from virtual buffer fulness ($d_0^n$) after clipping to definite maximum and minimum value keep QP limit in suitable range. This accounts for deviation in bitrate of the encoded video until the last fully encoded frame. It is same as $d_m^n$ at the start of encoding of the current frame. The metric AvgBitsPerMB is not a fixed value based on bitrate and framerate. This value is calculated based on bit-allocation explained above and hence remains constant for a given frame. A positive $d_0^n$ implies over-consumption of bits compared to target bits. CurFrameBitCount is the bit-consumption until the last encoded macroblock. Therefore, CurBufferOccupancy is the measure of deviation in target and achieved bitrate until the current macroblock in the frame. The current virtual buffer occupancy is used to calculate QP parameter for the $m^{th}$ macroblock ($Q_m$) using equation \ref{Eq:mainQP}.
 \begin{equation}
 	\label{Eq:mainQP}
-	Q_m = \frac{d_m^n * 31}{r} + dq
+	Q_m = \frac{d_m^{n'} * 31}{r} + dq
 \end{equation}
 \begin{equation}
  where, r = i * bitrate/framerate \nonumber
 \end{equation}
-The factor $dq$ in eq\ref{Eq:mainQP} is the delta QP calcuated using equation \ref{Eq:deltaQP}. The factor $r$, is called the reaction factor. This factor is used to tweak the aggressiveness of the bitrate control module in adapting to deviation in achieved bitrate. The aggressiveness is controlled using the factor $i$, the bitrate module in this work uses $i = 1$, making the bitrate control module highly reactive to deviation in bitrate. 
-  \subsection{ROI based coding}
-	In conventional video coding, all regions of a frame are considered equally important. It is assumed that all the regions contribute equally to the perceptual quality. Some video codecs use the fact that high frequency components are less important to the human visual system and perform preferential coding based on spatial frequency. The higher frequency components which are not so important to perceptual quality is encoded with higher QP. However, such preferential coding does not take into account the contents of the frame to be encoded. 
-
-The study of Human Visual System (HVS) also shows that human eyes can only focus at one area in a frame at any given point in time which is called region of interest. Region of interest based coding is not a common practice in video coding because it is very hard to automatically detect important regions that contribute the most to the perceptual quality. This is because the region of interest constantly keeps changing depending on the content. For instance, in a movie, the region of interest can depend on context of the scene. Developing generic techniques for detection of ROI in such videos is very difficult. However, region of interest in the video conferencing content is going to be the face region predominantly. Due to recent improvements in face detection algorithms it is possible to detect the face with good accuracy. The study in \cite{HighQualityROICodingForVideoConferencing} shows how boosting quality of face regions can improve the overall perceived quality of the video. This work aims to study possible ways of improving perceptual quality of the video by detecting face regions and coding it with higher quality than rest of the frame.
-
- As mentioned earlier, the bitrate control allocates bits at every macroblock and adjusts the QP. In a simple approach one would try to distribute the bitrate evenly on every macroblock. Since load efficiency is of high importance it is not advisable to do multipass encoding for optimal bitrate allocation. Therefore, over-allocation in one macroblock has to be compensated by under-allocation (using a higher QP) for neighboring macroblocks, regardless of the image content. However, a more intelligent allocation strategy should take the image content into account. Thus parts of the image with higher importance (e.g.faces) should be given a higher percentage of the overall bitcount which results in higher visual quality. Background regions would get a lower proportion of the bitcount.
+The factor $dq$ in eq\ref{Eq:mainQP} is the delta QP calcuated using equation \ref{Eq:deltaQP}. The factor $r$, is called the reaction factor. This factor indicates the number of frames over which the deviation in bitrate is to be compensated. The bitrate control module in this work uses $i = 1$. 
 
 \section{Study setup}
 \subsection{codec configuration}      
