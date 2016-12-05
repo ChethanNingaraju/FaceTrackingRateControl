@@ -229,7 +229,12 @@ The allocated QP($Q_m$) solely depends on $d_0^{n'}$ if the deviation in macrobl
 d_0^{n'} = clip(1000, \frac{40 * r}{31})
 \end{equation}
 
-The QP output by rate control ($Q_m$) is clipped between valid range of QP in H.264 encoding. In addition to these limits, the QP computed in (\ref{Eq:mainQP}) is subjected to swing restrictions. Since the QP is modulated based on the activity of the macroblock, a upper limit of $QP_{max} = QP_{avg} + 5$ is set to make sure the high activity regions are not excessively penalized with higher quantization. Here, $QP_{avg}$ corresponds to average QP of all the blocks in the previous encoded frame.
+The QP output by rate control ($Q_m$) is clipped between valid range of QP in H.264 encoding. In addition to these limits, the QP computed in (\ref{Eq:mainQP}) is subjected to swing restrictions. Since the QP is modulated based on the activity of the macroblock, a upper limit of maximum QP ($QP_{max}$),
+\begin{equation}
+	\label{Eq:QP swing restriction}
+	QP_{max} = QP_{avg} + 5,
+\end{equation} 
+is set to make sure the high activity regions are not excessively penalized with higher quantization. Here, $QP_{avg}$ corresponds to average QP of all the blocks in the previous encoded frame.
 
 \section{Study Setup}
 This section describes the the setup used in this work. It describes the configuration of the encoder used to evaluate different algorithms. It also describes the metrics and aspects used to benchmark the proposed ROI-based bitrate control algorithm against the state of the art bitrate control algorithm.
@@ -472,6 +477,7 @@ It is perhaps a better idea to link the confidence quotient of face detection al
 %
 \subsubsection{Tuning QP Offset} \label{sec:Tuning QP Offset}
 As mentioned earlier, the methods discussed in this work only aim to re-distribute the bits within a frame based on the region of interest. The extent of re-distribution should be carefully chosen to avoid degradation of the background to an extent that artifacts become noticeable to the viewer even though they are not expected to concentrate on those regions. Ideal level of redistribution will make sure that there is maximum transfer of bits from non-ROI parts to ROI parts without creating any visible artifacts in the image.
+\iffalse
 \begin{figure}[!h]
     \centering
     \includegraphics[scale=0.43]{QPOffset/trialOffset/Paul250kbps_offset2}
@@ -481,18 +487,62 @@ As mentioned earlier, the methods discussed in this work only aim to re-distribu
     \caption{Tuning QP offset - Trial QP offsets used are 2, 4, 6 and 8 in raster scan order}
     \label{fig:Default_QPOffsetTuning}
 \end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[scale=0.75]{BufferControl/Paul250kbps_Buffer_Control_Delay}
-    \caption{Delay Comparison of original video with ROI based reaction factor modification}
-    \label{fig:DelayDefault_BufferControltCompare}
+\fi
+
+
+%
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{\textwidth}
+		\centering
+		\includegraphics[width=0.49\textwidth]{Tuning_QP_offset/QP_offset_8/with_swing_restriction/Paul250kbps_uni_QP_offset_8.jpg}
+		\includegraphics[width=0.49\textwidth]{Tuning_QP_offset/QP_offset_8/with_swing_restriction/Paul250kbps_uni_QP_offset_8_psnr_abs.jpg}
+		\caption{QP offset = -8}
+		\label{fig:QP offset compare 8}
+	\end{subfigure}
+	\begin{subfigure}[t]{\textwidth}
+		\centering
+		\includegraphics[width=0.49\textwidth]{Tuning_QP_offset/QP_offset_12/with_swing_restriction/Paul250kbps_uni_QP_offset_12.jpg}
+		\includegraphics[width=0.49\textwidth]{Tuning_QP_offset/QP_offset_12/with_swing_restriction/Paul250kbps_uni_QP_offset_12_psnr_abs.jpg}
+		\caption{QP offset = -12}
+		\label{fig:QP offset compare 12}
+	\end{subfigure}
+	\caption{The snapshot of ROI-encoded test sequence (Left) and its corresponding absolute PSNR map (Right) for different QP offset.}
+	\label{fig:QP offset tuning}
 \end{figure}
 
-In this work, various offsets were used to study the effect of magnitude of QP offset on perceptual quality. The results shown in Figure \ref{fig:Default_QPOffsetTuning} shows that, as QP offset increases the face region appears more sharper which improves the overall perceptual quality of the frame. The image with QP offset of 8 appears to not have any noticeable blockiness in the background. However, using a very high QP offset triggers another problems that is not shown in the sample images. Due to increased QP offset, the encoder is forced to use lower QP even when virtual buffer is critically full. This increases the number of skipped/dropped frames in the entires sequence. The sample video consisted of 1000 frames and a total of 44, 46, 46 and 50 frames were dropped in the sequence with QP offset of 2, 4, 6 and 8 respectively. This increase in skip frames reduces the smoothness of the playback which is annoying to the viewer. Therefore, the increase in QP offset should be tuned not only considering the degradation of the background quality but also by assessing any other side effects like increase in dropped frames.
+
+%Table to show number of dropped frames
+\begin{table} [h!]
+	\centering
+	\begin{tabular}{ |c|c|c| }
+		\hline
+		\textbf{ROI QP Offset} & \textbf{Swing Restriction = on} & \textbf{Swing Restriction = off} \\
+		\hline 
+		0 & 16 & 10  \\
+		\hline
+		-4 & 19 & 11  \\
+		\hline
+		-8 & 31 & 11 \\ 
+		\hline
+		-12 & 45 & 11 \\ 
+		\hline						
+	\end{tabular}
+	\caption{Number of dropped frames with different QP offsets for ROI for test sequence with 1000 frames.}
+	\label{Table:QP tuning dropped frames}
+\end{table}
+
+In this work, various offsets were used to study the effect of magnitude of QP offset on perceptual quality. The results of ROI-based encoding with QP offset of -4 shows favorable results with increased perceptual quality. This section examines the impact of increasing the magnitude of QP offset further. %The results shown in Figure \ref{fig:QP offset tuning} shows that, as QP offset increases the face region appears more sharper which improves the overall perceptual quality of the frame. 
+
+The snapshot of sample input encoded  with QP offset of -8 shown in Figure \ref{fig:QP offset compare 8} appears to not have any noticeable blockiness in the background. However, with further increase in magnitude of the QP offset the blockiness in the background becomes more prominent. The image in Figure \ref{fig:QP offset compare 12} is encoded with QP offset of -12. Due to QP swing restriction discussed in section \ref{sec: Bitrate overview: Bitrate deviation} the difference in QP across macroblocks is heavily restricted. The maximum value of macroblock QP ($QP_{max}$) given by (\ref{Eq:QP swing restriction}), avoids the excessive degradation of non-ROI macroblocks due to usage of large QP offset. The QP of non-ROI blocks is not allowed to go very high despite over-consumption of bits by ROI blocks.  The side-effects of increased QP offset shows up in the form of increase in number of dropped frames. Table \ref{Table:QP tuning dropped frames} shows the number of dropped frames in the encoded video with 1000 input frames. There is a drastic increase in number of dropped frames with QP offset of -8 and -12. This increase in dropped frames reduces the smoothness of the playback which is annoying to the viewer.
+
+When the QP swing restrictions were turned off, the number of dropped frames with increased QP offset reduced drastically as shown in Table \ref{Table:QP tuning dropped frames}. There was no considerable increase in dropped frames compared to the output of normal encoding without using any ROI information. However, the quality of non-ROI blocks dropped significantly without QP swing restrictions. The extreme blockiness in non-ROI regions decreased the perceptual quality. Therefore, using large QP offsets can lead to less perceptual quality. 
+
+Therefore, the increase in QP offset should be tuned not only considering the degradation of the background quality but also by assessing any other side effects like increase in dropped frames.
 %
 %Discuss the impact of ratio of ROI mbs to non-ROI mb's
 \subsubsection{Area of Region of Interest}
-This section discusses the importance of considering the relative area of ROI with respect to non-ROI parts in calculating the QP offsets. The variation in QP offset discussed in the above section corresponds to the sample input content which has similar ratio of number of ROI macroblocks to number of non-ROI macroblocks across all the frames. In the sample sequence used, 46 to 50 macroblocks out of 1200 total macroblocks belong to the face region(ROI) in each frame. Therefore, the ROI is less than 5 percent of the entire video frame. Due to small percentage of ROI blocks, it is possible to use very high QP offsets since there are large number of non-ROI macroblocks to compensate for the over-consumption of bits by ROI macroblocks. However, based on the focal length of the camera and distance from camera, the area of face in video conference can change considerably. The number of ROI macroblocks can also change considerably  within a input content.   For instance, when the area of ROI is half of the entire frame, usage of higher QP offsets will cause severe degradation in the quality of non-ROI macroblocks. In order to avoid severe degradation of the background, the magnitude of the QP offset should be inversely proportional to the ratio of ROI to non-ROI area.
+This section discusses the importance of considering the relative area of ROI with respect to non-ROI parts in calculating the QP offsets. The variation in QP offset discussed in the above section corresponds to the sample input content which has similar ratio of number of ROI macroblocks to number of non-ROI macroblocks across all the frames. In the sample sequence used, 46 to 50 macroblocks out of 1200 total macroblocks belong to the face region(ROI) in each frame. Therefore, the ROI is less than 5 percent of the entire video frame. Due to small percentage of ROI blocks, it is possible to use very high QP offsets (very low ROI QP) since there are large number of non-ROI macroblocks to compensate for the over-consumption of bits by ROI macroblocks. However, based on the focal length of the camera and distance from camera, the area of face in video conference can change considerably. The number of ROI macroblocks can also change considerably  within a input content.   For instance, when the area of ROI is half of the entire frame, usage of higher QP offsets will cause severe degradation in the quality of non-ROI macroblocks. In order to avoid severe degradation of the background, the magnitude of the QP offset should be inversely proportional to the ratio of ROI to non-ROI area.
 
 The algorithm implemented to use area of ROI, calculates the QP offset using linear relationship described in equation \ref{Eq:QP_offset}
 \begin{equation}
@@ -529,7 +579,12 @@ where, $dq_{non-roi}$ is a positive QP offset used for non-ROI blocks when negat
     \caption{Comparing the images with modified reaction for ROI macroblcoks}
     \label{fig:Default_BufferControlCompare}
 \end{figure}
-
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.75]{BufferControl/Paul250kbps_Buffer_Control_Delay}
+	\caption{Delay Comparison of original video with ROI based reaction factor modification}
+	\label{fig:DelayDefault_BufferControltCompare}
+\end{figure}
 The second approach of using the ROI information to enhance quality of ROI is by using different buffer controls inside the bitrate control module. The bitrate control module used in this study compensates for the overconsumption or underconsumption of bits in the past by adjusting the delta bits during bit allocation of the future frames. This corrected allocation happens at every macroblock level. For instance, if there is excessive consumption of bits in the past macro-blocks, the excess is subtracted from bit budget of certain number of future frames known as reaction factor. If the reaction factor is low, the excess or shortage of bits is shared by a large number of macro-blocks.
 
 The reaction factor is used to allocate additional bits to ROI by using different reaction factors for macro-blocks belonging to the ROI. For instance, in case of underconsumption in the past, the excess bits available for future macroblocks is forced to be used aggressively for macroblocks belonging to ROI. On the other hand whenever there is overconsumption in the past, the bits are reduced more aggressively for macroblocks belonging to non-ROI. The advantage of this approach over QP offset approach is that the bit-allocation is still controlled within the rate control module and its decisions are not overridden by external offsets. This guarantees better buffer compliance. The results shown in Figure \ref{fig:Default_BufferControlCompare} compares the output with modified reaction factor based on region of interest and original video. It can be noticed that PSNR of the face regions is very close to that of the background. The data in Table \ref{AllPSNR1} shows that PSNR of ROI region is actually higher than the overall frame PSNR. The delay plots in \ref{fig:DelayDefault_BufferControltCompare} shows there is no significant changes in the delay or bitrate consumption.
