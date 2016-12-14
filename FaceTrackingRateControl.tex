@@ -432,7 +432,7 @@ The simplest way of creating a bias in the quality between ROI and non-ROI is by
     \label{fig:DelayDefault_QPOffsetCompare}
 \end{figure}
 
-The images in Figure \ref{fig:Default_QPOffsetCompare} shows the comparison between normal encoding and ROI-based encoding using QP offset and their corresponding attributes like PSNR map and  quantization map. The image in Figure \ref{fig:QP Offset image comparison 2} looks better in face regions compared to Figure \ref{fig:QP Offset image comparison 1} due to usage of negative QP offset for ROI. This improves the overall perceptual quality in a video. Figure \ref{fig:QP Offset Quant comparison 1}-\ref{fig:QP Offset Quant comparison 2} shows the effect of QP offset on the final QP used for encoding the macroblock. The macroblocks in the face region of \ref{fig:QP Offset Quant comparison 2} has lower QP which is seen as  macroblocks with a lighter shade of gray compared to other macroblocks in the frame. 
+The images in Figure \ref{fig:Default_QPOffsetCompare} shows the comparison between normal encoding and ROI-based encoding using QP offset and their corresponding attributes like PSNR map and  quantization map. The image in Figure \ref{fig:QP Offset image comparison 2} looks better in face regions compared to Figure \ref{fig:QP Offset image comparison 1} due to usage of negative QP offset for ROI. This improves the overall perceptual quality in a video. Figure \ref{fig:QP Offset Quant comparison 1}-\ref{fig:QP Offset Quant comparison 2} shows the effect of QP offset on the final QP used for encoding the macroblock. The macroblocks in the face region of \ref{fig:QP Offset Quant comparison 2} have lower QP which is seen as  macroblocks with a lighter shade of gray compared to other macroblocks in the frame. 
 
  The PSNR maps in Figure \ref{fig:QP Offset PSNR comparison 1}-\ref{fig:QP Offset PSNR comparison 2} shows that the PSNR of the face is closer to the background region with ROI-based encoding using QP offset. There is no major difference in the PSNR of the background region (non-ROI). The face appears much sharper due to the additional boost in quality from reduced QP. The overall bitrate of both the compared bitstreams remained almost same. The difference in the perceptual quality is only due to the movement of bits from non-ROI to ROI macroblocks. 
  
@@ -530,6 +530,7 @@ In this work, various offsets were used to study the effect of the magnitude of 
 The snapshot of sample input encoded  with QP offset of -8 shown in Figure \ref{fig:QP offset compare 8} appears to not have any noticeable blockiness in the background. However, with further increase in the magnitude of QP offset the blockiness in the background becomes more prominent. The image in Figure \ref{fig:QP offset compare 12} is encoded with QP offset of -12. Due to the QP swing restriction discussed in section \ref{sec: Bitrate overview: Bitrate deviation}, the difference in QP across macroblocks is heavily restricted. The maximum value of macroblock QP ($QP_{max}$) given by (\ref{Eq:QP swing restriction}), avoids the excessive degradation of the non-ROI macroblocks due to the usage of large QP offset. The QP of non-ROI blocks is not allowed to go very high despite over-consumption of bits by ROI blocks.  The side-effects of increased QP offset shows up in the form of an increase in the number of dropped frames. Table \ref{Table:QP tuning dropped frames} shows the number of dropped frames in the encoded video with 1000 input frames. There is a drastic increase in the number of dropped frames with QP offset of -8 and -12. This increase in dropped frames reduces the smoothness of the playback which is annoying to the viewer.
 
 When the QP swing restriction was turned off temporarily, the number of dropped frames with increased QP offset reduced drastically as shown in Table \ref{Table:QP tuning dropped frames}. There was no considerable increase in dropped frames compared to the output of normal encoding without using any ROI information. However, the quality of non-ROI blocks dropped significantly without QP swing restrictions. The extreme blockiness in the non-ROI regions decreased the perceptual quality. Therefore, using large QP offsets can lead to less perceptual quality either due to increased dropped frames or excessive blockiness in the background depending on the configuration of QP swing restriction. Therefore, the QP offset for the ROI should be tuned not only considering the degradation of the background quality but also by assessing any other side-effects like an increase in the number of dropped frames.
+
 %
 %Discuss the impact of ratio of ROI mbs to non-ROI mb's
 \subsubsection{Area of Region of Interest}
@@ -606,12 +607,13 @@ The advantages and disadvantages of this approach can be summarized as follows,
 	\item The deviation control mechanism described in section \ref{sec: Bitrate overview: Bitrate deviation} is not in sync with QP offsets. 
 \end{itemize}
 
+The next section introduces an alternative approach for ROI-based encoding using region based bit-allocation. Some of the disadvantages of the QP offset approach are addressed in the new approach.
 
 %%Add new section for splitting bit-allocation
 \subsection{ROI based Bit-Allocation}
-This section introduces an approach with modifications to the bit allocation module for improved ROI-based encoding. The main drawback of the QP offset based approach is that the input video content characteristics are not considered for QP offset calculation. The difference in complexity of ROI and non-ROI macroblocks determines the magnitude of quality difference required for good perceptual quality. This magnitude of optimal quality difference varies across different contents according to variation in complexity within a frame. For instance, consider a sample input video with moving background regions (non-ROI) but a simple static foreground (ROI). The usage of heuristic QP offsets which assumes background to be mostly static will result in annoying blocky artifacts in the background. This might decrease the perceptual quality to a level below that of the video without ROI-based encoding. Therefore it is important to consider the relative complexities of ROI and non-ROI parts to compute the desired quality difference between these regions.
+This section introduces an approach with modifications to the bit allocation module for improved ROI-based encoding. The main drawback of the QP offset based approach is that the input video content characteristics are not considered for determining the QP offset. The difference in complexity of ROI and non-ROI macroblocks determines the magnitude of quality difference required for good perceptual quality. This magnitude of optimal quality difference varies across different contents according to variation in complexity within a frame. For instance, consider a sample input video with moving background regions (non-ROI) but a simple static foreground (ROI). The usage of heuristic QP offsets which assumes background to be mostly static will result in annoying blocky artifacts in the background. This might decrease the perceptual quality to a level below that of the video without ROI-based encoding. Therefore it is important to consider the relative complexities of ROI and non-ROI parts to compute the desired quality difference between these regions.
 
-In this approach, the bits allocated at frame level $(B_{alloc})$ is split between ROI and non-ROI parts based on relative complexity of these regions. The cost of the macroblock computed during rate-distortion optimization (\ref{Eq:CostCalc}) is accumulated for ROI and non-ROI regions to get a relative complexity metric ($C_r$),
+In this approach, the bits allocated at frame level $(B_{alloc})$ is split between the ROI and non-ROI parts based on the relative complexity of these regions. The cost of a macroblock computed during rate-distortion optimization (\ref{Eq:CostCalc}) is accumulated for ROI and non-ROI regions to get a relative complexity metric ($C_r$),
 $$C_r = \frac{\sum_{i =0}^{M_{roi}}{J_i}}{\sum_{i =0}^{M-M_{roi}}{J_i}},$$
 where, $j_i$ is the RDO cost of the macroblock $i$. The cost of a region determines the bits consumed by the corresponding region. The relative bit consumption of ROI and non-ROI is predicted assuming that,
 \begin{equation}
@@ -619,36 +621,38 @@ where, $j_i$ is the RDO cost of the macroblock $i$. The cost of a region determi
 	C_r \propto B_R.
 \end{equation}
 where, $$B_R = \frac{B_{roi}}{B_{nroi}}.$$
-Here $B_{roi}$ is the accumulated bit consumption of all $M_{roi}$ macroblocks belonging to ROI and $B_{nroi}$ is the accumulated bit consumption of non-ROI macroblocks. The above equations hold true for any two regions in a given frame given that these two regions are encoded with equal importance (no ROI-encoding). Therefore, $B_{roi}$ and $B_{nroi}$ corresponds to bit consumption of the two regions if the frame was encoded normally without using any ROI information.
+Here $B_{roi}$ and $B_{nroi}$ is the accumulated bit consumption of all $M_{roi}$ macroblocks belonging to ROI and  $M_{nroi}$ non-ROI macroblocks respectively. The above equations hold true for any two regions in a given frame given that these two regions are encoded with equal importance (no ROI-encoding). Therefore, $B_{roi}$ and $B_{nroi}$ corresponds to bit consumption of the two regions if the frame was encoded normally without using any ROI information. The idea is to predict the bit-consumption in normal encoding without ROI information and allocate bits for ROI and non-ROI regions according to the estimate but with a bias for ROI part. 
  
 The ROI-based encoding with modified bit-allocation involves following major steps.
 \begin{itemize}
 	\item Predict relative bit-consumption of ROI and non-ROI ($B_R$) without any ROI-based encoding.
-	\item Split allocated frame level bits ($B_{alloc}$) between ROI and non-ROI parts with a bias for ROI parts.
+	\item Split allocated frame level bits ($B_{alloc}$) between ROI and non-ROI parts according to ($B_R$) with an additional bias for ROI parts.
 	\item Bitrate control for ROI and non-ROI regions.
 \end{itemize}
-The following sections discuss each of the above steps in detail
+The following sections discuss each of the above steps in detail.
 
 \subsubsection{Relative Bit-consumption Prediction} \label{sec:Relative Bit-consumption Prediction}
-The first step in bit-allocation based ROI-encoding is to determine the relative bit-consumption of ROI and non-ROI regions ($B_R$) if the frame was encoded normally without any bias for ROI regions. In this work, the relationship between the complexity of a macroblock and it's bit-consumption is studied. The RDO cost (\ref{Eq:CostCalc}) is chosen as complexity metric for prediction of $B_R$. The computation of a new complexity metric for predicting bit-consumption is not desirable due to increased complexity. The RDO cost which is computed by the encoder during rate-distortion optimization stage is reused to predict $B_R$. 
+The first step in bit-allocation based ROI-encoding is to determine the relative bit-consumption of the ROI and non-ROI parts ($B_R$) if the frame was encoded normally without any bias for ROI regions. In this work, the relationship between the complexity of a macroblock and its bit-consumption during normal encoding without using any ROI information is studied. The RDO cost (\ref{Eq:CostCalc}) is chosen as the complexity metric for prediction of $B_R$. The computation of a new complexity metric for predicting bit-consumption is not desirable due to increased complexity. The RDO cost which is computed by the encoder during rate-distortion optimization stage is reused to predict $B_R$. 
 
-The RDO cost is also used in rate control for delta QP prediction as discussed in section \ref{used QP prediction overview}. The cost of a macroblock affects its bit-consumption in two opposite ways. The cost of a macroblock reflects the complexity of the macroblock. A macroblock with higher cost consumes more bits (\ref{Eq:Relative bit consumption}). On the other hand, the delta QP computation (\ref{Eq:deltaQP}) allocates a higher QP to the macroblock with higher cost to equalize the bit-consumption across all the macroblocks. These conflicting influence of cost on bit-consumption makes it's prediction more complex. In the first iteration constant QP across all the macroblocks in a frame is used for coarse prediction of relative bit-consumption from the RDO-cost. The effect of delta QP is factored in to make prediction more accurate in the later stage.
+The RDO cost is also used in the bitrate control for delta QP prediction as discussed in section \ref{used QP prediction overview}. The cost of a macroblock affects its bit-consumption in two opposite ways. The cost of a macroblock reflects the complexity of the macroblock. A macroblock with a higher cost consumes more bits (\ref{Eq:Relative bit consumption}). On the other hand, the delta QP computation (\ref{Eq:deltaQP}) allocates a higher QP to the macroblock with a higher cost to equalize the bit-consumption across all the macroblocks. These conflicting influence of cost on bit-consumption makes it's prediction more complex. 
+
+In the first iteration, constant QP across all the macroblocks in a frame is used for coarse prediction of relative bit-consumption from the RDO-cost. The effect of delta QP is factored in to make prediction more accurate in the later stage (TBD).
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=0.75]{CostVsBits/const_QP/CostvsBits_ConstQP_Full}  
-	\caption{Macroblocks Cost vs Bits plot}
+	\caption{Macroblocks Cost vs Bits plot for all the macroblocks in a sample constant QP encoded video with 100 frames}
 	\label{fig:CostvsBits_ConstQP_Full}
 \end{figure}
 
-Figure \ref{fig:CostvsBits_ConstQP_Full} shows the plot of cost vs bits at the macroblock level. Every point on this plot corresponds to bit-consumption of a macroblock and its corresponding RDO cost computed during the RDO stage. The plot corresponds to all the macroblocks in encoded video sequence with 100 frames. The encoding for this plot was done in constant QP mode with QP=35 for all the macroblocks. The data of the first key frame is not included in this plot since the first key frame is encoded normally without using ROI information. It can be noticed that there is a linear relationship between predicted macroblock cost and the corresponding bit-consumption. 
+Figure \ref{fig:CostvsBits_ConstQP_Full} shows the plot of cost vs bits at the macroblock level. Every point on this plot corresponds to bit-consumption of a macroblock and its corresponding RDO cost computed during the RDO stage. The plot corresponds to all the macroblocks in the encoded video sequence with 100 frames. The encoding for this plot was done in constant QP mode with QP=35 for all the macroblocks. The data of the first key frame is not included in this plot since the first key frame is encoded normally without using ROI information. It can be noticed that there is a linear relationship between predicted macroblock cost and the corresponding bit-consumption. 
 
 The linear relationship between cost of a macroblock (J) and its corresponding bit-consumption (b) at a constant QP is given by,
 \begin{equation}
 	\label{Eq:costvsbits model all}
 	J = 22.328 . b + 624.7.
 \end{equation}
-The above equation equation is obtained by performing linear regression on the entire data set shown in Figure \ref{fig:CostvsBits_ConstQP_Full}. It has a corresponding $R^2$ value of 0.3236. The $R^2$ value displayed on the chart is measure of correlation between actual data and the predicted data using the linear relationship. A value of $R^2 = 1$ indicates perfect correlation. 
+The above equation is obtained by performing linear regression on the entire data set shown in Figure \ref{fig:CostvsBits_ConstQP_Full}. It has a corresponding $R^2$ value of 0.3236. The $R^2$ value (also displayed on the plots) is a measure of correlation between actual data and the predicted data using the linear relationship. A value of $R^2 = 1$ indicates perfect correlation. 
 
 The data in Figure \ref{fig:CostvsBits_ConstQP_Full} includes data for macroblocks of all types of prediction modes like skip, intra and inter prediction. It was observed that the predictability of bit-consumption using RDO cost was heavily dependent on the prediction mode used for encoding the macroblock. 
 
@@ -666,12 +670,11 @@ The data in Figure \ref{fig:CostvsBits_ConstQP_Full} includes data for macrobloc
 		Skip &  0.69 & 0.0412 \\ 
 		\hline					
 	\end{tabular}
-	\caption{The probability of prediction modes in 100 frames of encoded video in constant QP (QP = 35) with and its corresponding $R^2$ value.}
+	\caption{The probability of prediction modes in 100 frames of encoded video in constant QP (QP = 35) and its corresponding $R^2$ value.}
 	\label{Table:Mode Specific data}
 \end{table}
 
-
-The analysis of the macroblock cost and its corresponding bit consumption specific to encoding mode is shown in Figure \ref{fig: Cost vs bits mode}. The plots in Figure \ref{fig: Cost vs bits mode} uses same data as shown in Figure \ref{fig:CostvsBits_ConstQP_Full} but filtered based on mode of encoding. It can be noticed that the correlation between cost and bits is maximum for intra-prediction ($R^2 = 0.8757$) followed by inter-prediction ($R^2 = 0.2995$). However, the bit-consumption pattern was found to be almost independent of cost for skip-mode macroblocks ($R^2 = 0.0412$). This is because skip-mode decision happens in later stage of encoding when there is no transform coefficients generated for a macroblock encoded with intra or inter-prediction. The cost associated with skip macroblock corresponds to the encoding mode chosen before the macroblock was decided to be encoded as skip macroblock.
+The analysis of the macroblock cost and its corresponding bit-consumption specific to encoding mode is shown in Figure \ref{fig: Cost vs bits mode}. The plots in Figure \ref{fig: Cost vs bits mode} uses the same data as shown in Figure \ref{fig:CostvsBits_ConstQP_Full} but filtered based on the mode of encoding. It can be noticed that the correlation between cost and bits is maximum for intra-prediction ($R^2 = 0.8757$) followed by inter-prediction ($R^2 = 0.2995$). However, the bit-consumption pattern was found to be almost independent of the cost for skip-mode macroblocks ($R^2 = 0.0412$). This is because skip-mode decision happens in a later stage of encoding when there are no transform coefficients generated for a macroblock encoded with intra or inter-prediction. The cost associated with skip macroblock corresponds to the encoding mode chosen before the macroblock was decided to be encoded as skip macroblock.
 
 
 %Complexity vs bits prediction analysis
@@ -700,53 +703,53 @@ The analysis of the macroblock cost and its corresponding bit consumption specif
 	\label{fig: Cost vs bits mode}
 \end{figure}
  
-The uncorrelated cost and bits value can lead to large inaccuracy in predicting relative bit-consumption ($B_R$) of ROI and non-ROI parts. The data in Table \ref{Table:Mode Specific data} shows that skip mode in the most common prediction mode for the encoding mode discussed in section \ref{sec:Encoder configuration}. This is due to low bitrate and static background in the chosen content. Therefore, it is very important to have good bits vs cost prediction model for skip macroblocks to have compute $B_R$ with reasonable accuracy.
+The uncorrelated cost and bits value can lead to large inaccuracy in predicting relative bit-consumption ($B_R$) of ROI and non-ROI parts. The data in Table \ref{Table:Mode Specific data} shows that skip mode in the most common prediction mode for the encoder configuration discussed in section \ref{sec:Encoder configuration}. This is due to low target bitrate and mostly static background in the chosen content. Therefore, it is very important to have good bits vs cost prediction model for skip macroblocks to compute $B_R$ with reasonable accuracy.
 
-Fortunately, the uncorrelated cost and bits value for skip mode can be easily handled by assuming a constant number of bits for skip mode and ignoring its cost. The average of bits consumed by skip macroblocks over 100 frame video was found to be 0.458 bits. This value can be used directly in (\ref{Eq:Relative bit consumption}) to compute relative bit-consumption of ROI and non-ROI based on number of skip macroblocks in each of these regions.
+Fortunately, the uncorrelated cost and bits value for skip mode can be easily handled by assuming a constant number of bits for skip mode and ignoring its cost. The average of bits consumed by skip macroblocks over 100 frame video was found to be 0.458 bits. This value can be used directly in (\ref{Eq:Relative bit consumption}) to compute relative bit-consumption of ROI and non-ROI based on the number of skip macroblocks in each of these regions.
 
 The steps involved in computing relative bit-consumption of ROI and non-ROI region ($B_R$) are,
 \begin{itemize}
 	\item Identify the ROI and non-ROI macroblocks in the input frame.
-	\item Get the number of intra macroblocks, inter-macroblocks and skip macroblocks in ROI and non-ROI region separately. This can be done using previous frame data.
-	\item Compute relative complexity of ROI and non-ROI parts by accumulating costs of macroblocks in these regions.
+	\item Get the number of intra macroblocks, inter-macroblocks and skip macroblocks in the ROI and non-ROI region separately. This can be done using the previous frame data.
+	\item Compute relative complexity of the ROI and non-ROI parts by accumulating costs of macroblocks in these regions.
 	\item The relative complexity metric is translated to relative bit-consumption ($B_R$) between ROI and non-ROI using  prediction models shown in Figure \ref{fig: Cost vs bits mode}. A pre-computed value is used for skip macroblocks to account for bit consumed by skip macroblocks.
 \end{itemize}
 
-The procedure involved in using ($B_R$) to allocate bits to ROI and non-ROI to perform ROI-based encoding is discussed in subsequent sections.
+The procedure involved in using ($B_R$) to allocate bits to ROI and non-ROI parts with a bias for ROI parts to perform ROI-based encoding is discussed in subsequent sections.
 
 \subsubsection{ROI and non-ROI Bit Allocation}
-This section gives an overview of the process involved in splitting the frame level allocated bits ($B_{alloc}$) computed in (\ref{Eq:bit-allocation}) between ROI and non-ROI regions. This is done using relative bit-consumption factor ($B_R$) computed in the previous section. In case of normal encoding without ROI information, $B_{alloc}$ is split between ROI and non-ROI according to $B_R$ (by definition of $B_R$). For ROI-based encoding a bias factor k is introduced to create bias in bit-allocation. The bits allocated for ROI region ($B_{alloc}^{roi}$) is given by,
+This section gives an overview of the process involved in splitting the frame level allocated bits ($B_{alloc}$) computed in (\ref{Eq:bit-allocation}) between ROI and non-ROI regions. This is done using relative bit-consumption factor ($B_R$) computed in the previous section. In the case of normal encoding without ROI information, $B_{alloc}$ is split between ROI and non-ROI according to $B_R$ (by definition of $B_R$). For ROI-based encoding, a bias factor k is introduced to create bias in bit-allocation. The bits allocated for ROI region ($B_{alloc}^{roi}$) is given by,
 \begin{equation}
 \label{Eq:ROI allocated bits}
 B_{alloc}^{roi} = k \times B_R \times B_{alloc}^{nroi}
 \end{equation}
 and,
 $$ B_{alloc}^{nroi} = B_{alloc} - B_{alloc}^{roi}$$
-Here k is the ROI bias factor. For normal encoding without ROI information, $k = 1$. For ROI-based encoding, a value $k > 1$ is used to bias bit-allocation to allocate more bits to ROI considering its importance to the perceptual quality. The bias factor($k$) gives the flexibility of tuning the bias for ROI based on importance of ROI.
+Here k is the ROI bias factor. For normal encoding without ROI information, $k = 1$. For ROI-based encoding, a value $k > 1$ is used to bias bit-allocation to allocate more bits to ROI considering its importance to the perceptual quality. The bias factor($k$) gives the flexibility of tuning the bias for ROI based on the importance of the ROI.
 
-As mentioned earlier, the bit-allocation based ROI encoding is independent of the procedure involved in determining the relative bit-consumption factor ($B_R$). The approach presented in section \ref{sec:Relative Bit-consumption Prediction} needs computation of relative complexities of ROI and non-ROI regions. A simpler approach is to assume that frame is uniformly complex and splitting the frame level allocated bits ($B_{alloc}$) uniformly between ROI and non-ROI with bias factor specified in (\ref{Eq:ROI allocated bits}). Therefore, if the content information is not factored in for simplicity, the bits allocated for ROI and non-ROI is computed using (\ref{Eq:ROI allocated bits}) with,
+As mentioned earlier, the bit-allocation based ROI encoding is independent of the procedure involved in determining the relative bit-consumption factor ($B_R$). The approach presented in section \ref{sec:Relative Bit-consumption Prediction} needs computation of relative complexities of ROI and non-ROI regions. A simpler approach is to assume that the frame is uniformly complex and splitting the frame level allocated bits ($B_{alloc}$) uniformly between ROI and non-ROI with bias factor specified in (\ref{Eq:ROI allocated bits}). Therefore, if the content information is not factored in for simplicity, the bits allocated for ROI and non-ROI is computed using (\ref{Eq:ROI allocated bits}) with,
 $$B_R = \frac{M_{roi}}{M - M_{roi}}.$$ 
-The bias, factor k determines the additional bits allocated to ROI macroblocks. The main advantage of bit-allocation based ROI encoding compared to ROI-encoding based on QP offset is that it gives more control to guarantee minimum quality for the background macroblocks (non-ROI). For instance, the value of ROI-bias factor (k) can be bounded in such a way that non-ROI macroblocks are allocated at least half the amount of bits allocated during normal encoding. This ensures that the quality of non-ROI does not deteriorate to an extent that blockiness in the background reduces the perceptual quality.
+The bias, factor k determines the additional bits allocated to the ROI macroblocks. The main advantage of bit-allocation based ROI encoding compared to ROI-encoding based on QP offset is that it gives more control to guarantee minimum quality for the background macroblocks (non-ROI). For instance, the value of ROI-bias factor (k) can be bounded in such a way that non-ROI macroblocks are allocated at least half the amount of bits allocated during normal encoding. This ensures that the quality of non-ROI does not deteriorate to an extent that blockiness in the background reduces the perceptual quality.
 
 \subsubsection{Bitrate Control for ROI-based Bit-allocation}
 In the previous stages, the procedure for splitting frame level allocated bits ({$B_{alloc}$}) between ROI and non-ROI regions is described. The input to this stage is allocated bits for ROI ($B_{alloc}^{roi}$) and non-ROI ($B_{alloc}^{nroi}$) parts. The target is to reach bit-consumption according to the split between ROI and non-ROI parts with minimal error. 
 
-The bitrate control module described in section \ref{sec:used-bitrate-control-overview} performs only frame level bit-allocation. There is no macroblock level bit-allocation. The task of the bitrate control module was to reduce error between allocated frame bits $B_{alloc}$ and frame level bit-consumption without worrying about bit-distribution within a frame. 
+The bitrate control module described in section \ref{sec:used-bitrate-control-overview} performs only frame level bit-allocation. There is no macroblock level bit-allocation. The task of the bitrate control module was to reduce the error between allocated frame bits $B_{alloc}$ and the frame level bit-consumption without worrying about bit-distribution within a frame. 
 
-In ROI-based bit-allocation, the bit-allocation is not limited to frame level. The input frame is divided into two regions based on ROI information and target bits are specified for each of these regions separately. The task of the bitrate control module is to meet bitrate for different regions independently (ROI and non-ROI). This section describes the modifications to bitrate control module  to accomplish this task.
+In the bit-allocation based ROI encoding, the bit-allocation is not limited to frame level. The input frame is divided into two regions based on ROI information and target bits are specified for each of these regions separately. The task of the bitrate control module is to meet bitrate for different regions independently (ROI and non-ROI). This section describes the modifications to the bitrate control module to accomplish this task.
 
-The bitrate control module studied in section \ref{sec:used-bitrate-control-overview} computes a deviation factor ($D_m^{n'}$) based on accumulated error in frame level bit-consumption after encoding every frame as shown in (\ref{Eq:Frame level bit error accumulation}). In steady-state, the deviation factor ($D_m^{n'}$) takes value such that error in frame level bit-consumption is minimum. 
+The bitrate control module studied in section \ref{sec:used-bitrate-control-overview} computes a deviation factor ($D_m^{n'}$) based on accumulated error in frame level bit-consumption after encoding every frame as shown in (\ref{Eq:Frame level bit error accumulation}). In steady-state, the deviation factor ($D_m^{n'}$) takes a value such that error in frame level bit-consumption is minimum. 
 
-The modifications to bitrate control module to adapt to ROI-based bit allocation are as follows
+The modifications to the bitrate control module perform region based bit-allocation are as follows
 \begin{itemize}
-	\item Compute deviation factor for ROI ($Droi_m^{n'}$) and non-ROI ($Dnroi_m^{n'}$)regions independently. The deviation factors are updated using feedback data from ROI and non-ROI parts independently This can be visualized as having two instances of rate control running for ROI and non-ROI regions treating ROI and non-ROI regions as separate frames.
-	\item A single instance of macroblock level bitrate error is maintained in (\ref{Eq:Frame level bit error accumulation}). This ties the two instances of bitrate control together, so that frame level biterror is minimized. The error in allocation and consumption of bits in ROI and non-ROI is compensated throughout the frame resulting in less overall frame level error.
+	\item Compute the deviation factor for ROI ($Droi_m^{n'}$) and non-ROI ($Dnroi_m^{n'}$)regions independently. The deviation factors are updated using feedback data from ROI and non-ROI parts independently. This can be visualized as having two instances of rate control running for ROI and non-ROI regions treating ROI and non-ROI regions as separate frames.
+	\item A single instance of macroblock level bitrate error is maintained as shown in (\ref{Eq:Frame level bit error accumulation}). This ties the two instances of bitrate control together, so that frame level bit-error is minimized. The error in allocation and consumption of bits in the ROI and non-ROI is compensated throughout the frame resulting in less overall frame level error.
 	\item The VBV compliance works with frame level bit-allocation and therefore remains unchanged.
 \end{itemize} 
 
-The major problem with two instances of global deviation for ROI and non-ROI, which are simultaneously updated at the end of encoding of a frame is that it can lead to severe oscillations in frame QP. The error in allocated bits and consumed bits for a given region have opposite effects on two instance of global deviation which results in oscillations of average frame level QP. Figure \ref{fig: ROI bit-alloc oscc} shows the variation in frame size with usage of two different instances of deviation factor corresponding to ROI and non-ROI parts. The alternative frames differ in size almost by a factor of 2. Such oscillations was observed in steady-state (frame number 400-450 in the example shown). This variation in quality across alternate frames affects perceptual quality badly. 
+The major problem with two instances of global deviation for ROI and non-ROI, which are simultaneously updated at the end of encoding of a frame is that it can lead to severe oscillations in the frame QP. The error in allocated bits and consumed bits for a given region have opposite effects on two instance of global deviation which results in oscillations of average frame level QP. Figure \ref{fig: ROI bit-alloc oscc} shows the variation in encoded frame size with the usage of two different instances of deviation factor corresponding to ROI and non-ROI parts. The alternative frames differ in size almost by a factor of 2. Such oscillations were observed in steady-state (frame number 400-450 in the example shown). This variation in quality across alternate frames affects the perceptual quality adversely 
 
-The oscillation of frame average QP was avoided by keeping the update of two instances of deviation factors separate. The deviation factor for ROI and non-ROI is updated at the end of alternate frames. Since, the two updates are not happening simultaneously, there is increased stability resulting in near constant frame level bit consumption as shown in \ref{fig: ROI bit-alloc oscc corrected}.
+The oscillation of the frame average QP was avoided by keeping the update of two instances of deviation factors separate. The deviation factor for ROI and non-ROI is updated at the end of alternate frames. Since, the two updates are not happening simultaneously, there is increased stability resulting in near constant frame level bit consumption as shown in \ref{fig: ROI bit-alloc oscc corrected}.
 
 %Images to show oscillations
 \begin{figure}
@@ -796,13 +799,14 @@ The bit-allocation based ROI encoding considers input content characteristics to
 The advantages and disadvantages of this approach compared to QP offset approach can be summarized as follows.
 \subsubsection*{Advantages}
 \begin{itemize}
-\item The consideration of input content characteristics for ROI-based encoding. This guarantees minimum quality for the background region.
+\item The consideration of input content characteristics for ROI-based encoding makes this approach work well for all types of contents
+\item This approach can guarantee minimum quality for the background region by having sufficient bits allocated to the non-ROI to avoid blockiness.
 \item The variable importance of ROI can be factored in easily by altering the bias factor (k) to vary the magnitude of bit movement from ROI to non-ROI.
 \end{itemize}
 
 \subsubsection*{Disadvantages}
 \begin{itemize}
-\item This requires changes to bit-allocation module and hence more complex to implement.
+\item This approach requires changes to the bit-allocation module and hence more complex to implement.
 \item The determination of relative complexity factor $(C_R)$ needs trained models to predict bit-consumption of ROI and non-ROI parts during normal encoding without using ROI information. This prediction model has bad accuracy for macroblocks encoded with inter prediction. 
 \end{itemize}
 %
