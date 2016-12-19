@@ -93,7 +93,7 @@ H.264/AVC is one the most commonly used video coding standard. Figure \ref{fig:H
 
 In this coding scheme, the input picture is represented in block-shaped units(16x16 pixels) of associated luma and chroma samples called macroblocks. The basic source-coding algorithm is a hybrid of inter-picture prediction to exploit temporal statistical redundancies and transform coding of the prediction residual to exploit spatial statistical dependencies. 
 
-The first frame in a video is encoded using intra prediction and transform coding. The transform coefficients are quantized to achieve high compression ratio. These frames can be decoded independently with any dependencies are called key/intra frames. These frames act as reference frames to encode subsequent frames.
+The first frame in a video is encoded using intra prediction and transform coding. The transform coefficients are quantized to achieve high compression ratio. These frames can be decoded independently without any dependencies are called key/intra frames. These frames act as reference frames to encode subsequent frames.
 
 Once a reference frame is available, motion compensation is used to remove the temporal redundancies present in video sequence. When the frame rate is sufficiently high, there is a great amount of similarity between neighboring frames. It is highly efficient to code the difference between such similar frames than the frames themselves. Motion estimation is used to predict the motion of macroblocks relative to the previous encoded frames. In most cases, it is not possible to find an exact match for the current macroblock. During motion compensation, the residual error is estimated for the prediction from motion estimation. This residual error is coded using transform coding. Such frames which are predicted from other reference are called inter frames. The inter frames which use only past frames as reference are called P-frames. In addition to past frames, future frames can also be used as reference. Such frames are called Bi-directional frames or B-frames. Both B-frames and P-frames can be used as reference frames for encoding subsequent frames. A detailed overview of individual steps involved in H.264 coding can be found in \cite{h.264-overview}. 
 
@@ -141,11 +141,25 @@ The concept of region of interest based encoding has been around for a while. Th
 \item Preprocessing - Example, blurring.
 \item Video encoding - Example, during the RDO, bitrate control.
 \end{itemize}
+
+\subsection{Preprocessing}
 The input video stream can be directly altered based on the ROI information. Many pre-processing approaches are also used to directly reduce unimportant information by applying a non-uniform distortion filter in a scene. For instance, the image is divided into foreground (ROI) and background (non-ROI) and the non-ROI parts are blurred to save bits during encoding \cite{ROI-background-blurring}. The work in \cite{pre-postprocessig-ROI-codec-independent} is an example for codec independent ROI encoding. It can work with any codec and arbitrary ROI detector. In this approach input video stream is modified only to contain relevant information. The non-ROI pixels are replaced such that these regions can be very efficiently compressed by the encoder. The non-ROI macroblocks are either replaced by corresponding blocks from the previous frame or black blocks. The non-ROI regions are reconstructed with post-processing assuming zero motion vector. This approach is used in scenarios where non-ROI regions are mostly discarded completely at the receiver end.
 
+\subsection{Video Encoding}
 In video encoding, multiple approaches exist to preferentially code ROI regions with higher quality at the cost of non-ROI regions. The ROI information can be directly used in rate-distortion optimization (RDO) during video encoding to alter the quality of ROI region. One such approach is presented in \cite{ROI-rate-control-H264} in which non-ROI macroblocks are encoded only using AMC-based modes (Active MB Concealment). The non-ROI macroblocks are encoded with only motion vector but no residual information. This creates a bias to choose larger distortion for non-ROI blocks to save bits during Lagrangian optimization.
 
-A more common way of ROI encoding is by altering the rate control module to allocate higher bits to ROI regions. The work in \cite{ROI-bit-allocation-h264} proposes a bit-allocation and rate control scheme for enhancing regional perceptual quality using SSIM as the quality metric for distortion-quantization modeling. Statistical analysis is adopted to obtain the relation between SSIM of reconstructed MBs and corresponding QP (from 20 to 51 in this paper) after standard video coding.
+ The resources available during encoding like computational power is preferentially allocated to ROI in \cite{ROI-resource-allocation}. The H.264 coding standard offers many methods to enhance its compression performance, such as variable block size ME, quarter-sample-accurate ME, and multiple reference frames ME \cite{h.264-overview}. The complexity of H.264encoder is significantly increased due to the employment of these new methods. The computation need for non-ROI is reduced significantly at the cost of compression efficiency by adaptively adjusting the coding parameters as follows,
+\begin{itemize}
+	\item Choose only a subset of macroblock partition and prediction modes offered by H.264 standard for non-ROI during rate-distortion optimization to find best mode.
+	\item The number of reference frames is reduced to use only immediate neighboring frames for non-ROI macroblocks. The ROI MBs are allowed to reference from multiple frames.
+	\item The accuracy of subpixel accurate Motion estimation is set to quarter-pixel for ROI and half-pixel for non-ROI MBs.
+	\item The motion estimation search range is is reduced significantly for non-ROI. 
+\end{itemize} 
+These modifications in coding parameter results in higher quality for ROI even when the available bit-budget is uniformly distributed across ROI and non-ROI parts. 
+
+A more common way of ROI encoding is by altering the rate control module to allocate higher bits to ROI macroblocks. In addition to preferential allocation of computation power to ROI, ROI-based rate control is proposed in \cite{ROI-resource-allocation}. The modifications to a rate control scheme for low-delay video communication of H.264 \cite{ROI-resource-allocation-rate-control} has been proposed to allocate more bits (smaller QP) to the macroblock more important to HVS. A linear R-Q model is proposed to optimize QP calculation to provide a ROI-based rate control at the MB level.
+
+The work in \cite{ROI-bit-allocation-h264} proposes a bit-allocation and rate control scheme for enhancing regional perceptual quality using SSIM as the quality metric for distortion-quantization modeling. Statistical analysis is adopted to obtain the relation between SSIM of reconstructed MBs and corresponding QP (from 20 to 51 in this paper) after standard video coding. A target SSIM is set for the ROI and corresponding QP is determined with the help of the SSIM-QP model. In the proposed algorithm, target bits for each basic unit is estimated and allocated based on the bit-budget of ROI or non-ROI parts. After that, QP for each BU is computed based on R-Q model. Then, rate-distortion optimization mode decision of the encoding flow is performed to obtain the best prediction macroblock. The QP for MBs in ROI used for final encoding is altered to achieve the target SSIM quality based on the SSIM-Q model.
 
 The ROI-based encoding specific to video conferencing is proposed in \cite{ROI-MV-based-face-tracking} for H.263. This work proposes an algorithm to track the face using motion-vector information. Once the ROI is detected, it proposes modification of bit-allocation for both CBR and VBR mode of rate control. The QP for these blocks is predicted from the rate modeling of ROI and non-ROI blocks. The work described in \cite{Perception-model-of-face} goes a step further in face detection based ROI encoding schemes by enhancing finer facial feature to improve the perceptual quality in high-resolution HEVC encoding. In this approach, different weights are assigned to the background, face, eyes, mouth and nose regions which are in-turn used to alter quality by ROI-based adaptive CTU (Coding Tree Unit) partition structure for HEVC.
 
@@ -354,7 +368,7 @@ It is evident that the structure of the original content is preserved in the PSN
 \subsubsection{Bitrate fluctuation - Delay plots} \label{sec: setup delay plots}
 The core idea in this work is to efficiently use the bits within the frame to encode the region of interest. The algorithms used to achieve that purpose should not alter the behavior of the codec in terms of frame level bit-consumption. As mentioned in previous sections, the encoder drops the frame in order to maintain strict VBV buffer compliance. The dropped frames result in jerky playback and hence should be avoided. The intelligent bit-allocation scheme should not contribute to more dropped frames.
 
-The measured delay of every frame in the sequence is plotted to analyze bit-consumption behavior. A plot the delay of each frame is used to verify this. Figure \ref{fig:PaulDefault250kbpsDelay} is the delay plot of the bitstream encoded with 250 kbps (illustrated in Figure \ref{fig:PaulDefaultencoded}). Every point in the plot specifies the time taken by the corresponding frame (marked on the x-axis) to reach the decoder assuming zero transmission delay. The curve appears mostly smooth except for sudden drops (zero values). These zero-valued points indicate dropped frames. Since these frames are not included in the final bitstream and hence not transmitted, the delay is indicated as zero. 
+The measured delay of every frame in the sequence is plotted to analyze bit-consumption behavior. A plot of delay of each frame is used to verify this. Figure \ref{fig:PaulDefault250kbpsDelay} is the delay plot of the bitstream encoded with 250 kbps (illustrated in Figure \ref{fig:PaulDefaultencoded}). Every point in the plot specifies the time taken by the corresponding frame (marked on the x-axis) to reach the decoder assuming zero transmission delay. The curve appears mostly smooth except for sudden drops (zero values). These zero-valued points indicate dropped frames. Since these frames are not included in the final bitstream and hence not transmitted, the delay is indicated as zero. 
 \begin{figure}[!h]
     \includegraphics[scale=0.25]{PaulDefault250kbpsDelay}
     \caption{Delay plot}
@@ -913,6 +927,14 @@ B. Wandell, \textit{"Foundations of Vision"}, 1995, Sinauer.
 Thomas Wiegand, Gary J. Sullivan and Ajay Luthra, \textit{"Overview of the H.264/AVC Video Coding Standard"}
 IEEE TRANSACTIONS ON CIRCUITS AND SYSTEMS FOR VIDEO TECHNOLOGY, VOL. 13, NO. 7, JULY 2003
 
+\bibitem{ROI-resource-allocation}
+Y. Liu, Z. G. Li, and Y. C. Soh, \textit{"Region-of-Interest Based Resource Allocation for Conversational Video Communication of H.264/AVC"},
+IEEE TRANSACTIONS ON CIRCUITS AND SYSTEMS FOR VIDEO TECHNOLOGY, VOL. 18, NO. 1, JANUARY 2008
+
+\bibitem{ROI-resource-allocation-rate-control}
+Y. Liu, Z. G. Li, and Y. C. Soh, \textit{“A novel rate control scheme for low
+delay video communication of H.264/AVC standard,”}
+IEEE Trans. Circuits Syst. Video Technol., vol. 17, no. 1, pp. 68–78, Jan. 2007
 \end{thebibliography}
 
 \subsection{Reaction Factor - Buffer control} 
