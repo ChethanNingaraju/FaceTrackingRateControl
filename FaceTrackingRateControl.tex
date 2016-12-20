@@ -132,6 +132,7 @@ The knowledge of region of interest in input video can be used for many other pu
 	The functionality of the bitrate control module can be illustrated with the help of the leaky-bucket model \cite{InTech-Rate-control-in-video-coding}. The output data rate of a video encoder varies depending on the input complexity of the video (motion in the frame). It also depends on the picture type of the encoded frame. A frame can be encoded with spatial prediction (Key/I-frames), single directional temporal prediction (P-frames) and Bi-directional temporal prediction (B-frames). The key/I-frames consume a lot of bits compared to inter pictures (P-frames and B-frames). In a video streaming scenario considering a constant bitrate channel, the throughput is maximum when data-rate is constant and equal to the available bandwidth. Therefore, the output data of the encoder is smoothened using a theoretical buffer called Video Buffer Verifier (VBV). The VBV is a virtual buffer modeled by the bitrate control module to ensure that the video stream can be correctly buffered and played back at the decoder end. This is equivalent to the leaky-bucket model as shown in Figure \ref{fig-Leaky-Bucket-Model} \cite{Leaky-bucket-NSI}, where the output of the encoder with a variable rate (bursty output) is stored in a buffer (leaky bucket) which is draining at a constant rate.  Any underflow or overflow of this buffer causes glitch in the video streaming. To ensure that there is no VBV overflow or underflow, encoder's quantization parameter is adapted on a macroblock level so that the maximum allowed bit-count for an encoded frame is not exceeded.
 
  A typical bitrate control allocates bits at every macroblock and adjusts the QP accordingly. In a simple approach one would try to distribute the bitrate evenly across all macroblocks within a frame. Since low-latency and load efficiency are of high importance it is not advisable to do multi-pass encoding for optimal bitrate allocation. Therefore, over-allocation in one macroblock has to be compensated by under-allocation (using a higher QP) for neighboring macroblocks, regardless of the image content. However, a more intelligent allocation strategy should take the image content into account. Thus parts of the image with higher importance (ROI) should be given a higher share of the overall bit-count resulting in higher visual quality. Thus, background regions would get a lower proportion of the bit-count.
+\clearpage
 
 %% Section to throw light on other works in same field
 \section{Related Work}
@@ -164,7 +165,7 @@ The work in \cite{ROI-bit-allocation-h264} proposes a bit-allocation and rate co
 The ROI-based encoding specific to video conferencing is proposed in \cite{ROI-MV-based-face-tracking} for H.263. This work proposes an algorithm to track the face using motion-vector information. Once the ROI is detected, it proposes modification of bit-allocation for both CBR and VBR mode of rate control. The QP for these blocks is predicted from the rate modeling of ROI and non-ROI blocks. The work described in \cite{Perception-model-of-face} goes a step further in face detection based ROI encoding schemes by enhancing finer facial feature to improve the perceptual quality in high-resolution HEVC encoding. In this approach, different weights are assigned to the background, face, eyes, mouth and nose regions which are in-turn used to alter quality by ROI-based adaptive CTU (Coding Tree Unit) partition structure for HEVC.
 
 Most of the previous work concerned with modification of rate control to achieve better quality in ROI macroblocks deals with altering bit-allocation module. This work proposes ways of achieving ROI encoding in rate control modules that do not have explicit bit-allocation at the macroblock level. The previous work mentioned above proposes effective methods to create the quality difference between ROI and non-ROI. They do not throw sufficient light on determining optimal quality difference to achieve best perceptual quality. A part of this work aims to come up with a guideline to determine optimal quality difference to achieve best perceptual quality.
-
+\clearpage
 %%section for detailed overview of bitrate control	
 \section{Overview of Bitrate Control Module} \label{sec:used-bitrate-control-overview}
 This section gives an overview of the low-delay bitrate control module used in this work. The need for extremely low end-to-end delay in video telephony puts additional constraints on video coding which results in compromise of video quality. During the low-delay video encoding, tools like bi-directional prediction (B-frames) are disabled. The usage of B-frames needs buffering of at least one frame. This adds on to the overall latency of the system which is highly undesirable in video conferencing. The tolerable delay in video encoding is a direct measure of the Video Buffer Verifier (VBV) buffer size. When the size of the VBV buffer is very low (due to low delay), there is less room to accommodate the variation in bitrate of the encoder. This implies that there can be minimum variation in the size of a frame irrespective of the content. Any wrong prediction of QP by the bitrate control module can have bad impact since there is no additional time available to re-encode the content with a corrected QP. 
@@ -274,7 +275,8 @@ The QP output by the rate control ($Q_m$) is clipped between valid range of QP i
 	QP_{max} = QP_{avg} + 5,
 \end{equation} 
 is set to make sure the high activity regions are not excessively penalized with higher quantization. Here, $QP_{avg}$ corresponds to the average QP of all the blocks in the previous encoded frame.
-
+\clearpage
+%%Explain how all the measurements are done
 \section{Study Setup}
 This section describes the setup used in this work. It describes the configuration of the encoder used to evaluate different algorithms. It also describes the metrics and aspects used to benchmark the proposed ROI-based bitrate control algorithm against the state of the art bitrate control algorithm.
 
@@ -375,6 +377,7 @@ The measured delay of every frame in the sequence is plotted to analyze bit-cons
     \label{fig:PaulDefault250kbpsDelay}
 \end{figure} 
 Ideally, an algorithm with intelligent bit allocation within a frame should not alter the shape of this graph. It is also desirable to not have any increase in the number of dropped frames. %Since, the algorithm is not expected to change overall behavior it is not expected to have reduction in number of dropped frames.
+\clearpage
 %
 %Face Detection
 %
@@ -399,15 +402,34 @@ In this approach, the face detection algorithms work directly on the pixel value
 Most available face detection algorithms work on the pixel domain. These algorithms provide good level of detection accuracy. The main drawback of this approach is that they are computationally intensive. As discussed earlier, the use case considered in this work has very less room for additional computations. Therefore, in this work ways of compressed domain face detection is explored to detect faces with less computational requirements. 
 Many works have been published
 TBD LATER
+\clearpage
 %
 %Different approaches
 %
 % 
 \section{ROI-based Intelligent Bitrate Control - Approaches}
-As discussed in the previous sections there are many ways in which ROI information can be used to improve the perceptual quality of the video. This section describes various approaches to modify the bitrate control module to enhance the quality of ROI macroblocks. These approaches are designed considering the bitrate control module presented in section \ref{sec:used-bitrate-control-overview}. However, the underlying principles of ROI-based encoding to create the optimal quality difference between ROI and non-ROI are applicable to generic bitrate control modules to produce equivalent results. The approaches presented here vary in terms of ease of implementation, complexity and output quality. This offers flexibility to choose the suitable approach according to specific needs.
+As discussed in the previous sections there are many ways in which ROI information can be used to improve the perceptual quality of the video. This section describes following two major approaches to modify the bitrate control module to enhance the quality of ROI macroblocks. 
+\begin{itemize}
+	\item ROI QP Offset
+	\item ROI Bit-Allocation
+\end{itemize}
+These approaches are designed considering the bitrate control module presented in section \ref{sec:used-bitrate-control-overview}. However, the underlying principles of ROI-based encoding to create an optimal quality difference between ROI and non-ROI are applicable to generic bitrate control modules. The princilples presented in this work can be used to modify other standard low-delay bitrate control algorithms to produce equivalent results. The different approaches presented here vary in terms of ease of implementation, complexity and output quality. This offers flexibility to choose a suitable approach according to the specific requirements. The following subsections describe each of the ROI-based bitrate control approaches.
 
-\subsection{QP offset}
-The simplest way of creating a bias in the quality between ROI and non-ROI is by using a QP offset for macroblocks belonging to the ROI. A negative QP offset is added to the QP allocated by the bitrate control module (\ref{Eq:mainQP}) for ROI macroblocks. The QP offset is used outside of the bitrate control module, hence this approach requires minimum or no modifications inside the bitrate control module. The rate control module obtains feedback from the encoder regarding bit-consumption at the macroblock level (Section \ref{sec:used-bitrate-control-overview}). This feedback is used by the bitrate control module to modify the rate control QP allocation according to the externally added QP offset. The bitrate control reacts to the usage of reduced QP for ROI macroblocks by increasing the QP of non-ROI blocks to compensate for the additional bits used by ROI macroblocks. The feedback from the encoder to bitrate control module will ensure that target bitrate is successfully achieved. The bit-allocation based on buffer level (section \ref{used-bit-allocation-overview}) will ensure that a constant delay is maintained even after using the QP offset. This approach offers the simplest way of implementing quality bias without breaking the core functionality of the bitrate control module.  
+\subsection{ROI QP Offsets}
+A simple way of creating a bias in the quality between ROI and non-ROI is by using a QP offset for the macroblocks belonging to the ROI. A negative QP offset ($dq_{roi}$)is added to the QP allocated by the bitrate control module ($Q_m$) for ROI macroblocks. The QP for a macroblock assigned by the bitrate control is modified before using it for the final encoding as shown below.
+$$Q_m^{roi} = Q_m - dq_{roi},$$
+$$Q_m^{nroi} = Q_m.$$
+Where, $Q_m^{roi}$ and $Q_m^{nroi}$ are the QP used for encoding a macroblock belonging to ROI and non-ROI parts respectively. The QP offset is used outside the bitrate control module, hence this approach requires minimum or no modifications inside the bitrate control module. 
+
+The effects on encoding of non-ROI macroblocks due to usage of external QP offset for ROI macroblocks are:
+\begin{itemize}
+	\item A lower QP for ROI results in ROI macroblocks consuming more bits.
+	\item The rate control module obtains feedback from the encoder regarding bit-consumption at the macroblock level (Section \ref{sec:used-bitrate-control-overview}). This feedback signals over-consumption of bits by ROI macroblocks resulting in a higher deviation factor ($D_m^{n'}$).
+	\item The bitrate control reacts to the usage of reduced QP for ROI macroblocks by increasing the QP of non-ROI blocks to compensate for the additional bits used by ROI macroblocks. 
+	\item This results in the frame level bit-consumption very similar to normal encoding without using any ROI-based QP offsets. Therefore, the effect of ROI-based QP offset is mostly neutralized within the frame.
+	\item Any error in bit consumption at the frame level is compensated in the subsequent frames.
+\end{itemize}
+The feedback from the encoder to bitrate control module will ensure that target bitrate is successfully achieved. The bit-allocation based on buffer level (section \ref{used-bit-allocation-overview}) will ensure that a constant delay is maintained even after using the QP offset. This approach offers the simplest way of implementing quality bias without breaking the core functionality of the bitrate control module.  
 
 \iffalse
 \begin{figure}[!h]
@@ -959,5 +981,6 @@ IEEE Trans. Circuits Syst. Video Technol., vol. 17, no. 1, pp. 68–78, Jan. 200
 The second approach of using the ROI information to enhance quality of ROI is by using different buffer controls inside the bitrate control module. The bitrate control module used in this study compensates for the overconsumption or underconsumption of bits in the past by adjusting the delta bits during bit allocation of the future frames. This corrected allocation happens at every macroblock level. For instance, if there is excessive consumption of bits in the past macro-blocks, the excess is subtracted from bit budget of certain number of future frames known as reaction factor. If the reaction factor is low, the excess or shortage of bits is shared by a large number of macro-blocks.
 
 The reaction factor is used to allocate additional bits to ROI by using different reaction factors for macro-blocks belonging to the ROI. For instance, in case of underconsumption in the past, the excess bits available for future macroblocks is forced to be used aggressively for macroblocks belonging to ROI. On the other hand whenever there is overconsumption in the past, the bits are reduced more aggressively for macroblocks belonging to non-ROI. The advantage of this approach over QP offset approach is that the bit-allocation is still controlled within the rate control module and its decisions are not overridden by external offsets. This guarantees better buffer compliance. The results shown in Figure \ref{fig:Default_BufferControlCompare} compares the output with modified reaction factor based on region of interest and original video. It can be noticed that PSNR of the face regions is very close to that of the background. The data in Table \ref{AllPSNR1} shows that PSNR of ROI region is actually higher than the overall frame PSNR. The delay plots in \ref{fig:DelayDefault_BufferControltCompare} shows there is no significant changes in the delay or bitrate consumption.
+
 
 \end{document}
