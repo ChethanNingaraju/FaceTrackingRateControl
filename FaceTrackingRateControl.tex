@@ -4,7 +4,7 @@
 % This is a simple template for a LaTeX document using the "article" class.
 % See "book", "report", "letter" for other types of document.
 
-\documentclass[11pt]{article} % use larger type; default would be 10pt
+\documentclass[12pt]{article} % use larger type; default would be 10pt
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 \usepackage{graphicx}
@@ -88,15 +88,22 @@ The goal of this work is to identify the salient region of a frame, which is the
 \end{figure}
 
 \subsection{Hybrid Video Coding}
-H.264/AVC is one the most commonly used video coding standard. Figure \ref{fig:Hybrid Video Coding} depicts the underlying principle of block-based hybrid video coding used in H.264 \cite{h.264-overview}. The encoding scheme aims to exploit spatial and temporal redundancies that exist in a video. 
+H.264/AVC is one of the most commonly used video coding standard. Figure \ref{fig:Hybrid Video Coding} depicts the underlying principle of block-based hybrid video coding used in H.264 \cite{h.264-overview}. The encoding scheme aims to exploit spatial and temporal redundancies that exist in a video. 
 
 
-In this coding scheme, the input picture is represented in block-shaped units(16x16 pixels) of associated luma and chroma samples called macroblocks. The basic source-coding algorithm is a hybrid of inter-picture prediction to exploit temporal statistical redundancies and transform coding of the prediction residual to exploit spatial statistical dependencies. 
+In this coding scheme, the input picture is represented in block-shaped units(16x16 pixels) of associated luma and chroma samples called macroblocks (MBs). The basic source-coding algorithm is a hybrid of inter-picture prediction to exploit temporal statistical redundancies and transform coding of the prediction residual to exploit spatial statistical dependencies. The two types of prediction used are:
+\begin{itemize}
+	\item Intra Prediction - There exists a high similarity among neighboring blocks in a video frame. In intra prediction, a block is predicted from its neighboring pixels of already coded and reconstructed blocks. H.264 offers nine intra prediction modes (one DC prediction mode and eight directional prediction modes) \cite{h.264-overview}.
+	\item Inter Prediction - When the frame rate is sufficiently high, there is a great amount of similarity between neighboring frames. It is highly efficient to code the difference between such similar frames than the frames themselves. In inter prediction, block-based motion estimation is used to predict the motion of macroblocks relative to the previous encoded frames.
+\end{itemize}
 
-The first frame in a video is encoded using intra prediction and transform coding. The transform coefficients are quantized to achieve high compression ratio. These frames can be decoded independently without any dependencies are called key/intra frames. These frames act as reference frames to encode subsequent frames.
+The first frame in a video is encoded using intra prediction and transform coding. The transform coefficients are quantized to achieve high compression ratio. These frames which can be decoded independently without any dependencies are called key/intra frames. These frames act as reference frames to encode subsequent frames.
 
-Once a reference frame is available, motion compensation is used to remove the temporal redundancies present in video sequence. When the frame rate is sufficiently high, there is a great amount of similarity between neighboring frames. It is highly efficient to code the difference between such similar frames than the frames themselves. Motion estimation is used to predict the motion of macroblocks relative to the previous encoded frames. In most cases, it is not possible to find an exact match for the current macroblock. During motion compensation, the residual error is estimated for the prediction from motion estimation. This residual error is coded using transform coding. Such frames which are predicted from other reference are called inter frames. The inter frames which use only past frames as reference are called P-frames. In addition to past frames, future frames can also be used as reference. Such frames are called Bi-directional frames or B-frames. Both B-frames and P-frames can be used as reference frames for encoding subsequent frames. A detailed overview of individual steps involved in H.264 coding can be found in \cite{h.264-overview}. 
+Once a reference frame is available, inter prediction can be used to remove the temporal redundancies. During motion estimation, it is usually not possible to find an exact match for the current macroblock. Therefore, the residual error is estimated for the prediction from motion estimation. This is called motion compensation. The residual error is coded using transform coding followed by quantization.
 
+These frames which are predicted from other reference are called inter frames. The inter frames which use only past frames as reference are called P-frames. In addition to past frames, future frames can also be used as reference. Such frames are called Bi-directional frames or B-frames. Both B-frames and P-frames can be used as reference frames for encoding subsequent frames.
+
+The quantization step used to quantize transform coefficients is specified using quantization parameter (QP). In H.264, QP range of 1 to 51 is allowed which is translated to quantization steps. A lower QP implies low quantization step resulting in high quality output with less compression. The compression ratio increases with increase in QP at the cost of decreased output quality. The output data rate of the encoder is controlled by computing suitable QP, this is the task of bitrate control module, this is described in later section. A detailed overview of individual steps involved in H.264 coding can be found in \cite{h.264-overview}. 
 
 \subsection{ROI-based Coding}
 
@@ -280,12 +287,64 @@ is set to make sure the high activity regions are not excessively penalized with
 \section{Study Setup}
 This section describes the setup used in this work. It describes the configuration of the encoder used to evaluate different algorithms. It also describes the metrics and aspects used to benchmark the proposed ROI-based bitrate control algorithm against the state of the art bitrate control algorithm.
 
-\subsection{Encoder Configuration} \label {sec:Encoder configuration}     
-This work uses Citrix h264 video codec for the study. The encoder is configured in low-delay mode suitable for video conferencing and other real-time applications. The bitrate control described in section \ref{sec:used-bitrate-control-overview} is used to control the output data-rate of the encoder. The encoder is configured to use IPPP mode with key/I-frame used only at the beginning of the sequence followed by only uni-directional P frames. Due to the low-delay requirements there is no provision to re-encode the frame in case of buffer overflow. The frames are dropped entirely in case of a buffer overflow to maintain a constant low-delay.
-
 \subsection{Test Input}
-This section describes the test video contents chosen for evaluating the alrogrithms used for ROI-based encoding. (TBD)
+This section describes the test video sequences chosen for evaluating the algorithms used for ROI-based encoding. A typical video conferencing scenario is considered in this work. The list of inputs and their characteristics are tabulated in Table \ref{Table:ContentNames}.
 
+%%Table describing the input characteristis of the video
+\begin{table} [h!]
+	\centering
+	\begin{tabular}{ |c|c|c|c| }
+		\hline
+		 Name & Resolution & Frame rate (Frames/sec) & Total Frames \\
+		\hline 
+		Paul640x480 & 640x480 & 30 & 1000 \\ 
+		Chet640x480 & 640x480 & 30 & 500 \\
+		Johny1280x720 & 1280x720 & 60 & 500 \\
+		\hline
+	\end{tabular}
+	\caption{Test Input Sequence and their properties}
+	\label{Table:ContentNames}
+\end{table}
+
+The three chosen test sequences have different spatial and temporal complexities. The contents are chosen to cover most of the typical video conferencing environments. Table \ref{Table:Input-Complexity} lists the relative spatial and temporal complexities across different content. The table also lists the relative area of face (ROI) within a frame throughout the given sequence. The relative ROI area ($A_{roi}$) is defined as,
+$$A_{roi} = \frac{M_{roi}}{M},$$
+where, $M_{roi}$ is the number of ROI macroblocks and M is the total number of macroblocks in a given frame. The area of face region in chet640x480 changes significantly within the sequence, other input sequence have almost constant $A_{roi}$ across all the frames.
+%%Table describing complexities of test input
+\begin{table} [h!]
+	\centering
+	\begin{tabular}{ |c|c|c|c| }
+		\hline
+		{} & \multicolumn{2}{c|}{\textbf{Relative Complexity}} & {} \\		
+		\textbf{Name} & \textbf{Spatial} & \textbf{Temporal} & $\mathbf{A_{roi}}$ \textbf{(approx)} \\
+		\hline 
+		Paul640x480 & Medium & Low & 0.05  \\
+		Chet640x480 & Medium & High & 0.04 - 0.4 \\
+		Johny1280x720 & Low & Low & 0.10 \\  
+		\hline						
+	\end{tabular}
+	\caption{The relative spatial and temporal complexity comparison for the chosen test sequences}
+	\label{Table:Input-Complexity}
+\end{table}
+
+\subsection{Encoder Configuration} \label {sec:Encoder configuration}     
+This work uses Citrix H.264 video codec for studying different ROI-based encoding approaches. The encoder is configured in low-delay mode suitable for video conferencing and other real-time applications. The bitrate control described in section \ref{sec:used-bitrate-control-overview} is used to control the output data-rate of the encoder. The encoder is configured to use IPPP mode with key/I-frame used only at the beginning of the sequence followed by only uni-directional P frames. Due to the low-delay requirements there is no provision to re-encode the frame in case of buffer overflow. The frames are dropped entirely in case of a buffer overflow to maintain a constant low-delay.
+
+The configuration for encoding each of the input test sequence listed in the above section is shown in Table \ref{Table:ConfigurationForEncoding}. The bitrates for different input sequence is configured considering the resolution and complexity of the content. The chosen bitrates are relatively low yielding low visual quality with conventional encoding. This makes it easy to assess the gain in perceptual quality with ROI-based encoding.
+
+\begin{table} [h!]
+	\centering
+	\begin{tabular}{ |c|c|c| }
+		\hline
+		Name & Bitrate (Kbps) & VBV Size (Bits) \\
+		\hline 
+		Paul640x480 & 250 & 12500 \\ 
+		Chet640x480 & 300 & 15000 \\
+		Johny1280x720 & 500 & 12500 \\
+		\hline
+	\end{tabular}
+	\caption{Test Input Sequence and their properties}
+	\label{Table:ConfigurationForEncoding}
+\end{table}
 \subsection{Measurements}
 One of the crucial aspects in this study is the metric used to evaluate various algorithms in order to choose the best approach. The goal of this study is to improve the quality of the ROI macroblocks at the cost of degrading the non-ROI macroblocks. Since the whole approach is to measure the gain in perceptual quality, using frame level PSNR alone as a metric could be misleading. 
 
@@ -582,7 +641,7 @@ As mentioned earlier, the ROI-based encoding approaches discussed in this work o
 	\centering
 	\begin{tabular}{ |c|c|c| }
 		\hline
-		 {} & \multicolumn{2}{c}{\textbf{Encoding Mode}} \\		
+		 {} & \multicolumn{2}{c|}{\textbf{Encoding Mode}} \\		
 		\textbf{ROI QP Offset} & \textbf{Swing Restriction = on} & \textbf{Swing Restriction = off} \\
 		\hline 
 		0 & 16 & 10  \\
