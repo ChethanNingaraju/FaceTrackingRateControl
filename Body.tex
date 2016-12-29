@@ -521,17 +521,12 @@ The curve in delay plots appear mostly smooth except for few sudden drops (zero 
 %	\label{fig:PaulDefault250kbpsDelay}
 %\end{figure} 
 
-
-
-%
 %Face Detection
-%
-\chapter{Face Detection}
-\thispagestyle{empty}% no page number in chapter title page
+\section{Face Detection}
+In video conferencing, face is the most important region in the video stream to the viewer. In this work, various approaches of improving perceptual quality by increasing quality of the face region are presented. The prerequisite for these ROI-based encoding approaches is precise co-ordinates of the face (ROI) in any given video frame. This section describes the setup used to detect face prior to encoding.
 
-Face detection algorithms are used to mark the region of interest in the current frame. All the algorithms considered for intelligent bit allocation involve improving the region of interest at the cost of rest of the frame. Therefore, it is very important to have high reliability with face detection. Any false detection will lead to degradation of the actual region of interest compared to normal encoding, this should be avoided in all scenarios. The damage caused by false detection is higher than the loss due to not detecting any face. Therefore, a high threshold must be used to declare any region of the frame as face.
-
-\begin{figure}[!h]
+Since every ROI-based encoding approach discussed in this work involves improving the region of interest at the cost of degrading the quality in rest of the frame, it is very important to have high reliability with face detection. Any false detection will lead to degradation of the actual region of interest compared to conventional encoding. The damage caused by a false detection is higher than the loss due to not detecting any face. Therefore, a high threshold must be used to declare any region of the frame as face.
+\begin{figure}[h!]
 	\centering
 	\includegraphics[scale=0.4]{PaulDefault120FaceRecognized}
 	\includegraphics[scale=0.4]{PaulDefault120FaceMap}
@@ -539,16 +534,44 @@ Face detection algorithms are used to mark the region of interest in the current
 	\label{fig:PaulDefault120FaceMap}
 \end{figure}
 
-The face detection module itself shall not be a part of the encoder, but the output from the face detection is a binary file with face regions marked is used as input by the encoder. In this work, the face detection module uses input YUV to the encoder and marks the region of interest at the macro block level. Each byte value in the output file of face detection module represents a macro-block scanned in raster scan order. A value of 0xff signifies macro-block being part of the face or region of interest and 0x00 represents a normal macro-block. Figure \ref{fig:PaulDefault120FaceMap} represents the face map generated for the frame shown in Figure \ref{fig:PaulDefault120}. The region in white is considered as region of interest, this information is used inside the bitrate control module of the encoder to perform intelligent bit allocation.
+The face detection module is independent of the encoder and ROI-encoding schemes discussed in this work. In this work, the face detection module uses input YUV to the encoder and marks the region of interest at the macro block level. Each byte value in the output file of face detection module represents a macro-block scanned in raster scan order. A value of 0xff signifies macro-block being part of the face or region of interest and 0x00 represents a normal macro-block. Figure \ref{fig:PaulDefault120FaceMap} shows the face map generated for the frame shown in Figure \ref{fig:PaulDefault120}. The region in white is considered as region of interest. This information is used inside the bitrate control module of the encoder for ROI-based encoding.
 
-Different approaches are used to detect the face region in the video. There is always a trade-off between accuracy of face detection algorithm and its complexity. The work presented here is mostly relevant to real time systems. Any added complexity due to additional module of face detection will cause significant delay which is totally unacceptable in such systems. Therefore, the algorithm chosen for face detection must be light weight and reasonably accurate in all lighting conditions. 
+\subsection{Viola Jones Face Detection}
+Many open-source solutions like OpenCV offers a ready to use solution that can be integrated with the codec library. In this work, openCV implementation of Viola-Jones face detection algorithm \cite{Viola01rapidobject} was used. It has large set of trained classifiers considering many types of faces and viewing angles. A standard frontal face haar-classifier was used to detect faces in all the sample video sequence.
 
-\section{Spatial Domain Face Detection}
-In this approach, the face detection algorithms work directly on the pixel values. This approach is simple in terms of implementation. Many open-source solutions like OpenCV offers a ready to use solution that can be integrated with the codec library. It has large set of trained classifiers considering many types of faces and viewing angles. However, this is a computation intensive approach and almost impractical to use in the final solution. 
-\section{Compressed domain Face Detection}
-Most available face detection algorithms work on the pixel domain. These algorithms provide good level of detection accuracy. The main drawback of this approach is that they are computationally intensive. As discussed earlier, the use case considered in this work has very less room for additional computations. Therefore, in this work ways of compressed domain face detection is explored to detect faces with less computational requirements. 
-Many works have been published
-TBD LATER
+%Most available face detection algorithms work on the pixel domain. These algorithms provide good level of detection accuracy. The main drawback of this approach is that they are computationally intensive. As discussed earlier, the use case considered in this work has very less room for additional computations. Therefore, in this work ways of compressed domain face detection is explored to detect faces with less computational requirements.
+
+%\subsection{Spatial Domain Face Detection}
+%In this approach, the face detection algorithms work directly on the pixel values. This approach is simple in terms of implementation. Many open-source solutions like OpenCV offers a ready to use solution that can be integrated with the codec library. It has large set of trained classifiers considering many types of faces and viewing angles. However, this is a computation intensive approach and almost impractical to use in the final solution. 
+%\subsection{Compressed domain Face Detection}
+%Most available face detection algorithms work on the pixel domain. These algorithms provide good level of detection accuracy. The main drawback of this approach is that they are computationally intensive. As discussed earlier, the use case considered in this work has very less room for additional computations. Therefore, in this work ways of compressed domain face detection is explored to detect faces with less computational requirements. 
+
+%
+%Face Detection
+%
+%\chapter{Face Detection}
+%\thispagestyle{empty}% no page number in chapter title page
+%
+%Face detection algorithms are used to mark the region of interest in the current frame. All the algorithms considered for intelligent bit allocation involve improving the region of interest at the cost of rest of the frame. Therefore, it is very important to have high reliability with face detection. Any false detection will lead to degradation of the actual region of interest compared to normal encoding, this should be avoided in all scenarios. The damage caused by false detection is higher than the loss due to not detecting any face. Therefore, a high threshold must be used to declare any region of the frame as face.
+%
+%\begin{figure}[!h]
+%	\centering
+%	\includegraphics[scale=0.4]{PaulDefault120FaceRecognized}
+%	\includegraphics[scale=0.4]{PaulDefault120FaceMap}
+%	\caption{Face Detection binary map}
+%	\label{fig:PaulDefault120FaceMap}
+%\end{figure}
+%
+%The face detection module itself shall not be a part of the encoder, but the output from the face detection is a binary file with face regions marked is used as input by the encoder. In this work, the face detection module uses input YUV to the encoder and marks the region of interest at the macro block level. Each byte value in the output file of face detection module represents a macro-block scanned in raster scan order. A value of 0xff signifies macro-block being part of the face or region of interest and 0x00 represents a normal macro-block. Figure \ref{fig:PaulDefault120FaceMap} represents the face map generated for the frame shown in Figure \ref{fig:PaulDefault120}. The region in white is considered as region of interest, this information is used inside the bitrate control module of the encoder to perform intelligent bit allocation.
+%
+%Different approaches are used to detect the face region in the video. There is always a trade-off between accuracy of face detection algorithm and its complexity. The work presented here is mostly relevant to real time systems. Any added complexity due to additional module of face detection will cause significant delay which is totally unacceptable in such systems. Therefore, the algorithm chosen for face detection must be light weight and reasonably accurate in all lighting conditions. 
+%
+%\section{Spatial Domain Face Detection}
+%In this approach, the face detection algorithms work directly on the pixel values. This approach is simple in terms of implementation. Many open-source solutions like OpenCV offers a ready to use solution that can be integrated with the codec library. It has large set of trained classifiers considering many types of faces and viewing angles. However, this is a computation intensive approach and almost impractical to use in the final solution. 
+%\section{Compressed domain Face Detection}
+%Most available face detection algorithms work on the pixel domain. These algorithms provide good level of detection accuracy. The main drawback of this approach is that they are computationally intensive. As discussed earlier, the use case considered in this work has very less room for additional computations. Therefore, in this work ways of compressed domain face detection is explored to detect faces with less computational requirements. 
+%Many works have been published
+%TBD LATER
 %
 %Different approaches
 %
@@ -885,48 +908,48 @@ dq_{nroi} = \frac{M_{roi} * dq_{roi}}{M - M_{roi}}
 where, $dq_{nroi}$ is a positive QP offset used for non-ROI blocks when negative QP offset of $dq_{roi}$ is used for ROI blocks (\ref{Eq:QP_offset}). 
 
 %%Results of Two-sided QP offset
-\begin{figure}
-	\centering
-	\begin{subfigure}[t]{0.49\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{QPOffset/Bi_direction/Paul250kbps_uni_QP_offset_Bi_4.png}
-		\caption{}
-		\label{fig:Bi-direction QP offset result image}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.49\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{QPOffset/Bi_direction/Paul250kbps_uni_QP_offset_Bi_4_psnr_abs.png}
-		\caption{}
-		\label{fig:Bi-direction QP offset result psnr}
-	\end{subfigure}
-	\begin{subfigure}[t]{\textwidth}
-		\centering
-		\includegraphics[width=0.49\textwidth]{QPOffset/Bi_direction/Paul250kbps_uni_QP_offset_Bi_4_quant.png}
-		\caption{}
-		\label{fig:Bi-direction QP offset result quant}
-	\end{subfigure}
-	\caption{The results of ROI-based encoding with Bi-direction QP offset.(a) Snapshot of encoded video, (b) absolute PSNR map (range 25dB - 50dB), (c) quantization map}
-	\label{fig:Bi-direction QP offset result}
-\end{figure}
+%\begin{figure}
+%	\centering
+%	\begin{subfigure}[t]{0.49\textwidth}
+%		\centering
+%		\includegraphics[width=\textwidth]{QPOffset/Bi_direction/Paul250kbps_uni_QP_offset_Bi_4.png}
+%		\caption{}
+%		\label{fig:Bi-direction QP offset result image}
+%	\end{subfigure}
+%	\begin{subfigure}[t]{0.49\textwidth}
+%		\centering
+%		\includegraphics[width=\textwidth]{QPOffset/Bi_direction/Paul250kbps_uni_QP_offset_Bi_4_psnr_abs.png}
+%		\caption{}
+%		\label{fig:Bi-direction QP offset result psnr}
+%	\end{subfigure}
+%	\begin{subfigure}[t]{\textwidth}
+%		\centering
+%		\includegraphics[width=0.49\textwidth]{QPOffset/Bi_direction/Paul250kbps_uni_QP_offset_Bi_4_quant.png}
+%		\caption{}
+%		\label{fig:Bi-direction QP offset result quant}
+%	\end{subfigure}
+%	\caption{The results of ROI-based encoding with Bi-direction QP offset.(a) Snapshot of encoded video, (b) absolute PSNR map (range 25dB - 50dB), (c) quantization map}
+%	\label{fig:Bi-direction QP offset result}
+%\end{figure}
 
 \subsection{Results}
-The results of improved QP offset based ROI encoding is shown in Figure \ref{fig:Bi-direction QP offset result}. The improvements include using of relative area based QP offset and Bi-direction QP offset discussed in the previous sections. The quantization map shown in Figure \ref{fig:Bi-direction QP offset result quant} has less increase in the non-ROI QP compared to approach without bi-direction QP offset shown in Figure \ref{fig:QP Offset Quant comparison 2}. This approach also works with any size of ROI since the QP offsets are scaled according to the relative area of the ROI.
+The results of improved QP offset based ROI encoding is shown in Figure \ref{fig:Bi-direction QP offset result}. The improvements include using of consideration of relative ROI area to compute QP offset and Bi-direction QP offset discussed in the previous sections. The quantization map shown in Figure \ref{fig:Bi-direction QP offset result quant} has more uniform increase in QP of non-ROI compared to the approach without bi-direction QP offset shown in Figure \ref{fig:QP Offset Quant comparison 2}. This approach also works with any size of ROI since the QP offsets are scaled according to the relative area of the ROI.
 
-This section analyses the advantages and disadvantages of ROI-based encoding using QP offsets. Since the QP offset is applied outside the bitrate control, there is less possibility of other factors like buffer fullness and global deviation ($D_m^{n'}$) overriding the QP offset. Such guaranteed QP offsets will ensure boost in the ROI quality at all circumstances. However, this approach has many side effects due to the forced QP offset. The main disadvantage of this approach is not considering the content to decide the QP offset. Any given input with a given ratio of the number of ROI blocks to the number of non-ROI blocks will have the same QP offsets irrespective of the content. The QP offset computation is empirical which might work for most of the contents. However, it is not guaranteed to give optimal results for all contents.
+This section analyses the advantages and disadvantages of ROI-based encoding using QP offsets. Since the QP offset is applied outside the bitrate control, there is less possibility of other factors like buffer fullness and global deviation ($D_m^{n'}$) overriding the QP offset. Such guaranteed QP offsets will ensure boost in the ROI quality at all circumstances. However, this approach has many side effects due to the forced QP offset. The main disadvantage of this approach is not considering the characteristics of the input video content to decide the QP offset. Any given input with a given ratio of the number of ROI blocks to non-ROI blocks will have the same QP offsets irrespective of the content. The QP offset computation is empirical which will work for most of the contents. However, it is not guaranteed to give optimal results for all contents.
 
 The advantages and disadvantages of this approach can be summarized as follows,
 \subsection*{Advantages}
 \begin{itemize}
 	\item Easy to implement with minimal changes required to the encoder.
-	\item QP offset is forced irrespective of buffer conditions, therefore guarantees quality difference between ROI and non-ROI.
+	\item QP offset is forced irrespective of the buffer conditions, therefore guarantees quality difference between ROI and non-ROI.
 \end{itemize}
 
 \subsection*{Disadvantages}
 \begin{itemize}
+	\item The QP offsets chosen does not take into account any of the input content characteristics. Same QP offset is used for all the contents for a given ROI to non-ROI ratio.	
 	\item Since buffer conditions are not considered at macroblock level, there is increased possibility of dropped frames.
 	%%	\item The reaction of the bitrate control to external offset is not uniform throughout the non-ROI macroblocks. The reaction is less before encoding the ROI and very high just after encoding the non-ROI. This causes non uniform quality within the non-ROI macroblocks. 
-	\item The QP offsets chosen does not take into account any of the input content characteristics. Same QP offset is used for all the contents for a given ROI to non-ROI ratio.
-	\item The deviation control mechanism described in section \ref{sec: Bitrate overview: Bitrate deviation} is not in sync with QP offsets. 
+	\item The deviation control mechanism described in section \ref{sec: Bitrate overview: Bitrate deviation} is not in sync with QP offsets. The deviation control mechanism will increase the QP even for ROI blocks when there is an increased deviation due to over-consumption of bits by ROI macroblocks.
 \end{itemize}
 
 The next section introduces an alternative approach for ROI-based encoding using region based bit-allocation. Some of the disadvantages of the QP offset approach are addressed in the new approach.
@@ -1150,115 +1173,373 @@ The oscillation of the frame average QP was avoided by keeping the update of two
 		\hline
 		Methodology & Content & PSNR Avg (dB) & PSNR ROI (dB) \\
 		\hline 
-		QP Offset & Paul640x480, 250kbps & 38.90 & 38.88 \\ 
-		& Johny1280x720 750kbps & 40.49 & 40.22 \\  
+		Conventional Encoding & Paul640x480, 250kbps & 39.15 & 37.72 \\ 
+		& Johnny1280x720 350kbps & 37.93 & 37.37 \\ 
+		& Chet640x480 250kbps & 31.35 & 32.91 \\ 
 		\hline
-		Reaction Factor & Paul640x480, 250kbps & 38.22 & 39.50 \\ 
-		& Johny1280x720 750kbps & 39.71 & 40.74 \\  
+		Improved QP Offset based  & Paul640x480, 250kbps & 38.29 & 40.10 \\ 
+		ROI encoding & Johnny1280x720 350kbps & 37.50 & 40.74 \\ 
+		&  Chet640x480 250kbps & 31.08 & 34.89 \\ 
 		\hline
-		ROI-based Bit-allocation & Paul640x480, 250kbps & 38.86 & 39.70 \\ 
-		& Johny1280x720 750kbps & - & - \\  
+		ROI-based Bit-allocation & Paul640x480, 250kbps & 38.22 & 40.95 \\ 
+		& Johnny1280x720 350kbps & 36.94 & 38.57 \\  
+		&  Chet640x480 250kbps & 30.55 & 36.17 \\
 		\hline 
 	\end{tabular}
 	\caption{PSNR Comparison for different approaches of ROI encoding}
 	\label{AllPSNR1}
 \end{table}
-%Conventional Encoding Images
+%% NewImages for comparison
+%All methods side-by-sde
 \begin{figure}[h!]
 	\centering
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{New_dec/BufferControl/Chet250kbpsBuffer.png}
+		\includegraphics[width=\textwidth]{New_dec/Default/Chet106_250kbpsDefault.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{New_dec/BufferControl/Paul250kbpsBuffer.png}
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/Chet106_250kbpsQpOffset.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.98\textwidth}
+	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{New_dec/BufferControl/Johnny350kbpsBuffer.png}
+		\includegraphics[width=\textwidth]{New_dec/BufferControl/Chet106_250kbpsBuffer.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+%For Chet over
+	\caption{Result of ROI-based bit allocation encoding for the encoding configuration discussed in section \ref{sec:Encoder configuration} (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+\label{fig:ConventionalEncodingFrames}
+\end{figure}
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[t]{0.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{New_dec/Default/PaulDefault250kbps.png}
+	\caption{}
+	\label{}
+\end{subfigure}
+\begin{subfigure}[t]{0.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{New_dec/Qp_offset/Paul250kbpsQpOffset.png}
+	\caption{}
+	\label{}
+\end{subfigure}
+\begin{subfigure}[t]{0.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{New_dec/BufferControl/Paul250kbpsBuffer.png}
+	\caption{}
+	\label{}
+\end{subfigure}
+	\caption{Result of ROI-based bit allocation encoding for the encoding configuration discussed in section \ref{sec:Encoder configuration} (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+\label{fig:ConventionalEncodingFrames}
+\end{figure}
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[t]{0.75\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{New_dec/Default/Johnny350kbpsDefault.png}
+	\caption{}
+	\label{}
+\end{subfigure}
+\begin{subfigure}[t]{0.75\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{New_dec/Qp_offset/johnny350kbpsQpOffset.png}
+	\caption{}
+	\label{}
+\end{subfigure}
+\begin{subfigure}[t]{0.75\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{New_dec/BufferControl/Johnny350kbpsBuffer.png}
+	\caption{}
+	\label{}
+\end{subfigure}
+	\caption{Result of ROI-based bit allocation encoding for the encoding configuration discussed in section \ref{sec:Encoder configuration} (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+	\label{fig:ConventionalEncodingFrames}
+\end{figure}
+%%Psnr Maps for the above
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Default/Chet106_250kbpsDefaultPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/Chet250kbpsQpOffsetPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/BufferControl/Chet250kbpsBufferPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	%For Chet over
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Default/PaulDefault250kbpsPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/Paul250kbpsQpOffsetPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/BufferControl/Paul250kbpsBufferPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Default/Johnny350kbpsDefaultPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/johnny350kbpsQpOffsetPsnrAbs.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferPsnrAbs.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
 	\caption{Result of ROI-based bit allocation encoding for the encoding configuration discussed in section \ref{sec:Encoder configuration} (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
 	\label{fig:ConventionalEncodingFrames}
 \end{figure}
-%Quant Maps
+%All methods side-by-side Quant Maps
 \begin{figure}[h!]
 	\centering
-	\begin{subfigure}[t]{0.49\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
-		\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Chet250kbpsBufferQuant.png}
+		\includegraphics[width=\textwidth]{New_dec/Default/Chet106_250kbpsDefaultQuant.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/Chet250kbpsQpOffsetQuant.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/BufferControl/Chet250kbpsBufferQuant.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	%For Chet over
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Default/PaulDefault250kbpsQuant.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/Paul250kbpsQpOffsetQuant.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/BufferControl/Paul250kbpsBufferQuant.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Paul250kbpsBufferQuant.png}
+		\includegraphics[width=\textwidth]{New_dec/Default/Johnny350kbpsDefaultQuant.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.98\textwidth}
+	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=0.5\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferQuant.png}
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/johnny350kbpsQpOffsetQuant.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\caption{Result of ROI-based bit allocation encoding (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferQuant.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\caption{Result of ROI-based bit allocation encoding for the encoding configuration discussed in section \ref{sec:Encoder configuration} (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
 	\label{fig:ConventionalEncodingFrames}
 \end{figure}
-%Psnr maos
+%%Delay Maps All
 \begin{figure}[h!]
 	\centering
-	\begin{subfigure}[t]{0.49\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
-		\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Chet250kbpsBufferPsnrAbs.png}
+		\includegraphics[width=\textwidth]{New_dec/Default/Chet250kbpsDefaultDelay.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.49\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
-		\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Paul250kbpsBufferPsnrAbs.png}
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/Chet250kbpsQpOffsetDelay.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.98\textwidth}
-		\centering
-		\includegraphics[width=0.5\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferPsnrAbs.png}
-		\caption{}
-		\label{}
-	\end{subfigure}
-	\caption{Result of ROI-based bit allocation encoding (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
-	\label{fig:ConventionalEncodingFrames}
-\end{figure}
-%Psnr maos
-\begin{figure}[h!]
-	\centering
-	\begin{subfigure}[t]{0.33\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{New_dec/BufferControl/Chet250kbpsBufferDelay.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.33\textwidth}
+	%For Chet over
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Default/PaulDefault250kbpsDelay.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/Paul250kbpsQpOffsetDelay.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{New_dec/BufferControl/Paul250kbpsBufferDelay.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.33\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Default/Johnny350kbpsDefaultDelay.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{New_dec/Qp_offset/johnny350kbpsQpOffsetDelay.png}
+		\caption{}
+		\label{}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferDelay.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\caption{Result of ROI-based bit allocation encoding (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+	\caption{Result of ROI-based bit allocation encoding for the encoding configuration discussed in section \ref{sec:Encoder configuration} (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
 	\label{fig:ConventionalEncodingFrames}
 \end{figure}
+%Conventional Encoding Images
+%	\begin{figure}[h!]
+%		\centering
+%		\begin{subfigure}[t]{0.49\textwidth}
+%			\centering
+%			\includegraphics[width=\textwidth]{New_dec/BufferControl/Chet250kbpsBuffer.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.49\textwidth}
+%			\centering
+%			\includegraphics[width=\textwidth]{New_dec/BufferControl/Paul250kbpsBuffer.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.98\textwidth}
+%			\centering
+%			\includegraphics[width=\textwidth]{New_dec/BufferControl/Johnny350kbpsBuffer.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\caption{Result of ROI-based bit allocation encoding for the encoding configuration discussed in section \ref{sec:Encoder configuration} (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+%		\label{fig:ConventionalEncodingFrames}
+%	\end{figure}
+%	%Quant Maps
+%	\begin{figure}[h!]
+%		\centering
+%		\begin{subfigure}[t]{0.49\textwidth}
+%			\centering
+%			\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Chet250kbpsBufferQuant.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.49\textwidth}
+%			\centering
+%			\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Paul250kbpsBufferQuant.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.98\textwidth}
+%			\centering
+%			\includegraphics[width=0.5\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferQuant.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\caption{Result of ROI-based bit allocation encoding (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+%		\label{fig:ConventionalEncodingFrames}
+%	\end{figure}
+%	%Psnr maos
+%	\begin{figure}[h!]
+%		\centering
+%		\begin{subfigure}[t]{0.49\textwidth}
+%			\centering
+%			\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Chet250kbpsBufferPsnrAbs.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.49\textwidth}
+%			\centering
+%			\includegraphics[width=0.6\textwidth]{New_dec/BufferControl/Paul250kbpsBufferPsnrAbs.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.98\textwidth}
+%			\centering
+%			\includegraphics[width=0.5\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferPsnrAbs.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\caption{Result of ROI-based bit allocation encoding (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+%		\label{fig:ConventionalEncodingFrames}
+%	\end{figure}
+%	%Psnr maos
+%	\begin{figure}[h!]
+%		\centering
+%		\begin{subfigure}[t]{0.33\textwidth}
+%			\centering
+%			\includegraphics[width=\textwidth]{New_dec/BufferControl/Chet250kbpsBufferDelay.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.33\textwidth}
+%			\centering
+%			\includegraphics[width=\textwidth]{New_dec/BufferControl/Paul250kbpsBufferDelay.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\begin{subfigure}[t]{0.33\textwidth}
+%			\centering
+%			\includegraphics[width=\textwidth]{New_dec/BufferControl/Johnny350kbpsBufferDelay.png}
+%			\caption{}
+%			\label{}
+%		\end{subfigure}
+%		\caption{Result of ROI-based bit allocation encoding (a)chet640x480, (b)Paul640x480 ,(c)Johnny1280x720.}
+%		\label{fig:ConventionalEncodingFrames}
+%	\end{figure}
 
 \subsection{Results}
 The bit-allocation based ROI encoding considers input content characteristics to perform the bit-allocation for ROI blocks. Therefore, this approach is applicable to generic contents and hence can be expected to be more robust across multiple contents. The results of this approach is shown in Figure 
