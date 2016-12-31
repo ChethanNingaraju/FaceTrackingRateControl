@@ -280,7 +280,7 @@ where, $M_{roi}$ is the number of ROI macroblocks and M is the total number of m
 	\centering
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{New_dec/Chet_425.png}
+		\includegraphics[width=\textwidth]{New_dec/Chet_106.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
@@ -322,7 +322,7 @@ The configuration for encoding each of the sample input sequence listed in the a
 	\centering
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{New_dec/Default/Chet250kbpsDefault.png}
+		\includegraphics[width=\textwidth]{New_dec/Default/Chet106_250kbpsDefault.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
@@ -375,13 +375,13 @@ The values in Table \ref{InitPSNR1} show the PSNR values for the conventional vi
 %Conventional Encoding results
 \begin{table} [h!]
 	\centering
-	\begin{tabular}{ |c|c|c| }
+	\begin{tabular}{ |c|c|c|c| }
 		\hline
-		Content & PSNR Avg (dB) & PSNR ROI (dB) \\
+		Content & PSNR Avg (dB) & PSNR ROI(dB) & PSNR non-ROI(dB) \\
 		\hline 
-		Paul640x480, 250kbps & 39.15 & 37.72 \\ 
-		Chet640x480, 250kbps & 30.80 & 32.59 \\
-		Johny1280x720 350kbps & 37.93 & 36.08 \\  
+		Paul640x480, 250kbps & 39.15 & 37.72 & 39.22\\ 
+		Chet640x480, 250kbps & 31.35 & 32.91 &  31.24\\
+		Johny1280x720 350kbps & 37.93 & 36.08 & 38.13\\  
 		\hline
 	\end{tabular}
 	\caption{PSNR values for conventional encoding}
@@ -419,7 +419,7 @@ In a QP scale map, the darker regions in a frame indicate higher quantization. E
 	\centering
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{New_dec/Default/Chet250kbpsDefaultQuant.png}
+		\includegraphics[width=\textwidth]{New_dec/Default/Chet106_250kbpsDefaultQuant.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
@@ -443,7 +443,7 @@ In a QP scale map, the darker regions in a frame indicate higher quantization. E
 	\centering
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{New_dec/Default/Chet250kbpsDefaultPsnrAbs.png}
+		\includegraphics[width=\textwidth]{New_dec/Default/Chet106_250kbpsDefaultPsnrAbs.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
@@ -721,13 +721,14 @@ Figure \ref{fig:DelayDefault_QPOffsetCompare} shows the delay plot described in 
 
 \begin{table} [h!]
 	\centering
-	\begin{tabular}{ |c|c|c|c| }
+	\begin{tabular}{ |c|c|c|c|c| }
 		\hline
-		QP Offset & Content & PSNR Avg (dB) & PSNR ROI (dB) \\
+		& & \multicolumn{3}{c|}{PSNR (dB)} \\\cline{3-5}
+		QP Offset & Content & Frame & ROI& non-ROI \\
 		\hline
-		-4 & Chet640x480, 250kbps & 31.22 & 34.27 \\   
-		-8 & Chet640x480, 250kbps & 30.87 & 35.51 \\   
-		-12 & Chet640x480, 250kbps & 30.39 & 36.54 \\  
+		-4 & Chet640x480, 250kbps & 31.22 & 34.27 & 31.04\\   
+		-8 & Chet640x480, 250kbps & 30.87 & 35.51 & 30.64\\   
+		-12 & Chet640x480, 250kbps & 30.39 & 36.54 & 30.13\\  
 		\hline 
 	\end{tabular}
 	\caption{PSNR Comparison for for QP offset based ROI encoding}
@@ -802,11 +803,11 @@ The snapshot of same sample input encoded  with QP offset of -8 shown in Figure 
 		\textbf{ROI QP Offset} & \textbf{Swing Restriction = on} & \textbf{Swing Restriction = off} \\
 		\hline 
 		0 & 16 & 12  \\
-		\hline
+
 		-4 & 19 & 12  \\
-		\hline
+
 		-8 & 31 & 12 \\ 
-		\hline
+
 		-12 & 45 & 14 \\ 
 		\hline						
 	\end{tabular}
@@ -1178,21 +1179,22 @@ The following steps summarize the approach to implement region-based bitrate con
 %\end{figure}
 \begin{table} [h!]
 	\centering
-	\begin{tabular}{ |c|c|c|c| }
+	\begin{tabular}{ |c|c|c|c|c| }
 		\hline
-		Methodology & Content & PSNR Avg (dB) & PSNR ROI (dB) \\
+		& & \multicolumn{3}{c|}{PSNR (dB)}\\ \cline{3-5}
+		Methodology & Content & Frame & ROI (dB) &non-ROI\\
 		\hline 
-		Conventional Encoding & Paul640x480, 250kbps & 39.15 & 37.72 \\ 
-		& Johnny1280x720 350kbps & 37.93 & 36.08 \\ 
-		& Chet640x480 250kbps & 31.35 & 32.91 \\ 
+		\multirow{3}{*}{\parbox{0.3\linewidth}{Conventional Encoding}} & Paul640x480, 250kbps & 39.15 & 37.72 & 39.22\\ 
+							  & Johnny1280x720 350kbps & 37.93 & 36.08 & 38.13\\ 
+							  & Chet640x480 250kbps & 31.35 & 32.91 & 31.24\\ 
 		\hline
-		Improved QP Offset based  & Paul640x480, 250kbps & 38.29 & 40.10 \\ 
-		ROI encoding & Johnny1280x720 350kbps & 37.50 & 37.37 \\ 
-		&  Chet640x480 250kbps & 31.08 & 34.89 \\ 
+		\multirow{3}{*}{\parbox{0.3\linewidth}{Improved QP Offset based ROI encoding}}  & Paul640x480, 250kbps & 38.29 & 40.10 & 38.24\\ 
+											   & Johnny1280x720 350kbps & 37.50 & 37.37 & 37.52\\ 
+											   &  Chet640x480 250kbps & 31.08 & 34.89 & 30.89\\ 
 		\hline
-		ROI-based Bit-allocation & Paul640x480, 250kbps & 38.22 & 40.95 \\ 
-		& Johnny1280x720 350kbps & 36.94 & 38.57 \\  
-		&  Chet640x480 250kbps & 30.55 & 36.17 \\
+		\multirow{3}{*}{\parbox{0.3\linewidth}{ROI-based Bit-allocation}} & Paul640x480, 250kbps & 38.22 & 40.95 & 38.15\\ 
+								 & Johnny1280x720 350kbps & 36.94 & 38.57& 36.85\\  
+								 &  Chet640x480 250kbps & 30.55 & 36.17& 30.30\\
 		\hline 
 	\end{tabular}
 	\caption{PSNR Comparison for different approaches of ROI encoding}
