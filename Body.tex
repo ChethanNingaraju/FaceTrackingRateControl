@@ -1,6 +1,6 @@
 \chapter{Background} \label{chapter:Background}
 \thispagestyle{empty}% no page number in chapter title page
-A brief overview of principles of hybrid video coding used in H.264 is presented in this chapter. The ROI-based encoding approaches discussed in this work are implemented in the form of intelligent bitrate control schemes. Therefore, an overview of the bitrate control module is presented to provide the reader with an understanding of the functionality of bitrate control in a video encoder. Finally, the concept of Region-of-Interest based encoding is introduced.
+A brief overview of principles of hybrid video coding used in H.264 is presented in this chapter. The ROI-based encoding approaches discussed in this work are implemented in the form of intelligent bitrate control schemes. Therefore, an overview of the bitrate control module is presented to provide the reader with an understanding of the functionality of bitrate control in a video encoder. Finally, the concept of ROI based encoding is introduced.
 
 \section{Hybrid Video Coding}
 H.264/AVC is one of the most commonly used video coding standard. Figure \ref{fig:Hybrid Video Coding} depicts the underlying principle of block-based hybrid video coding used in H.264 \cite{h.264-overview}. The encoding scheme aims to exploit the spatial and temporal redundancies that exist in a video. 
@@ -9,21 +9,21 @@ H.264/AVC is one of the most commonly used video coding standard. Figure \ref{fi
 In this coding scheme, the input picture is represented in block-shaped units(16x16 pixels) of associated luma and chroma samples called macroblocks (MBs). The basic source-coding algorithm is a hybrid of inter-picture prediction to exploit temporal statistical redundancies and transform coding of the prediction residual to exploit spatial statistical dependencies. The two types of prediction used are:
 \begin{description}
 	\item[Intra Prediction:] There exists a high similarity among the neighboring blocks in a video frame. In intra prediction, a block is predicted from its neighboring pixels of already coded and reconstructed blocks. H.264 offers nine intra prediction modes (one DC prediction mode and eight directional prediction modes) \cite{h.264-overview}.
-	\item[Inter Prediction:] When the frame rate is sufficiently high, there is a great amount of similarity between neighboring frames. It is highly efficient to code the difference between such similar frames than the frames themselves. In inter prediction, block-based motion estimation is used to predict the motion of macroblocks relative to the previous encoded frames.
+	\item[Inter Prediction:] When the frame rate is sufficiently high, there is a great amount of similarity between neighboring frames. It is highly efficient to code the difference between such similar frames than the frames themselves. In inter prediction, block-based motion estimation (ME) is used to predict the motion of macroblocks relative to the previous encoded frames.
 \end{description}
 
-The first frame in a video is encoded using intra prediction and transform coding. The transform coefficients are quantized to achieve high compression ratio. These frames which are encoded without any dependencies on the neighboring frames are called key/intra frames. These frames act as reference frames to encode subsequent frames.
+The first frame in a video is encoded using intra prediction and transform coding. The transform coefficients are quantized to achieve high compression ratio. The frames which are encoded without any dependencies on the neighboring frames are called key/intra frames, and act as reference frames to encode subsequent frames.
 
 Once a reference frame is available, inter prediction can be used to remove the temporal redundancies. During motion estimation, it is usually not possible to find an exact match for the current macroblock. Therefore, the residual error is estimated for the prediction from motion estimation. This is called motion compensation. The residual error is coded using transform coding followed by quantization to achieve higher compression ratio. Due to quantization, it is not possible to recover the exact transform coefficients at decoder end without any loss of information. This introduces distortion in the decoded frame.
 
 These frames which are predicted from other reference frames are called inter frames. The inter frames which use only past frames as reference are called P-frames. In addition to past frames, future frames can also be used as reference. Such frames are called Bi-directional frames or B-frames. Both B-frames and P-frames can be used as reference frames for encoding subsequent frames.
 
-The quantization step used to quantize transform coefficients is specified using quantization parameter (QP). In H.264, QP range of 1 to 51 is allowed which is translated to quantization steps. The magnitude of distortion introduced by quantization depends on the quantization parameter. A lower QP implies low quantization step resulting in high quality output with less compression. The compression ratio increases with increase in QP at the cost of decreased output quality. The output data rate of the encoder is controlled by computing suitable QP, this is the task of bitrate control module, this is described in the following section. A detailed overview of individual steps involved in H.264 coding can be found in \cite{h.264-overview}. 
+The quantization step used to quantize transform coefficients is specified using quantization parameter (QP). In H.264, QP range of 1 to 51 is allowed which is translated to quantization steps. The magnitude of distortion introduced by quantization depends on the quantization parameter. A lower QP implies low quantization step resulting in high quality output with less compression. The compression ratio increases with increase in QP at the cost of decreased output quality. The output data rate of the encoder is controlled by computing suitable QP, this is the task of bitrate control module as described in the following section. A detailed overview of individual steps involved in H.264 coding can be found in \cite{h.264-overview}. 
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[scale=0.5]{general/Hybrid_video_coding.png}
-	\caption{Block-based hybrid video coding}
+	\caption{Block-based hybrid video coding\cite{h.264-overview}}
 	\label{fig:Hybrid Video Coding}
 \end{figure}
 
@@ -39,16 +39,16 @@ The bitrate control module is responsible for controlling the bit-consumption of
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{general/Leaky_bucket}
-	\caption{Leaky Bucket Model}
+	\caption{Leaky Bucket Model\cite{Leaky-bucket-NSI}}
 	\label{fig-Leaky-Bucket-Model}
 \end{figure} 	
-Figure \ref{fig:Bitrate Control Module Functionality} illustrates the functionality of the bitrate control module. The main purpose of bitrate control module is to ensure smooth playback of the encoded video under given bandwidth and delay constraints. It estimates the video bitrate based on the available network bandwidth, ensures that the coded bitstream can be transmitted within the specified delay and makes full use of the limited bandwidth \cite{InTech-Rate-control-in-video-coding}. It achieves this by controlling the quantization parameter (QP) used during the encoding. The quantization parameter is computed considering the input bitrate, framerate, input complexity (spatial and temporal activity) and acceptable delay of the system. The module also receives regular  feedback from the encoder to make better QP adaptation.  The feedback from the encoder gives information about the complexity of the input video and helps the bitrate control to compute optimum QP for a given bit-budget.
+Figure \ref{fig:Bitrate Control Module Functionality} illustrates the functionality of the bitrate control module. The main purpose of bitrate control module is to ensure smooth playback of the encoded video under given bandwidth and delay constraints. It estimates the video bitrate based on the available network bandwidth, ensures that the coded bitstream can be transmitted within the specified delay and makes full use of the limited bandwidth \cite{InTech-Rate-control-in-video-coding}. It achieves this by controlling the QP used during the encoding. The QP is computed considering the input bitrate, framerate, input complexity (spatial and temporal activity) and acceptable delay of the system. The module also receives regular  feedback from the encoder to make better QP adaptation.  The feedback from the encoder gives information about the complexity of the input video and helps the bitrate control to compute optimum QP for a given bit-budget.
 
 The functionality of the bitrate control module can be illustrated with the help of the leaky-bucket model \cite{InTech-Rate-control-in-video-coding}. The output data rate of a video encoder varies depending on the input complexity of the video (motion in the frame). It also depends on the picture type of the encoded frame. The key/I-frames consume a lot of bits compared to inter pictures (P-frames and B-frames). In a video streaming scenario considering a constant bitrate channel, the throughput is maximum when data-rate is constant and equal to the available bandwidth. Therefore, the output data of the encoder is smoothened using a theoretical buffer called Video Buffer Verifier (VBV). The VBV is a virtual buffer modeled by the bitrate control module to ensure that the video stream can be correctly buffered and played back at the decoder end. This is equivalent to the leaky-bucket model as shown in Figure \ref{fig-Leaky-Bucket-Model} \cite{Leaky-bucket-NSI}, where the output of the encoder with a variable rate (bursty output) is stored in a buffer (leaky bucket) which is draining at a constant rate.  Any underflow or overflow of this buffer causes glitch in the video streaming. To ensure that there is no VBV overflow or underflow, encoder's quantization parameter is adapted on a macroblock level so that the maximum allowed bit-count for an encoded frame is not exceeded. A detailed description of the low-delay bitrate control module used in this work is given in chapter \ref{chapter:used-bitrate-control-overview}.
 
 \section{ROI-based Coding}
 
-In conventional video coding, all regions of a frame are considered equally important to the viewer. It is assumed that all regions contribute equally to the perceptual quality. However, the study of Human Visual System (HVS) shows that human eyes can only focus on one area in a frame at any given point in time which is called region of interest. For example, it has been found out in \cite{human-vision-proof-NSI} that humans normally perceive clearly a small region of 2\degree-5\degree of the visual angle. This corresponds to a very small region in a video frame.
+In conventional video coding, all regions of a frame are considered equally important to the viewer. It is assumed that all regions contribute equally to the perceptual quality. However, the study of Human Visual System (HVS) shows that human eyes can only focus on one area in a frame at any given time which is called region of interest. For example, it has been found out in \cite{human-vision-proof-NSI} that humans normally perceive clearly a small region of 2\degree-5\degree of the visual angle. This corresponds to a very small region in a video frame.
 
 In video coding, the compression gain from spatial and temporal prediction is reaching saturation level. Further compression from these techniques demand exponential growth in computational capabilities. The next generation video coding standards like HEVC/H.265 claims to offer two fold increase in compression ratio over H.264. This increase in compression comes with multi-fold increase in computation complexity during encoding. Therefore, perceptual coding can provide an alternative solution towards lower bitrate video coding. The technique of encoding regions with higher importance to perceptual quality at a higher quality at the cost of degradation of quality in non-ROI parts is called ROI-based coding. The loss of quality in non-ROI is not perceived by the viewer leading to increased perceptual quality at the same bitrate.
 
@@ -56,7 +56,7 @@ In video coding, the compression gain from spatial and temporal prediction is re
 
 The ROI-based coding is not a common practice in video coding because it is very hard to automatically detect important regions in generic contents that contribute the most to the perceptual quality. There are many ways of detecting region of interest, most of which are application specific. The most common approach is usage of difference image based moving object detector. In these systems any moving object is considered as ROI. A typical use-case for such a system is video surveillance. In addition to difference image based motion detection, global motion estimation is used in ROI detection \cite{ROI-aerial-surveillance} in applications like aerial surveillance.
 
-In generic video content, region of interest changes constantly depending on the context. For instance, in a movie, the ROI can depend on context of the scene. Developing generic techniques for detection of ROI in such videos is very difficult. There have been attempts to use eye tracker to record the foveation points of a human observer on the receiver which was used to apply foveation filter in video coding of the sender. An advancement over such approach is proposed in \cite{foveated-rate-control} which optimizes rate control to maximize foveal visual quality metric. These generic ROI detectors are very hard to implement due to uncommon availability of eye tracking mechanism at the receiver. 
+In generic video content, ROI changes constantly depending on the context. For instance, in a movie, the ROI can depend on context of the scene. Developing generic techniques for detection of ROI in such videos is very difficult. There have been attempts to use eye tracker to record the foveation points of a human observer on the receiver which was used to apply foveation filter in video coding of the sender. An advancement over such approach is proposed in \cite{foveated-rate-control} which optimizes rate control to maximize foveal visual quality metric. These generic ROI detectors are very hard to implement due to uncommon availability of eye tracking mechanism at the receiver. 
 
 The region of interest in the video conferencing scenario is going to be the face region predominantly. Due to recent improvements in face detection algorithms it is possible to detect the face with good accuracy. The study in \cite{HighQualityROICodingForVideoConferencing} shows that boosting quality of the face regions can improve the overall perceived quality of the video. This work aims to study possible ways of improving perceptual quality of the video by detecting face region and coding it with higher quality than rest of the frame.
 
@@ -68,24 +68,24 @@ The knowledge of region of interest in input video can be used for many other pu
 %% Section to throw light on other works in same field
 \chapter{Related Work} \label{chapter:Literature_survey}
 \thispagestyle{empty}% no page number in chapter title page
-The concept of region of interest based encoding has been around for a while. In this chapter, some of the papers which are relevant to this thesis work are reviewed. The different approaches of using ROI information to improve perceptual quality can be broadly classified into following categories based on which stage of processing the ROI information is used.
+The concept of region of interest based encoding has been around for a while. In this chapter, some of state-of-the-art techniques are discussed. The different approaches of using ROI information to improve perceptual quality can be broadly classified into following categories based on the stage of processing using ROI information.
 \begin{itemize}  
 	\item Preprocessing - Example: blurring.
-	\item Video Coding - Example: during the RDO, bitrate control.
+	\item Video Coding - Example: during the rate-distortion optimization (RDO), bitrate control.
 \end{itemize}
 The relevant techniques proposed under these categories are discussed in the following sections.
 \section{Preprocessing} \label{sec:Literature_survey_Preprocessing}
 The input video stream can be directly altered based on the ROI information. Many pre-processing approaches are also used to directly reduce unimportant information by applying a non-uniform distortion filter in a scene. For instance, the image is divided into foreground (ROI) and background (non-ROI) and the non-ROI parts are blurred to save bits during encoding \cite{ROI-background-blurring}. The work in \cite{pre-postprocessig-ROI-codec-independent} is an example for codec independent ROI encoding. It can work with any codec and arbitrary ROI detector. In this approach, input video stream is modified only to contain relevant information. The non-ROI pixels are replaced such that these regions can be very efficiently compressed by the encoder. The non-ROI macroblocks are either replaced by corresponding blocks from the previous frame or black blocks. The non-ROI regions are reconstructed with post-processing assuming a zero motion vector. This approach is used in scenarios where non-ROI regions are mostly discarded completely at the receiver end.
 
 \section{Video Coding}
-In video encoding, multiple approaches exist to preferentially code ROI macroblocks with a higher quality at the cost of degrading non-ROI parts. The ROI information can be directly used in rate-distortion optimization (RDO) during video encoding to alter the quality of ROI. One such approach is presented in \cite{ROI-rate-control-H264} in which non-ROI macroblocks are encoded using only AMC-based modes (Active MB Concealment). The non-ROI macroblocks are encoded with only motion vector but no residual information. This creates a bias to choose larger distortion for non-ROI blocks to save bits during Lagrangian optimization. The bits saved during encoding of non-ROI macroblocks is used to encode ROI blocks with a higher quality
+In video encoding, multiple approaches exist to preferentially code ROI macroblocks with a higher quality at the cost of degrading non-ROI parts. The ROI information can be directly used in RDO during video encoding to alter the quality of ROI. One such approach is presented in \cite{ROI-rate-control-H264} in which non-ROI macroblocks are encoded using only AMC-based modes (Active MB Concealment). The non-ROI macroblocks are encoded with only motion vector but no residual information. This creates a bias to choose larger distortion for non-ROI blocks to save bits during Lagrangian optimization. The bits saved during encoding of non-ROI macroblocks is used to encode ROI blocks with a higher quality
 
 The resources available during encoding like computational power is preferentially allocated to ROI in \cite{ROI-resource-allocation}. The H.264 coding standard offers many methods to enhance its compression performance such as variable block size ME, quarter-sample-accurate ME, and multiple reference frames ME \cite{h.264-overview}. The complexity of H.264 encoder is significantly increased due to employment of these new methods. The computation need for non-ROI is reduced significantly at the cost of compression efficiency by adaptively adjusting the coding parameters as follows,
 \begin{itemize}
 	\item Choose only a subset of macroblock partition and prediction modes offered by H.264 standard for non-ROI during rate-distortion optimization to find the best mode. This is similar to usage of only AMC-based prediction modes for non-ROI proposed in \cite{ROI-rate-control-H264}.
 	\item The number of reference frames is reduced to use only immediate neighboring frames for non-ROI macroblocks. The ROI MBs are allowed to reference from multiple frames.
-	\item The accuracy of subpixel accurate Motion estimation is set to quarter-pixel for ROI and half-pixel for non-ROI MBs.
-	\item The motion estimation search range is reduced significantly for non-ROI. 
+	\item The accuracy of subpixel accurate ME is set to quarter-pixel for ROI and half-pixel for non-ROI MBs.
+	\item The ME search range is reduced significantly for non-ROI. 
 \end{itemize} 
 These modifications in coding parameters result in a higher quality for ROI even when the available bit-budget is uniformly distributed across ROI and non-ROI parts. 
 
@@ -159,7 +159,7 @@ Therefore, the amount of allocated bits for the current frame $(B_{alloc})$ is g
 \label{Eq:bit-allocation}
 B_{alloc} = L_{bits} - d_0^n .
 \end{equation}
-In practice, rate control QP predictions are not very accurate to exactly consume the bits that were allocated to the frame ($B_{alloc}$). If a frame consumes more bits than $B_{alloc}$, it violates the delay conditions. The encoded frame will be unable to reach the decoder in time with the available bitrate. Hence, the frame is not added to the bitstream. These frames which are encoded but not part of the output of the encoder are called \textit{dropped frames}. Such dropped frames must be avoided since they cause jerky playback. A small room for inaccuracy of the QP prediction is considered at the end of the bit-allocation stage to avoid dropped frames. In practice, the amount of target bits used for QP prediction is slightly smaller than $B_{alloc}$ to avoid dropped frames in case of marginal over-consumption of bits.
+In practice, rate control QP predictions are not very accurate to exactly consume the bits that were allocated to the frame ($B_{alloc}$). If a frame consumes more bits than $B_{alloc}$, it violates the delay conditions. The encoded frame will be unable to reach the decoder in time with the available bitrate. Hence, the frame is not added to the bitstream. The frames which are encoded but are not part of the output of the encoder are called \textit{dropped frames}. Such dropped frames must be avoided since they cause jerky playback. A small room for inaccuracy of the QP prediction is considered at the end of the bit-allocation stage to avoid dropped frames. In practice, the amount of target bits used for QP prediction is slightly smaller than $B_{alloc}$ to avoid dropped frames in case of marginal over-consumption of bits.
 
 %%In code, the upper limit of buffer is some fraction of the VBV buffer, check it if this needs to be included
 \section{QP Prediction}  \label{used QP prediction overview}
@@ -218,7 +218,7 @@ The factor $r$, is called the reaction factor. This factor indicates the number 
 
 %%Explain how bitrate is met
 The working of bitrate control can be understood by analyzing the deviation factor $D_m^{n'}$ in (\ref{Eq:mainQP}). At the beginning of the frame (m = 0), $$D_m^{n'} = d_0^{n'}.$$ 
-The allocated QP($Q_m$) solely depends on $d_0^{n'}$ if the deviation in macroblock level bit-consumption and activity based delta QP(dq) are ignored. The init value of $d_0^{n'}$ is chosen heuristically at the start of encoding based on the most commonly used configuration. Therefore, the QP calculated for the first frame is not content dependent. Once the first frame is encoded, the bit-consumption usually differs from allocated bits by a large extent. For instance, if the content was more complex than average, the initial QP allocation will result in large bit consumption, increasing the value of frame level bit deviation ($d_0^{n'}$) which results in large global deviation ($D_m^{n'}$). This will result in larger QP value for next frame to be encoded according to (\ref{Eq:mainQP}). Therefore, the value of $d_0^{n'}$ oscillates for the first few frames. In steady state it takes optimum value to keep the deviation low eventually helping in achieving the target bitrate. The frame level bit-deviation $d_0^{n'}$ is clipped between pre-computed maximum and minimum value to limit the QP to a suitable range.
+The allocated QP($Q_m$) solely depends on $d_0^{n'}$ if the deviation in macroblock level bit-consumption and activity based delta QP(dq) are ignored. The initial value of $d_0^{n'}$ is chosen heuristically at the start of encoding based on the most commonly used configuration. Therefore, the QP calculated for the first frame is not content dependent. Once the first frame is encoded, the bit-consumption usually differs from allocated bits by a large extent. For instance, if the content was more complex than average, the initial QP allocation will result in large bit consumption, increasing the value of frame level bit deviation ($d_0^{n'}$) which results in large global deviation ($D_m^{n'}$). This will result in larger QP value for next frame to be encoded according to (\ref{Eq:mainQP}). Therefore, the value of $d_0^{n'}$ oscillates for the first few frames. In steady state it takes optimum value to keep the deviation low eventually helping in achieving the target bitrate. The frame level bit-deviation $d_0^{n'}$ is clipped between pre-computed maximum and minimum value to limit the QP to a suitable range.
 \begin{equation}
 \label{Eq:DevClip}
 d_0^{n'} = clip(1000, \frac{40 * r}{31})
@@ -264,7 +264,7 @@ where, $M_{roi}$ is the number of ROI macroblocks and M is the total number of m
 	\centering
 	\begin{tabular}{ |c|c|c|c| }
 		\hline
-		{} & \multicolumn{2}{c|}{\textbf{Relative Complexity}} & {} \\		
+		{} & \multicolumn{2}{c|}{\textbf{Relative Complexity}} & {} \\\cline{2-3}		
 		\textbf{Name} & \textbf{Spatial} & \textbf{Temporal} & $\mathbf{A_{roi}}$ \textbf{(approx)} \\
 		\hline 
 		Paul640x480 & Medium & Low & 0.05  \\
@@ -288,7 +288,7 @@ where, $M_{roi}$ is the number of ROI macroblocks and M is the total number of m
 		\centering
 		\includegraphics[width=\textwidth]{New_dec/Paul_119.png}
 		\caption{}
-		\label{}
+		\label{fig:PaulDefault120}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.98\textwidth}
 		\centering
@@ -316,7 +316,7 @@ This work uses Citrix H.264 video codec for studying different ROI-based encodin
 	\caption{Encoder configuration}
 	\label{Table:ConfigurationForEncoding}
 \end{table}
-The configuration for encoding each of the sample input sequence listed in the above section is shown in Table \ref{Table:ConfigurationForEncoding}. The bitrates for different input sequence is configured considering the resolution and the complexity of the content. The chosen bitrates are relatively low yielding low visual quality with conventional encoding. This makes it easy to assess the gain in perceptual quality with ROI-based encoding. Figure \ref{fig:ConventionalEncodingFrames} shows the results of conventional encoding for the configuration shown in Table  \ref{Table:ConfigurationForEncoding}. Due to usage of low bitrate, blocky artifacts can be noticed in the face regions.
+The configuration used for encoding each of the sample input sequence listed in the above section is shown in Table \ref{Table:ConfigurationForEncoding}. The bitrates for different input sequence is configured considering the resolution and the complexity of the content. The chosen bitrates are relatively low yielding low visual quality with conventional encoding. This makes it easy to assess the gain in perceptual quality with ROI-based encoding. Figure \ref{fig:ConventionalEncodingFrames} shows the results of conventional encoding for the configuration shown in Table  \ref{Table:ConfigurationForEncoding}. Due to usage of low bitrate, blocky artifacts can be noticed in the face regions.
 %Conventional Encoding Images
 \begin{figure}[!h]
 	\centering
@@ -522,10 +522,15 @@ The curve in delay plots appear mostly smooth except for few sudden drops (zero 
 %\end{figure} 
 
 %Face Detection
-\section{Face Detection}
-In video conferencing, face is the most important region in the video stream to the viewer. In this work, various approaches of improving perceptual quality by increasing quality of the face region are presented. The prerequisite for these ROI-based encoding approaches is precise co-ordinates of the face (ROI) in any given video frame. This section describes the setup used to detect face prior to encoding.
+%Face Detection
+%
+\chapter{Face Detection and Tracking}
+\thispagestyle{empty}% no page number in chapter title page
+In video conferencing, face is the most important region in the video stream to the viewer. In this work, various approaches of improving perceptual quality by increasing quality of the face region are presented. The prerequisite for these ROI-based encoding techniques is precise co-ordinates of the face (ROI) in any given video frame. This section describes the setup used to detect face prior to encoding.
 
-Since every ROI-based encoding approach discussed in this work involves improving the region of interest at the cost of degrading the quality in rest of the frame, it is very important to have high reliability with face detection. Any false detection will lead to degradation of the actual region of interest compared to conventional encoding. The damage caused by a false detection is higher than the loss due to not detecting any face. Therefore, a high threshold must be used to declare any region of the frame as face.
+The face detection module is independent of the encoder and ROI-based encoding schemes discussed in this work. The face detection module uses input video stream to the encoder and marks the ROI at the macro block level. Figure \ref{fig:PaulDefault120FaceMap} shows the face map generated for the frame shown in Figure \ref{fig:PaulDefault120}. Each byte value in the face-map file of face detection module represents a macro-block scanned in raster scan order. A value of 0xff signifies macroblock being part of the face or ROI and 0x00 represents a normal macro-block.  The region in white is considered as ROI. This information is used by the bitrate control module of the encoder for ROI-based encoding.
+
+Since every ROI-based encoding approach discussed in this work involves improving the ROI at the cost of degrading the quality in non-ROI, it is very important to have high reliability with face detection. Any false detection will lead to degradation of the actual ROI compared to conventional encoding. Therefore, the damage caused by a false detection is higher than the loss due to not detecting any face.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[scale=0.4]{PaulDefault120FaceRecognized}
@@ -533,8 +538,6 @@ Since every ROI-based encoding approach discussed in this work involves improvin
 	\caption{Face Detection binary map}
 	\label{fig:PaulDefault120FaceMap}
 \end{figure}
-
-The face detection module is independent of the encoder and ROI-encoding schemes discussed in this work. In this work, the face detection module uses input YUV to the encoder and marks the region of interest at the macro block level. Each byte value in the output file of face detection module represents a macro-block scanned in raster scan order. A value of 0xff signifies macro-block being part of the face or region of interest and 0x00 represents a normal macro-block. Figure \ref{fig:PaulDefault120FaceMap} shows the face map generated for the frame shown in Figure \ref{fig:PaulDefault120}. The region in white is considered as region of interest. This information is used inside the bitrate control module of the encoder for ROI-based encoding.
 
 \subsection{Viola Jones Face Detection}
 Many open-source solutions like OpenCV offers a ready to use solution that can be integrated with the codec library. In this work, openCV implementation of Viola-Jones face detection algorithm \cite{Viola01rapidobject} was used. It has large set of trained classifiers considering many types of faces and viewing angles. A standard frontal face haar-classifier was used to detect faces in all the sample video sequence.
@@ -584,7 +587,7 @@ As discussed in the previous sections there are many ways in which ROI informati
 	\item ROI QP Offset
 	\item ROI-based Bit-Allocation
 \end{itemize}
-These approaches are designed considering the bitrate control module described in section \ref{chapter:used-bitrate-control-overview}. However, the underlying principles of ROI-based encoding to create an optimal quality difference between ROI and non-ROI are applicable to any generic bitrate control modules. The principles presented in this work can be used to modify other standard low-delay bitrate control algorithms to produce equivalent results. The different approaches presented here vary in terms of ease of implementation, complexity and output quality. This offers flexibility to choose a suitable approach according to the specific requirements. The following subsections describe each of the ROI-based bitrate control approaches.
+These approaches are designed considering the bitrate control module described in chapter \ref{chapter:used-bitrate-control-overview}. However, the underlying principles of ROI-based encoding to create an optimal quality difference between ROI and non-ROI are applicable to any generic bitrate control modules. The principles presented in this work can be used to modify other standard low-delay bitrate control algorithms to produce equivalent results. The different approaches presented here vary in terms of ease of implementation, complexity and output quality. This offers flexibility to choose a suitable approach according to the specific requirements. The following subsections describe each of the ROI-based bitrate control approaches.
 
 \section{ROI QP Offset}
 A simple way of creating a bias in the quality between ROI and non-ROI is by using a QP offset for the macroblocks belonging to the ROI. A negative QP offset ($dq_{roi}$)is added to the QP allocated by the bitrate control module ($Q_m$) for ROI macroblocks. The QP for a macroblock assigned by the bitrate control is modified before using it for the final encoding as shown below.
@@ -595,7 +598,7 @@ Where, $Q_m^{roi}$ and $Q_m^{nroi}$ are the QP used for encoding a macroblock be
 The effects on encoding of non-ROI macroblocks due to usage of external QP offset for ROI macroblocks are:
 \begin{itemize}
 	\item A lower QP for ROI results in ROI macroblocks consuming more bits.
-	\item The rate control module obtains feedback from the encoder regarding bit-consumption at the macroblock level (Section \ref{chapter:used-bitrate-control-overview}). This feedback signals over-consumption of bits by ROI macroblocks resulting in a higher deviation factor ($D_m^{n'}$).
+	\item The rate control module obtains feedback from the encoder regarding bit-consumption at the macroblock level (chapter \ref{chapter:used-bitrate-control-overview}). This feedback signals over-consumption of bits by ROI macroblocks resulting in a higher deviation factor ($D_m^{n'}$).
 	\item The bitrate control reacts to the usage of reduced QP for ROI macroblocks by increasing the QP of non-ROI blocks to compensate for the additional bits used by ROI macroblocks. 
 	\item This results in the frame level bit-consumption very similar to conventional encoding without using any ROI-based QP offsets. Therefore, the effect of ROI-based QP offset is mostly neutralized within the frame.
 	\item Any error in bit consumption at the frame level is compensated in the subsequent frames.
@@ -708,7 +711,7 @@ The feedback from the encoder to the bitrate control module will ensure that tar
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=0.75]{Tuning_QP_offset/New/-4/Chet250kbpsQpOffsetsingleDelay.png}
-	\caption{Delay plot for conventional encoding and ROI-based encoding with QP offset of 4 for ROI (Purple - Conventional encoding, Greem - QP offset based ROI encoding)}
+	\caption{Delay plot for conventional encoding and ROI-based encoding with QP offset of 4 for ROI (Purple - Conventional encoding, Green - QP offset based ROI encoding)}
 	\label{fig:DelayDefault_QPOffsetCompare}
 \end{figure}
 
@@ -799,7 +802,7 @@ The snapshot of same sample input encoded  with QP offset of -8 shown in Figure 
 	\centering
 	\begin{tabular}{ |c|c|c| }
 		\hline
-		{} & \multicolumn{2}{c|}{\textbf{Encoding Mode}} \\		
+		{} & \multicolumn{2}{c|}{\textbf{Encoding Mode}} \\\cline{2-3}	
 		\textbf{ROI QP Offset} & \textbf{Swing Restriction = on} & \textbf{Swing Restriction = off} \\
 		\hline 
 		0 & 16 & 12  \\
@@ -835,9 +838,9 @@ The snapshot of same sample input encoded  with QP offset of -8 shown in Figure 
 %\end{table}
 
 \subsubsection*{QP Swing Restriction}
-It is possible to preserve the quality of the non-ROI macroblocks even with high QP offsets by using QP swing restriction discussed in section \ref{sec: Bitrate overview: Bitrate deviation}. The maximum value of macroblock QP ($QP_{max}$) given by (\ref{Eq:QP swing restriction}), avoids the excessive degradation of the non-ROI macroblocks due to the usage of large QP offset. The QP of non-ROI blocks is not allowed to go very high despite over-consumption of bits by ROI blocks.  The side-effects of increased QP offset shows up in the form of an increase in the number of dropped frames. Table \ref{Table:QP tuning dropped frames} shows the number of dropped frames in the encoded video with 400 input frames. There is a drastic increase in the number of dropped frames with QP offset of -8 and -12. This increase in dropped frames reduces the smoothness of the playback which is annoying to the viewer.
+It is possible to preserve the quality of the non-ROI macroblocks even with high QP offsets by using QP swing restriction discussed in section \ref{sec: Bitrate overview: Bitrate deviation}. The maximum value of macroblock QP ($QP_{max}$) given by \cref{Eq:QP swing restriction}, avoids the excessive degradation of the non-ROI macroblocks due to the usage of large QP offset. The QP of non-ROI blocks is not allowed to go very high despite over-consumption of bits by ROI blocks.  The side-effects of increased QP offset shows up in the form of an increase in the number of dropped frames. Table \ref{Table:QP tuning dropped frames} shows the number of dropped frames in the encoded video with 400 input frames. There is a drastic increase in the number of dropped frames with QP offset of -8 and -12. This increase in dropped frames reduces the smoothness of the playback which is annoying to the viewer.
 
-When the QP swing restriction was turned off, the number of dropped frames with increased QP offset reduced drastically as shown in Table \ref{Table:QP tuning dropped frames}. There was no considerable increase in the number of dropped frames compared to the output of conventional encoding without using any ROI information. However, the quality of non-ROI blocks dropped significantly without QP swing restrictions as shown in Figure \ref{fig:QP offset tuning}. The extreme blockiness in the non-ROI regions decreased the perceptual quality. Therefore, using large QP offsets can lead to less perceptual quality either due to increased dropped frames or excessive blockiness in the background depending on the configuration of QP swing restriction. Therefore, the QP offset for the ROI should be tuned not only considering the degradation of the background quality but also by assessing any other side-effects like an increase in the number of dropped frames.
+When the QP swing restriction was turned off, the number of dropped frames with increased QP offset reduced drastically as shown in Table \ref{Table:QP tuning dropped frames}. There was no considerable increase in the number of dropped frames compared to the output of conventional encoding without using any ROI information. However, the quality of non-ROI blocks dropped significantly without QP swing restrictions as shown in Figure \ref{fig:QP offset tuning}. The extreme blockiness in the non-ROI decreased the perceptual quality. Therefore, using large QP offsets can lead to less perceptual quality either due to increased dropped frames or excessive blockiness in the background depending on the configuration of QP swing restriction. Therefore, the QP offset for the ROI should be tuned not only considering the degradation of the background quality but also by assessing any other side-effects like an increase in the number of dropped frames.
 
 %
 %Discuss the impact of ratio of ROI mbs to non-ROI mb's
@@ -846,35 +849,35 @@ This section discusses the importance of considering the relative area of ROI wi
  
 \begin{figure}[h!]
 	\centering
-	\begin{subfigure}[t]{0.24\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{varyingFaceSize/Chet119.png}
-		\caption{}
-		\label{fig:Bi-direction QP offset result image}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.24\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{varyingFaceSize/Chet119_facemap.png}
-		\caption{}
-		\label{fig:Bi-direction QP offset result psnr}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.24\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{varyingFaceSize/Chet446.png}
+	\begin{subfigure}[t]{0.49\textwidth}
+	%	\centering
+		\includegraphics[width=0.49\textwidth]{varyingFaceSize/Chet119.png}
+	%	\caption{}
+	%	\label{}
+	%\end{subfigure}
+	%\begin{subfigure}[t]{0.24\textwidth}
+	%	\centering
+		\includegraphics[width=0.49\textwidth]{varyingFaceSize/Chet119_facemap.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.24\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{varyingFaceSize/Chet446_facemap.png}
+	\begin{subfigure}[t]{0.49\textwidth}
+	%	\centering
+		\includegraphics[width=.49\textwidth]{varyingFaceSize/Chet446.png}
+	%	\caption{}
+	%	\label{}
+	%\end{subfigure}
+	%\begin{subfigure}[t]{0.24\textwidth}
+	%	\centering
+		\includegraphics[width=0.49\textwidth]{varyingFaceSize/Chet446_facemap.png}
 		\caption{}
 		\label{}
 	\end{subfigure}
-	\caption{The snapshots and corresponding face map of frame number 119 (a),(b) with $A_{roi} = 0.675$ and frame number 446 (c),(d) with $A_{roi} = 0.35$ for the content chet640x480.  }
+	\caption{The snapshots and corresponding face map of frame number 119 with $A_{roi} = 0.675$(a) and frame number 446 with $A_{roi} = 0.35$(c) in sample content chet640x480.}
 	\label{fig:variable-face-size}
 \end{figure}
 	
-However, in a video conferencing scenario,  based on the focal length of the camera and distance of the participant from the camera, area of the face in the video frame can change significantly. The number of ROI macroblocks can also change within a given input video sequence. The images in Figure \ref{fig:variable-face-size} shows the variation in size of ROI within a video sequence. This demands continuous adaptation of the QP offset to avoid visual artifacts due to the usage of wrong QP offset. For instance, when the area of ROI is half of the entire frame($A_{roi} > 0.5$), usage of higher QP offsets will cause severe degradation in the quality of non-ROI macroblocks. In order to avoid severe degradation of the background, the magnitude of the QP offset should be inversely proportional to the ratio of the number of ROI blocks to non-ROI blocks.
+However, in a video conferencing scenario,  based on the focal length of the camera and distance of the participant from the camera, area of the face in the video frame can change significantly. The number of ROI macroblocks can also change within a given input video sequence. The images in Figure \ref{fig:variable-face-size} shows the variation in size of ROI within a video sequence. This demands continuous adaptation of the QP offset to avoid visual artifacts due to the usage of wrong QP offset. For instance, when the area of ROI greater than area of non-ROI($A_{roi} > 0.5$), usage of higher QP offsets will lead to huge over-consumption of bits by ROI due to increased number of ROI macroblocks causing severe degradation in the quality of non-ROI macroblocks. In order to avoid severe degradation of the background, the magnitude of the QP offset should be inversely proportional to the ratio of the number of ROI blocks to non-ROI blocks.
 
 The algorithm implemented to adapt QP offset uses relative area of ROI. The QP offset is calculated using linear relationship described in (\ref{Eq:QP_offset}). This is a heuristic approximation which was found to yield best perceptual quality across many video contents. The scaled QP offset is then clipped to a value of -6 to avoid large QP offsets which can lead to side-effects discussed in the previous section.
 \begin{equation}
@@ -884,13 +887,13 @@ dq_{roi'} = -round\Big(\frac{M}{M_{roi} * 3}\Big), \\
 dq_{roi} = clip(dq_{roi'}, -1 , -6),
 \end{aligned}	
 \end{equation}
-where, $dq_{roi}$ is the offset used for ROI blocks, $M$ is the total number of macroblocks in the frame and $M_{roi}$ is the total number of macroblocks marked as region-of-interest. The negative sign in the equation implies that the calculated offset is negative, which results in QP lower than non-ROI blocks. It is also evident from (\ref{Eq:QP_offset}) that a minimum QP offset ($dq_{roi} = -1$) is used if the ROI covers more than two-third of the whole frame. The magnitude of QP offset increases linearly with subsequent decrease in the ROI area.
+where, $dq_{roi}$ is the offset used for ROI blocks, $M$ is the total number of macroblocks in the frame and $M_{roi}$ is the total number of macroblocks marked as ROI. The negative sign in the equation implies that the calculated offset is negative, which results in QP lower than non-ROI blocks. It is also evident from (\ref{Eq:QP_offset}) that a minimum QP offset ($dq_{roi} = -1$) is used if the ROI covers more than two-third of the whole frame. The magnitude of QP offset increases linearly with subsequent decrease in the ROI area.
 
 
 
 
 \subsection{Bi-direction QP-offset} \label{sec:bi-direction QP offset}
-The QP offset computed so far is only applied to the ROI macroblocks. The bitrate control module is held responsible for compensating the additional bits used in encoding the ROI blocks by increasing the QP of non-ROI blocks. 
+The QP offset computed so far is only applied to the ROI macroblocks. The bitrate control module is responsible for compensating the additional bits used in encoding the ROI blocks by increasing the QP of non-ROI blocks. 
 
 As explained in section \ref{sec: Bitrate overview: Bitrate deviation}, the bitrate control uses feedback from the encoder to constantly react to any deviation in the bitrate at the macroblock level. This feedback loop is not aware of the QP offset which is applied externally to the QP computed by bitrate control ($Q_m$). Due to this, the bitrate control reacts to over-consumption of bits by increasing the QP of non-ROI blocks only after encoding the ROI macroblocks. This effect is clearly seen in the quant map of ROI-based encoding in Figure \ref{fig:QP Offset Quant comparison 2}. 
 
@@ -939,7 +942,7 @@ The result of improved QP offset based ROI encoding is shown in \Cref{fig:ChetIm
 
 \begin{description}
 	\item[PSNR Value:] The PSNR values for all the sample video sequences with ROI-based encoding using QP offset is tabulated in \Cref{Table:AllPSNR1}. As expected, there is huge improvement in the PSNR of the ROI and q corresponding drop in non-ROI PSNR. The magnitude of drop in non-ROI PSNR is minor compared to the improvement in ROI PSNR. The reason for this observation is that in all the three chosen sample input sequence, the area of ROI is small compared to area of non-ROI ($A_{ROI} < 0.5$). Due to low $A_{ROI}$ the bits saved from quality degradation of non-ROI is used to encode a smaller number of ROI macroblocks with a higher quality leading to asymmetric change in PSNR values.  
-	\item[Psnr and Quantization Maps:] The comparison of PSNR and quantization maps between conventional encoding and improved QP offset based ROI-encoding is shown in \Cref{fig:AllPsnrComparison} and \Cref{fig:AllQuantizationComparison} respectively. 
+	\item[PSNR and Quantization Maps:] The comparison of PSNR and quantization maps between conventional encoding and improved QP offset based ROI-encoding is shown in \Cref{fig:AllPsnrComparison} and \Cref{fig:AllQuantizationComparison} respectively. 
 	In a simpler approach with uni-directional QP offset, one of the disadvantages discussed is non-uniform increase in ROI QP. The quantization map shown in \Cref{fig:AllQuantizationComparison-offset-chet} has more uniform increase in QP of non-ROI compared to the approach without bi-direction QP offset shown in \Cref{fig:QP Offset Quant comparison 2}. The regions below ROI do not reach extreme high QP since a positive QP offset is added to non-ROI QP from the start of the frame. This also improves the overall perceptual quality.
 	\item[Delay Plots:] The delay plots for improved QP offset approach is shown in \Cref{fig:AllDelayComparison}. For each of the sample video sequence, the delay curve follows very closely the curve for conventional encoding. This shows that the QP offset based approach does not modify the bit-consumption behavior at frame level. The absence of any additional zero-points indicate that there is no increase in the number of dropped frames. This is a highly desirable behavior since it indicates that there will be no glitch in playback of the video due to ROI-based encoding. 	
 \end{description}
@@ -969,7 +972,7 @@ The next section introduces an alternative approach for ROI-based encoding using
 \section{ROI based Bit-Allocation}
 This section introduces an approach with modifications to the bit-allocation module for improved ROI-based encoding. The main drawback of the QP offset based approach is that the input video content characteristics are not considered for determining the QP offset. The difference in complexity of ROI and non-ROI macroblocks determines the magnitude of quality difference required for good perceptual quality. This magnitude of optimal quality difference varies across different contents depending on the variation in complexity within a frame. For instance, consider a sample input video with complex background with some temporal complexity(non-ROI) but a simple static foreground (ROI). The usage of heuristic QP offsets which assumes background to be mostly static will result in annoying blocky artifacts in the background. This might decrease the perceptual quality to a level below that of conventional encoding. Therefore, it is important to consider the relative complexities of ROI and non-ROI parts to compute the desired quality difference between these regions.
 
-In conventional encoding, the bit-consumption is not uniform across all the macroblocks even though all regions of a frame are considered equally important to the viewer. This is due to variation in complexities across different macroblocks. The image in Figure \ref{fig:DefaultJohnnyBitConsumption} shows relative macroblock size in bits for a conventionally encoded frame. Similar to quant and psnr maps, the brighter shade of gray represents larger bit-consumption. It is clear that background regions consume least amount of bits and face region consumes an above average amount of bits. A bit-allocation strategy for ROI-based encoding which allocates higher than average amount of bits to ROI based on arbitrary weights \cite{ROI-MV-based-face-tracking,ROI-resource-allocation} might not allocate any additional bits compared to the conventional encoding. For ROI-based encoding, the bit-allocation strategy should take into account the relative complexities of ROI and non-ROI and allocate bits with a bias over the complexity based bit-allocation. The fundamental idea behind this approach is to allocate bits to ROI and non-ROI proportional to their complexities with an additional bias for ROI.
+In conventional encoding, the bit-consumption is not uniform across all the macroblocks even though all regions of a frame are considered equally important to the viewer. This is due to variation in complexities across different macroblocks. The image in Figure \ref{fig:DefaultJohnnyBitConsumption} shows relative macroblock size in bits for a conventionally encoded frame. Similar to quant and PSNR maps, the brighter shade of gray represents larger bit-consumption. It is clear that background regions consume least amount of bits and face region consumes an above average amount of bits. A bit-allocation strategy for ROI-based encoding which allocates higher than average amount of bits to ROI based on arbitrary weights \cite{ROI-MV-based-face-tracking,ROI-resource-allocation} might not allocate any additional bits compared to the conventional encoding. For ROI-based encoding, the bit-allocation strategy should take into account the relative complexities of ROI and non-ROI and allocate bits with a bias over the complexity based bit-allocation. The fundamental idea behind this approach is to allocate bits to ROI and non-ROI proportional to their complexities with an additional bias for ROI.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[scale=0.4]{New_dec/Johnny_Default_bit_consumption.png}
@@ -1111,21 +1114,21 @@ As mentioned earlier, the ROI-based bit-allocation is independent of the procedu
 $$B_R = \frac{M_{roi}}{M - M_{roi}}.$$ 
 The bias factor k determines the additional bits allocated to the ROI macroblocks. The main advantage of encoding with ROI-based bit-allocation compared to ROI-encoding based on QP offset is that it gives more control to guarantee minimum quality for the background macroblocks (non-ROI). For instance, the value of ROI-bias factor (k) can be bounded in such a way that non-ROI macroblocks are allocated at least half the amount of bits allocated during conventional encoding. This ensures that the quality of non-ROI does not deteriorate to an extent that blockiness in the background reduces the perceptual quality.
 
-In this work, the value of k is chosen to first allocate non-ROI half of the bits it would have consumed in conventional encoding. The excess is allocated to ROI parts. The maximum excess bits allocated to ROI is three times its bit-consumption in conventional encoding. The excess is allocated back to the non-ROI parts. Therefore, the value of k changes depending on the complexities of ROI and non-ROI regions. 
+In this work, the value of k is chosen to first allocate non-ROI half of the bits it would have consumed in conventional encoding. The excess is allocated to ROI parts. The maximum excess bits allocated to ROI is three times its bit-consumption in conventional encoding. The excess is allocated back to the non-ROI parts. Therefore, the value of k changes depending on the complexities of ROI and non-ROI. 
 %if asked for equations for above computations
 
 \subsection{Region based Bitrate Control}
 In the previous stages, the procedure for splitting the allocated frame level bits ({$B_{alloc}$}) between ROI and non-ROI is described. The input to this stage is bits allocated for ROI ($B_{alloc}^{roi}$) and non-ROI ($B_{alloc}^{nroi}$) parts. The target is to achieve bit-consumption according to the split between ROI and non-ROI parts with minimal error. 
 
-The bitrate control module described in section \ref{chapter:used-bitrate-control-overview} performs only frame level bit-allocation. There is no macroblock level bit-allocation. The task of the bitrate control module was to reduce the error between allocated frame bits $B_{alloc}$ and the frame level bit-consumption without worrying about bit-distribution within a frame. 
+The bitrate control module described in \cref{chapter:used-bitrate-control-overview} performs only frame level bit-allocation. There is no macroblock level bit-allocation. The task of the bitrate control module was to reduce the error between allocated frame bits $B_{alloc}$ and the frame level bit-consumption without worrying about bit-distribution within a frame. 
 
 In the ROI-based bit-allocation, the bit-allocation is not limited to frame level. The input frame is divided into two regions based on the ROI information and target bits are specified for each of these regions separately. The task of the bitrate control module is to meet bitrate for different regions independently (ROI and non-ROI) with minimal error. This section describes the modifications to the bitrate control module to accomplish this task.
 
-The bitrate control module studied in section \ref{chapter:used-bitrate-control-overview} computes the deviation factor ($D_m^{n'}$) based on accumulated error in frame level bit-consumption after encoding every frame as shown in (\ref{Eq:Frame level bit error accumulation}). In steady-state, the deviation factor ($D_m^{n'}$) takes a value such that the error in frame level bit-consumption is minimum. 
+The bitrate control module studied in \cref{chapter:used-bitrate-control-overview} computes the deviation factor ($D_m^{n'}$) based on accumulated error in frame level bit-consumption after encoding every frame as shown in (\ref{Eq:Frame level bit error accumulation}). In steady-state, the deviation factor ($D_m^{n'}$) takes a value such that the error in frame level bit-consumption is minimum. 
 
-The following steps summarize the approach to implement region-based bitrate control using the exisiting bitrate control described in section \ref{chapter:used-bitrate-control-overview}.
+The following steps summarize the approach to implement region-based bitrate control using the existing bitrate control described in \cref{chapter:used-bitrate-control-overview}.
 \begin{itemize}
-	\item Compute the deviation factor for ROI ($Droi_m^{n'}$) and non-ROI ($Dnroi_m^{n'}$) regions independently. The deviation factors are updated using feedback data from ROI and non-ROI parts independently. This can be visualized as having two instances of rate control running for ROI and non-ROI regions treating ROI and non-ROI regions as separate frames.
+	\item Compute the deviation factor for ROI ($Droi_m^{n'}$) and non-ROI ($Dnroi_m^{n'}$) independently. The deviation factors are updated using feedback data from ROI and non-ROI parts independently. This can be visualized as having two instances of rate control running for ROI and non-ROI treating ROI and non-ROI as separate frames.
 	\item A single instance of macroblock level bitrate error is maintained as shown in (\ref{Eq:Frame level bit error accumulation}). This ties the two instances of bitrate control together, so that frame level bit-error is minimized. The error in allocation and consumption of bits in the ROI and non-ROI is compensated throughout the frame resulting in less overall frame level error.
 	\item The VBV compliance works with frame level bit-allocation and therefore remains unchanged. There will be no increase in number of dropped frames as long as frame level deviation in bit-consumption is kept under check.
 \end{itemize} 
@@ -1438,7 +1441,7 @@ The following steps summarize the approach to implement region-based bitrate con
 		\centering
 		\includegraphics[width=\textwidth]{New_dec/Default/Johnny350kbpsDefaultDelay.png}
 		\caption{}
-		\label{}
+		\label{fig:AllDelayComparison-Default-Johnny}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
@@ -1560,13 +1563,13 @@ The overall difference in the image quality is more noticeable in the decreasing
 \begin{description}
 	\item[PSNR Value:] The PSNR values for all the sample video sequences with ROI-based bit-allocation is tabulated in \Cref{Table:AllPSNR1}. Similar to observations made with QP offset based ROI encoding, there is a huge improvement in PSNR of the ROI and a small drop in non-ROI PSNR. It can be noticed that PSNR of ROI is higher with ROI-based bit-allocation compared to QP offsets based ROI-encoding. This shows that ROI-based bit-allocation scheme results in more aggressive movement of bits from non-ROI to ROI parts. This is possible since the input content characteristics are considered in the algorithm which allows it to exploit the static background to allocate maximum amount of bits to complex ROI parts. This is not possible in ROI encoding with QP offset because the approach needs to be conservative due to the lack of information about the content characteristics. The adverse effects of using large magnitude QP offset is discussed previously in section \ref{sec:Tuning QP Offset}.
 	 
-	\item[Psnr and Quantization Maps:] The comparison of PSNR and Quantization maps between conventional encoding and improved QP offset based ROI-encoding is shown in \Cref{fig:AllPsnrComparison} and \Cref{fig:AllQuantizationComparison} respectively.
-	The usage of lower quantization parameter in the face regions compared to conventional encoding is clearly visible. The quantizations maps corresponding to ROI-based bit-allocation shows more prominent distinction between ROI and non-ROI parts compared to QP offsets based approach. This is achieved by allocating bits to ROI and non-ROI parts independently. Unlike ROI-encoding with QP offsets, the deviation control mechanism does not conflict with higher bits allocated to ROI. This leads to clear distinction between between ROI and non-ROI QP. The increase in non-ROI QP is also is more uniform with this scheme as shown in \Cref{fig:AllQuantizationComparison-ROI-bitrate-chet,fig:AllQuantizationComparison-ROI-bitrate-Paul,fig:AllQuantizationComparison-ROI-bitrate-Johnny}  as compared to QP offset based approach shown in \Cref{fig:AllQuantizationComparison-offset-chet,fig:AllQuantizationComparison-offset-Paul,fig:AllQuantizationComparison-offset-Johnny} respectively.
+	\item[PSNR and Quantization Maps:] The comparison of PSNR and Quantization maps between conventional encoding and improved QP offset based ROI-encoding is shown in \Cref{fig:AllPsnrComparison} and \Cref{fig:AllQuantizationComparison} respectively.
+	The usage of lower quantization parameter in the face regions compared to conventional encoding is clearly visible. The quantizations maps corresponding to ROI-based bit-allocation shows more prominent distinction between ROI and non-ROI parts compared to QP offsets based approach. This is achieved by allocating bits to ROI and non-ROI parts independently. Unlike ROI-encoding with QP offsets, the deviation control mechanism does not conflict with higher bits allocated to ROI. This leads to clear distinction between ROI and non-ROI QP. The increase in non-ROI QP is also is more uniform with this scheme as shown in \Cref{fig:AllQuantizationComparison-ROI-bitrate-chet,fig:AllQuantizationComparison-ROI-bitrate-Paul,fig:AllQuantizationComparison-ROI-bitrate-Johnny}  as compared to QP offset based approach shown in \Cref{fig:AllQuantizationComparison-offset-chet,fig:AllQuantizationComparison-offset-Paul,fig:AllQuantizationComparison-offset-Johnny} respectively.
 	 
 	The PSNR maps shown in \Cref{fig:AllPsnrComparison} show higher quality in the face regions compared to conventional and QP offset based ROI encoding. This is due to aggressive movement of bits from non-ROI parts to ROI parts.
-	\item[Delay Plots:] The delay plots for ROI-based bit-allocation are shown in \Cref{fig:AllDelayComparison}. For each of the sample video sequence, the delay curve follows the curve for conventional encoding. However, this is one aspect in which ROI-based bit-allocation scheme performs inferior to QP offset based ROI encoding. There is considerable deviation in delay curve for Chet640x480 and Paul640x480 with ROI-based bit-allocation (\cref{fig:AllDelayComparison-ROI-bitrate-Paul,fig:AllDelayComparison-ROI-bitrate-Paul}) as compared to QP offset based ROI encoding (\cref{fig:AllDelayComparison-offset-Paul,fig:AllDelayComparison-offset-Paul}). There is also an increase in the number of dropped frames which can be seen as an additional zero-point in \Cref{fig:AllDelayComparison-ROI-bitrate-Paul}. 
+	\item[Delay Plots:] The delay plots for ROI-based bit-allocation are shown in \Cref{fig:AllDelayComparison}. For each of the sample video sequence, the delay curve follows the curve for conventional encoding. However, this is one aspect in which ROI-based bit-allocation scheme performs inferior to QP offset based ROI encoding. There is considerable deviation in delay curve for Chet640x480 and Paul640x480 with ROI-based bit-allocation (\cref{fig:AllDelayComparison-ROI-bitrate-Paul,fig:AllDelayComparison-ROI-bitrate-Chet}) as compared to QP offset based ROI encoding (\cref{fig:AllDelayComparison-offset-Paul,fig:AllDelayComparison-offset-Chet}). There is also an increase in the number of dropped frames which can be seen as an additional zero-point in \Cref{fig:AllDelayComparison-ROI-bitrate-Paul}. However, the delay curves for sample content Johnny1280x720 for both approaches of ROI-based encoding shown in  \Cref{fig:AllDelayComparison-offset-Johnny,fig:AllDelayComparison-ROI-bitrate-Johnny} have very low deviation from delay curve for conventional encoding. This is due to comparatively low temporal complexity.
 	
-	The reason for increased deviation in delay curve and an increase in the number of dropped frame is the usage of region-based bi-rate control. Since bits are allocated independently to ROI and non-ROI regions, the bitrate control attempts to meet these region-specific target bitrate leading to deviation in bitrate in two regions. This increased deviation leads to overall increase in frame level bit-allocation and bit-consumption error. In extreme cases, this increased error leads to dropped frames.
+	The reason for increased deviation in delay curve and an increase in the number of dropped frame is the usage of region-based bitrate control. Since bits are allocated independently to ROI and non-ROI, the bitrate control attempts to meet these region-specific target bitrate leading to deviation in bitrate in two regions. This increased deviation leads to overall increase in frame level bit-allocation and bit-consumption error. In extreme cases, this increased error leads to dropped frames.
 	
 \end{description}
 
@@ -1575,7 +1578,7 @@ The ROI-based bit-allocation scheme offers an efficient way of improving percept
 \begin{itemize}
 	\item The consideration of input content characteristics for ROI-based encoding makes this approach work well for all types of contents
 	\item This approach can guarantee minimum quality for the background region by having sufficient bits allocated to the non-ROI to avoid blockiness.
-	\item The variable importance of ROI can be factored in easily by altering the bias factor (k) to vary the magnitude of bit movement from ROI to non-ROI.
+	\item The variable importance of ROI can be factored easily by altering the bias factor (k) to vary the magnitude of bit movement from ROI to non-ROI.
 \end{itemize}
 
 \subsection*{Disadvantages}
