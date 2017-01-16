@@ -1,10 +1,10 @@
-\switchlanguage{en} % The abstract is supposed to be in English!
+%\switchlanguage{en} % The abstract is supposed to be in English!
 
 \thispagestyle{plain}
 
 \section*{Abstract}
-Titel auf Englisch wiederholen.
+In video communication applications at low bitrates, coding artifacts are especially disturbing in the face region. In this work, region-of-interest (ROI) based encoding techniques are proposed to preferentially code the face region with higher quality to improve the perceived visual quality of video conferencing system. The face region is detected in the video stream and marked as ROI before encoding. The low-delay bitrate control proposed for H.264 video coding standard is extended to implement two different approaches of ROI-based encoding. In the first approach, QP offsets for ROI is computed based on relative area of ROI to reduce the quantization parameter(QP) allocated for ROI macroblocks. In the second approach, region-based bit-allocation is performed to allocate higher bits to ROI. The two approaches offer tradeoff between complexity and output quality. In contrast to previous ROI-based video coding approaches, this work uses the complexities of ROI and non-ROI parts in a video frame to allocate optimal amount of bits for corresponding regions. Experimental results demonstrated that the quality of ROI is improved without any noticeable degradation in non-ROI quality hence improving the overall perceived visual quality at low bitrates.
 
-Es folgt die englische Version der Kurzfassung.
+In addition to ROI-based coding, optimization techniques are proposed for real-time face detection in video stream by reusing motion vector information computed during motion-estimation stage of video encoding. This work proposes motion vector based variable interval face detection technique instead of detecting face in every frame of the video. The motion vectors of face regions are analyzed perform face detection only when there is movement in the face regions.
 
-\switchlanguage{\lang} % Switch back to the document's default language.
+%\switchlanguage{\lang} % Switch back to the document's default language.
