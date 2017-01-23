@@ -3,7 +3,7 @@
 A brief overview of principles of hybrid video coding used in H.264 is presented in this chapter. The ROI-based encoding approaches discussed in this work are implemented in the form of intelligent bitrate control schemes. Therefore, an overview of the bitrate control module is presented to provide the reader with an understanding of the functionality of bitrate control in a video encoder. Finally, the concept of ROI-based encoding is introduced.
 
 \section{Hybrid Video Coding}
-H.264/Advanced Video Coding (\ac{AVC}) is one of the most commonly used video coding standard. Figure \ref{fig:Hybrid Video Coding} depicts the underlying principle of block-based hybrid video coding used in H.264~\cite{h.264-overview}. The encoding scheme aims to exploit the spatial and temporal redundancies that exist in a video. 
+H.264/AVC is one of the most commonly used video coding standard. Figure \ref{fig:Hybrid Video Coding} depicts the underlying principle of block-based hybrid video coding used in H.264~\cite{h.264-overview}. The encoding scheme aims to exploit the spatial and temporal redundancies that exist in a video. 
 
 In this coding scheme, the input picture is represented in block-shaped units (16x16 pixels) of associated luma and chroma samples called macroblocks (\ac{MB}s). The basic source-coding algorithm is a hybrid of inter-picture prediction to exploit temporal statistical redundancies and transform coding of the prediction residual to exploit spatial statistical dependencies. The two types of prediction used are:
 \begin{description}
@@ -337,6 +337,7 @@ This work uses the Citrix H.264 video codec for studying different ROI-based enc
 	\caption{Result of conventional encoding with corresponding bitrates.}
 	\label{fig:ConventionalEncodingFrames}
 \end{figure}
+
 The configuration used for encoding each of the sample input sequences listed in the above section is shown in Table \ref{Table:ConfigurationForEncoding}. The bitrates for different input sequences are configured considering the resolution and the complexity of the content. The chosen bitrates are relatively low yielding low visual quality with conventional encoding. This makes it easy to assess the gain in the perceptual quality with ROI-based encoding. Figure \ref{fig:ConventionalEncodingFrames} shows the results of conventional encoding for the configuration shown in Table  \ref{Table:ConfigurationForEncoding}. Due to the usage of low bitrate, blocky artifacts can be noticed in the face regions.
 
 %\begin{figure}[!h]
@@ -536,7 +537,7 @@ Since every ROI-based encoding approach discussed in this work involves improvin
 	\label{fig:PaulDefault120FaceMap}
 \end{figure}
 
-\section{Viola Jones Face Detection}
+\section{Viola-Jones Face Detection}
 Many open-source solutions like OpenCV offers a ready to use solution that can be integrated with the codec library. In this work, OpenCV implementation of Viola-Jones AdaBoost face detection algorithm~\cite{Viola01rapidobject} is used. It has a large set of trained classifiers considering many types of faces and viewing angles. A standard frontal face Haar-classifier is used to detect faces in all the sample video sequences.
 
 \subsection{Performance Benchmark}
@@ -960,7 +961,7 @@ where, $dq_{roi}$ is the offset used for ROI blocks, $M$ is the total number of 
 
 
 
-\subsection{Bi-direction QP-offset} \label{sec:bi-direction QP offset}
+\subsection{Bi-direction QP Offset} \label{sec:bi-direction QP offset}
 The QP offset computed so far is only applied to the ROI macroblocks. The bitrate control module is responsible for compensating the additional bits used in encoding the ROI blocks by increasing the QP of non-ROI blocks. 
 
 As explained in \Cref{sec: Bitrate overview: Bitrate deviation}, the bitrate control uses feedback from the encoder to constantly react to any deviation in the bitrate at the macroblock level. This feedback loop is not aware of the QP offset which is applied externally to the QP computed by the bitrate control ($Q_m$). Due to this, the bitrate control reacts to over-consumption of bits by increasing the QP of non-ROI blocks only after encoding the ROI macroblocks. This effect is clearly seen in the quantization map of ROI-based encoding in Figure \ref{fig:QP Offset Quant comparison 2}. 
