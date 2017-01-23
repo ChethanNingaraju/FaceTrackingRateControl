@@ -44,6 +44,28 @@
 \usepackage{multirow}
 \usepackage{tabularx}
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\usepackage{acro}
+
+\acsetup{first-style=short}
+
+%class `abbrev': abbreviations:
+\DeclareAcronym{PSNR}{  short = PSNR ,  long  = Peak Signal to Noise Ratio ,  class = abbrev}
+\DeclareAcronym{ROI}{  short = ROI ,  long  = Region Of Interest ,  class = abbrev}
+\DeclareAcronym{QP}{  short = QP ,  long  = Quantization Parameter ,  class = abbrev}
+\DeclareAcronym{ME}{  short = ME ,  long  = Motion Estimation ,  class = abbrev}
+\DeclareAcronym{AVC}{  short = AVC ,  long  = Advanced Video Coding ,  class = abbrev}
+\DeclareAcronym{CBR}{  short = CBR ,  long  = Constant Bitrate ,  class = abbrev}
+\DeclareAcronym{VBR}{  short = VBR ,  long  = Variable Bitrate ,  class = abbrev}
+\DeclareAcronym{VBV}{  short = VBV ,  long  = Video Buffer Verifier ,  class = abbrev}
+\DeclareAcronym{HVS}{  short = HVS ,  long  = Human Visual System ,  class = abbrev}
+\DeclareAcronym{RDO}{  short = RDO ,  long  = Rate Distortion Optimization ,  class = abbrev}
+\DeclareAcronym{SSIM}{  short = SSIM ,  long  = Structural Similarity Index ,  class = abbrev}
+\DeclareAcronym{SATD}{  short = SATD ,  long  = Sum of Absolute Difference in Transform Domain ,  class = abbrev}
+\DeclareAcronym{SAD}{  short = SAD ,  long  = Sum of Absolute Difference ,  class = abbrev}
+\DeclareAcronym{MB}{  short = MB ,  long  = Macroblock ,  class = abbrev}
+\DeclareAcronym{CAMSHIFT}{  short = CAMSHIFT ,  long  = Continuous Adaptive Mean Shift ,  class = abbrev}
+\DeclareAcronym{HEVC}{  short = HEVC , long = High Efficiency Video Coding ,  class = abbrev}
 % Include doc++ generated tex-files:
 %\usepackage{docxx}
 % Include PDF links
@@ -97,13 +119,15 @@
 %\include{Results}
 %  Conclusions (Zusammenfassung):
 \include{Conclusions}
-% Appendix (Anhänge), could have multiple chaper-files:
-%\appendix
-%\include{Appendix}
+
+
 % List of figures (Abbildungsverzeichnis):
 \listoffigures
 % List of tables (Tabellenverzeichnis):
 \listoftables
+% Appendix (Anhänge), could have multiple chaper-files:
+%\appendix
+\include{Appendix}
 % Glossary (Glossar):
 %\include{Glossary}
 % List of formulae (Liste der Formelzeichen):
